@@ -1,0 +1,4 @@
+<resources>
+    <string name="accessKey">your_accessKey</string>
+    <string name="campaignKey">your_campaignKey</string>
+</resources>

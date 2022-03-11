@@ -1,0 +1,20 @@
+<resources>
+    <string-array name="ratio">
+        <item>1:1</item>
+        <item>1:2</item>
+        <item>2:3</item>
+        <item>3:4</item>
+        <item>9:16</item>
+    </string-array>
+
+    <string-array name="playerNextAction">
+        <item>Switch to PIP mode</item>
+        <item>No change</item>
+        <item>Exit</item>
+    </string-array>
+
+    <string-array name="preview">
+        <item>Overlay view</item>
+        <item>OS PIP</item>
+    </string-array>
+</resources>

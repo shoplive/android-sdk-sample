@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+            app:key="screen"
+            app:title="@string/setting_category_player"
+            app:iconSpaceReserved="false">
+
+        <Preference
+                app:key="@string/preference_pipRatio_key"
+                app:title="@string/preference_pipRatio_title"
+                app:summary="@string/preference_pipRatio_summary"
+                app:iconSpaceReserved="false"
+                />
+
+        <Preference
+                app:key="@string/preference_nextAction_key"
+                app:title="@string/preference_nextAction_title"
+                app:summary="@string/preference_nextAction_summary"
+                app:iconSpaceReserved="false"
+                />
+
+        <SwitchPreferenceCompat
+                app:key="@string/preference_tabletAspect_key"
+                app:title="@string/preference_tabletAspect_title"
+                app:summary="@string/preference_tabletAspect_summary"
+                app:iconSpaceReserved="false"
+                app:enabled="false"
+                />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            app:key="autoPlay"
+            app:title="@string/setting_category_auto_play"
+            app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+                app:key="@string/preference_headset_key"
+                app:title="@string/preference_headset_title"
+                app:summary="@string/preference_headset_summary"
+                app:iconSpaceReserved="false"
+                />
+
+        <SwitchPreferenceCompat
+                app:key="@string/preference_mute_key"
+                app:title="@string/preference_mute_title"
+                app:summary="@string/preference_mute_summary"
+                app:iconSpaceReserved="false"
+                />
+
+        <SwitchPreferenceCompat
+                app:key="@string/preference_call_key"
+                app:title="@string/preference_call_title"
+                app:summary="@string/preference_call_summary"
+                app:iconSpaceReserved="false"
+                />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            app:key="share"
+            app:title="@string/setting_category_share"
+            app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+                app:key="@string/preference_custom_share_key"
+                app:title="@string/preference_custom_share_title"
+                app:summary="@string/preference_custom_share_summary"
+                app:iconSpaceReserved="false"
+                />
+
+        <Preference
+                app:key="@string/preference_share_url_key"
+                app:title="@string/preference_share_url_title"
+                app:summary="@string/preference_share_url_summary"
+                app:iconSpaceReserved="false"
+                />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            app:key="loading"
+            app:title="@string/setting_category_loading_progress"
+            app:iconSpaceReserved="false">
+
+        <Preference
+                app:key="@string/preference_loading_progress_key"
+                app:title="@string/preference_loading_progress_title"
+                app:summary="@string/preference_loading_progress_summary"
+                app:iconSpaceReserved="false"
+                />
+
+        <SwitchPreferenceCompat
+                app:key="@string/preference_loading_image_animation_key"
+                app:title="@string/preference_loading_image_animation_title"
+                app:summary="@string/preference_loading_image_animation_summary"
+                app:iconSpaceReserved="false"
+                />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            app:key="chatInputFont"
+            app:title="@string/setting_category_chat_font"
+            app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+                app:key="@string/preference_chat_input_font_key"
+                app:title="@string/preference_chat_input_font_title"
+                app:summary="@string/preference_chat_input_font_summary"
+                app:iconSpaceReserved="false"
+                />
+
+        <SwitchPreferenceCompat
+                app:key="@string/preference_chat_send_font_key"
+                app:title="@string/preference_chat_send_font_title"
+                app:summary="@string/preference_chat_send_font_summary"
+                app:iconSpaceReserved="false"
+                />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            app:key="exit"
+            app:title="@string/setting_category_exit"
+            app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+                app:key="@string/preference_pipModeOnBackPressed_key"
+                app:title="@string/preference_pipModeOnBackPressed_title"
+                app:summary="@string/preference_pipModeOnBackPressed_summary"
+                app:iconSpaceReserved="false"
+                />
+
+        <SwitchPreferenceCompat
+                app:key="@string/preference_autoClose_key"
+                app:title="@string/preference_autoClose_title"
+                app:summary="@string/preference_autoClose_summary"
+                app:iconSpaceReserved="false"
+                />
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>
