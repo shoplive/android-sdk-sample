@@ -15,19 +15,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
 
-        <activity android:name=".MainActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/Theme.ShopLiveSample"
-                android:windowSoftInputMode="stateAlwaysHidden">
+        <activity
+                android:name=".SplashActivity"
+                android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name="cloud.shoplive.sample.WebViewActivity"
-                android:theme="@style/Theme.ShopLiveSample"/>
+        <activity
+                android:name=".MainActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.ShopLiveSample"
+                android:windowSoftInputMode="stateAlwaysHidden"
+                />
+
+        <activity
+                android:name="cloud.shoplive.sample.WebViewActivity"
+                android:theme="@style/Theme.ShopLiveSample"
+                />
 
     </application>
-
 </manifest>
