@@ -15,9 +15,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
 
-        <activity android:name="cloud.shoplive.sample.WebViewActivity"
-                android:theme="@style/Theme.ShopLiveSample"/>
-
         <activity android:name=".MainActivity"
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.ShopLiveSample"
@@ -28,18 +25,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".campaign.CampaignActivity"
-                android:screenOrientation="portrait"
+        <activity android:name="cloud.shoplive.sample.WebViewActivity"
                 android:theme="@style/Theme.ShopLiveSample"/>
-
-        <activity android:name=".options.SettingsActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/Theme.Settings"/>
-
-        <activity android:name=".user.UserActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/Theme.ShopLiveSample"
-                />
 
     </application>
 

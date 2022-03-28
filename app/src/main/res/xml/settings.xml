@@ -99,7 +99,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-            app:key="chatInputFont"
+            app:key="chatFont"
             app:title="@string/setting_category_chat_font"
             app:iconSpaceReserved="false">
 

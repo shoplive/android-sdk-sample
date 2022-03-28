@@ -8,7 +8,7 @@ import android.webkit.*
 import android.widget.ProgressBar
 import androidx.fragment.app.DialogFragment
 
-class WebViewDialogFragment(private val url: String): DialogFragment(){
+class WebViewDialogFragment: DialogFragment(){
 
     lateinit var webView: WebView
     lateinit var progressBar: ProgressBar
@@ -29,7 +29,7 @@ class WebViewDialogFragment(private val url: String): DialogFragment(){
         progressBar = view.findViewById(R.id.progressBar)
 
         setupWebView()
-        webView.loadUrl(url)
+        webView.loadUrl(arguments?.getString("url"))
     }
 
     override fun onResume() {

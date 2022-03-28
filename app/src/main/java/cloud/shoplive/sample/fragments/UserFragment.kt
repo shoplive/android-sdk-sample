@@ -1,4 +1,4 @@
-package cloud.shoplive.sample.user
+package cloud.shoplive.sample.fragments
 
 import android.content.Context
 import android.content.Intent
@@ -9,17 +9,16 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.fragment.app.Fragment
 import cloud.shoplive.sample.CampaignSettings
 import cloud.shoplive.sample.R
-import cloud.shoplive.sample.base.ToolbarActivity
 import cloud.shoplive.sdk.ShopLiveUser
 import cloud.shoplive.sdk.ShopLiveUserGender
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.lang.NumberFormatException
 
-
-class UserActivity: ToolbarActivity() {
+class UserFragment: Fragment() {
 
     lateinit var rgAuth: RadioGroup
     lateinit var tvAuth: AppCompatTextView
@@ -33,23 +32,29 @@ class UserActivity: ToolbarActivity() {
     lateinit var etTokenLayout: TextInputLayout
     lateinit var etToken: TextInputEditText
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        setHasOptionsMenu(true)
+        return inflater.inflate(R.layout.fragment_user, container, false)
+    }
 
-        supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        rgAuth = findViewById(R.id.rgAuth)
-        tvAuth = findViewById(R.id.tvAuth)
-        scrollView = findViewById(R.id.scrollView)
-        etUserId = findViewById(R.id.etUserId)
-        etUserName = findViewById(R.id.etUserName)
-        etAge = findViewById(R.id.etAge)
-        etUserScore = findViewById(R.id.etUserScore)
-        rgGender = findViewById(R.id.rgGender)
-        tvTokenGuide = findViewById(R.id.tvTokenGuide)
-        etTokenLayout = findViewById(R.id.etTokenLayout)
-        etToken = findViewById(R.id.etToken)
+        rgAuth = view.findViewById(R.id.rgAuth)
+        tvAuth = view.findViewById(R.id.tvAuth)
+        scrollView = view.findViewById(R.id.scrollView)
+        etUserId = view.findViewById(R.id.etUserId)
+        etUserName = view.findViewById(R.id.etUserName)
+        etAge = view.findViewById(R.id.etAge)
+        etUserScore = view.findViewById(R.id.etUserScore)
+        rgGender = view.findViewById(R.id.rgGender)
+        tvTokenGuide = view.findViewById(R.id.tvTokenGuide)
+        etTokenLayout = view.findViewById(R.id.etTokenLayout)
+        etToken = view.findViewById(R.id.etToken)
 
         tvTokenGuide.paintFlags = Paint.UNDERLINE_TEXT_FLAG
         tvTokenGuide.setOnClickListener {
@@ -78,45 +83,34 @@ class UserActivity: ToolbarActivity() {
             }
         }
 
-        when(CampaignSettings.authType(this)) {
+        when(CampaignSettings.authType(requireContext())) {
             0 -> rgAuth.check(R.id.rbUser)
             1 -> rgAuth.check(R.id.rbToken)
             2 -> rgAuth.check(R.id.rbGuest)
         }
-        setUser(CampaignSettings.user(this))
-        etToken.setText(CampaignSettings.jwt(this))
+        setUser(CampaignSettings.user(requireContext()))
+        etToken.setText(CampaignSettings.jwt(requireContext()))
+
     }
 
-    override fun layout(): Int {
-        return R.layout.activity_user
-    }
-
-    override fun toolbarTitle(): String {
-        return getString(R.string.title_user)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.user_menu, menu)
-        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-            android.R.id.home -> {
-                finish()
-            }
             R.id.action_save -> {
                 saveUser()
-                CampaignSettings.jwt(this, etToken.text.toString())
+                CampaignSettings.jwt(requireContext(), etToken.text.toString())
                 CampaignSettings.authType(
-                    this, when (rgAuth.checkedRadioButtonId) {
+                    requireContext(), when (rgAuth.checkedRadioButtonId) {
                         R.id.rbUser -> 0
                         R.id.rbToken -> 1
                         else -> 2
                     }
                 )
-                finish()
+                activity?.supportFragmentManager?.popBackStack()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -163,7 +157,7 @@ class UserActivity: ToolbarActivity() {
     }
 
     private fun saveUser() {
-        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(etUserId.windowToken, 0)
 
         val user = ShopLiveUser().apply {
@@ -200,6 +194,6 @@ class UserActivity: ToolbarActivity() {
             }
         }
 
-        CampaignSettings.user(this, user)
+        CampaignSettings.user(requireContext(), user)
     }
 }

@@ -81,7 +81,10 @@ public class SampleActivity extends AppCompatActivity {
                     startActivity(intent);
                     break;
                 case KEEP:
-                    DialogFragment webDialogFragment = new WebViewDialogFragment(url);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("url", url);
+                    DialogFragment webDialogFragment = new WebViewDialogFragment();
+                    webDialogFragment.setArguments(bundle);
                     ShopLive.showDialogFragment(webDialogFragment);
                     break;
                 default:
