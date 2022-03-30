@@ -1,4 +1,4 @@
-package cloud.shoplive.sample
+package cloud.shoplive.sample.extension
 
 import android.content.res.Configuration
 import androidx.fragment.app.Fragment

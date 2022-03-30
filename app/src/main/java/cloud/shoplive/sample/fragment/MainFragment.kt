@@ -1,4 +1,4 @@
-package cloud.shoplive.sample.fragments
+package cloud.shoplive.sample.fragment
 
 import android.app.Dialog
 import android.content.Context
@@ -19,27 +19,20 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import cloud.shoplive.sample.*
 import cloud.shoplive.sample.R
+import cloud.shoplive.sample.databinding.FragmentMainBinding
 import cloud.shoplive.sdk.*
 import org.json.JSONObject
 
 class MainFragment : Fragment() {
 
-    private var _view: View? = null
-    lateinit var btCampaign: AppCompatButton
-    lateinit var btUser: AppCompatButton
-    lateinit var btOption: AppCompatButton
-    lateinit var tvCampaign: AppCompatTextView
-    lateinit var tvUser: AppCompatTextView
-    lateinit var tvOption: AppCompatTextView
-    lateinit var btPlay: Button
-    lateinit var btPreview: Button
+    private var _binding: FragmentMainBinding? = null
+
+    private val binding get() = _binding!!
 
     companion object {
         val TAG: String = MainFragment::class.java.name
@@ -49,42 +42,37 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        if (_view == null) {
-            _view = inflater.inflate(R.layout.fragment_main, container, false)
-        }
-        return _view    }
+    ): View {
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        btCampaign = view.findViewById(R.id.btCampaign)
-        btUser = view.findViewById(R.id.btUser)
-        btOption = view.findViewById(R.id.btOption)
-        tvCampaign = view.findViewById(R.id.tvCampaign)
-        tvUser = view.findViewById(R.id.tvUser)
-        tvOption = view.findViewById(R.id.tvOption)
-        btPlay = view.findViewById(R.id.btPlay)
-        btPreview = view.findViewById(R.id.btPreview)
-
-        btCampaign.setOnClickListener {
+        binding.btCampaign.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.campaign_fragment)
         }
 
-        btUser.setOnClickListener {
+        binding.btUser.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.user_fragment)
         }
 
-        btOption.setOnClickListener {
+        binding.btOption.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.settings_fragment)
         }
 
-        btPlay.setOnClickListener {
+        binding.btPlay.setOnClickListener {
             makeCampaignData()
             play()
         }
 
-        btPreview.setOnClickListener {
+        binding.btPreview.setOnClickListener {
             makeCampaignData()
             preview()
         }
@@ -95,9 +83,9 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        tvCampaign.text = loadCampaignData()
-        tvUser.text = loadUserData()
-        tvOption.text = Options.toString(requireContext())
+        binding.tvCampaign.text = loadCampaignData()
+        binding.tvUser.text = loadUserData()
+        binding.tvOption.text = Options.toString(requireContext())
     }
 
     private fun loadCampaignData(): String {

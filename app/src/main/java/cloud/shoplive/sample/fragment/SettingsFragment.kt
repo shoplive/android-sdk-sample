@@ -1,4 +1,4 @@
-package cloud.shoplive.sample.fragments
+package cloud.shoplive.sample.fragment
 
 import android.Manifest
 import android.app.Application
@@ -23,7 +23,7 @@ import androidx.preference.SwitchPreferenceCompat
 import cloud.shoplive.sample.BuildConfig
 import cloud.shoplive.sample.Options
 import cloud.shoplive.sample.R
-import cloud.shoplive.sample.isTablet
+import cloud.shoplive.sample.extension.isTablet
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLivePIPRatio
 

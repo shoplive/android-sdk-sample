@@ -1,34 +1,38 @@
-package cloud.shoplive.sample.fragments
+package cloud.shoplive.sample.fragment
 
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import cloud.shoplive.sample.CampaignSettings
 import cloud.shoplive.sample.R
-import com.google.android.material.textfield.TextInputEditText
+import cloud.shoplive.sample.databinding.FragmentCampaignBinding
 
 class CampaignFragment: Fragment() {
 
-    private lateinit var etAccessKey: TextInputEditText
-    private lateinit var etCampaignKey: TextInputEditText
+    private var _binding: FragmentCampaignBinding? = null
+
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_campaign, container, false)
+        _binding = FragmentCampaignBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        etAccessKey = view.findViewById(R.id.etAccessKey)
-        etCampaignKey = view.findViewById(R.id.etCampaignKey)
-
-        etAccessKey.setText(CampaignSettings.accessKey(requireContext()))
-        etCampaignKey.setText(CampaignSettings.campaignKey(requireContext()))
+        binding.etAccessKey.setText(CampaignSettings.accessKey(requireContext()))
+        binding.etCampaignKey.setText(CampaignSettings.campaignKey(requireContext()))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -39,8 +43,8 @@ class CampaignFragment: Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.action_save -> {
-                val accessKey = etAccessKey.text.toString()
-                val campaignKey = etCampaignKey.text.toString()
+                val accessKey = binding.etAccessKey.text.toString()
+                val campaignKey = binding.etCampaignKey.text.toString()
 
                 CampaignSettings.accessKey(requireContext(), accessKey)
                 CampaignSettings.campaignKey(requireContext(), campaignKey)
