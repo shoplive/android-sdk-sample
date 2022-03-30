@@ -29,7 +29,9 @@ class WebViewDialogFragment: DialogFragment(){
         progressBar = view.findViewById(R.id.progressBar)
 
         setupWebView()
-        webView.loadUrl(arguments?.getString("url"))
+        arguments?.getString("url")?.let {
+            webView.loadUrl(it)
+        }
     }
 
     override fun onResume() {
