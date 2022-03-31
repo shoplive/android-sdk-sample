@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebStorage
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -68,13 +67,13 @@ class MainFragment : Fragment() {
         }
 
         binding.btPlay.setOnClickListener {
-            makeCampaignData()
+            setOptions()
             play()
         }
 
         binding.btPreview.setOnClickListener {
-            makeCampaignData()
-            preview()
+            setOptions()
+            startPreview()
         }
 
         registerShopLiveHandler()
@@ -131,7 +130,7 @@ class MainFragment : Fragment() {
         return userText
     }
 
-    private fun makeCampaignData() {
+    private fun setOptions() {
         // user set
         when(CampaignSettings.authType(requireContext())) {
             0 -> { CampaignSettings.user(requireContext())?.let { ShopLive.setUser(it) } }
@@ -175,8 +174,6 @@ class MainFragment : Fragment() {
     }
 
     private fun play() {
-        WebStorage.getInstance().deleteAllData()
-
         CampaignSettings.accessKey(requireContext())?.let {
             ShopLive.setAccessKey(it)
         }
@@ -186,7 +183,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun preview() {
+    private fun startPreview() {
         CampaignSettings.accessKey(requireContext())?.let {
             ShopLive.setAccessKey(it)
         }
