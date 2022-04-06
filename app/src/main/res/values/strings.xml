@@ -8,12 +8,14 @@
     <string name="bt_step3">STEP 3. Advanced setting</string>
     <string name="bt_play">Play</string>
     <string name="bt_preview">Preview</string>
+    <string name="bt_login">Login</string>
 
     <!-- title -->
     <string name="title_main">Shoplive SDK Sample</string>
     <string name="title_campaign">Campaign setting</string>
     <string name="title_user">User setting</string>
     <string name="title_option">Advanced setting</string>
+    <string name="title_login">Login</string>
 
     <!-- hint -->
     <string name="hint_accessKey">Access Key</string>
@@ -25,6 +27,8 @@
     <string name="hint_jwt">JWT token</string>
     <string name="hint_share_scheme_url">Sharing URL or scheme</string>
     <string name="hint_loading_progress_hex">Not set (default: #FFFFFF)</string>
+    <string name="hint_login_id">ID</string>
+    <string name="hint_login_pw">Password</string>
 
     <!-- toast -->
     <string name="toast_headset_mute_option">It can be set only when the Earphone/Headset Option 1 is enabled.</string>
@@ -35,7 +39,7 @@
     <string name="alert_custom_action_success">Custom action runs successfully</string>
     <string name="alert_custom_action_fail">Custom action runs failed</string>
     <string name="alert_preview_permission_info">To use preview, you should allow "Display over other apps" permission. Do you want to allow this permission?</string>
-    <string name="alert_need_login">You need to log in. Do you want to login?</string>
+    <string name="alert_need_login">Log in to use this feature. Are you sure to log in?</string>
     <string name="alert_call_permission">"\'Earphone/Headset Option 1\' feature requires \'Phone\' permission. Please \'Allow\' permission before using this feature.</string>
 
     <!-- menu -->

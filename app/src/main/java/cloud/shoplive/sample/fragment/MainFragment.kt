@@ -8,6 +8,8 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +22,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.Navigation
 import cloud.shoplive.sample.*
 import cloud.shoplive.sample.R
@@ -396,6 +399,8 @@ class MainFragment : Fragment() {
                         val builder = AlertDialog.Builder(context)
                         builder.setMessage(getString(R.string.alert_need_login))
                         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
+                            ShopLive.startPictureInPicture()
+                            goToSignIn()
                             dialog.dismiss()
                         }
                         builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
@@ -414,5 +419,17 @@ class MainFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun goToSignIn() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.signin_fragment)
+            setFragmentResultListener("requestKey") { requestKey, bundle ->
+                val userId = bundle.getString("userId")
+                Log.d(TAG, "userId=$userId")
+                setOptions()
+                play()
+            }
+        }, 100)
     }
 }

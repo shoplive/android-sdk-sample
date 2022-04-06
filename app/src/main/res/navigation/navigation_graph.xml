@@ -56,4 +56,11 @@
             android:label="@string/title_option"
             />
 
+    <fragment
+            android:id="@+id/signin_fragment"
+            android:name="cloud.shoplive.sample.fragment.SignInFragment"
+            android:label="@string/title_login"
+            tools:layout="@layout/fragment_signin"
+            />
+
 </navigation>
