@@ -11,6 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_login_id"
+            android:enabled="false"
             />
 
     <EditText
@@ -19,6 +20,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_login_pw"
             android:layout_marginTop="6dp"
+            android:inputType="textPassword"
+            android:enabled="false"
             />
 
     <androidx.appcompat.widget.AppCompatButton

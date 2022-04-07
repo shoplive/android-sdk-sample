@@ -34,6 +34,9 @@ class SignInFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.etId.setText("shoplive")
+        binding.etPw.setText("shoplive")
+
         binding.btLogin.setOnClickListener {
             val id = binding.etId.text.toString()
             if (id.isNullOrEmpty()) {
@@ -45,6 +48,7 @@ class SignInFragment: Fragment() {
             }
             CampaignSettings.authType(requireContext(), 0)
             CampaignSettings.user(requireContext(), shopliveUser)
+
             setFragmentResult("requestKey", bundleOf("userId" to id))
             requireActivity().supportFragmentManager.popBackStack()
         }
