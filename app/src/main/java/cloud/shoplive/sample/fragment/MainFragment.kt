@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.content.Intent
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -57,6 +56,8 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Options.init(requireContext())
+
         binding.btCampaign.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.campaign_fragment)
         }
@@ -70,11 +71,13 @@ class MainFragment : Fragment() {
         }
 
         binding.btPlay.setOnClickListener {
+            ShopLive.init(requireActivity().application)
             setOptions()
             play()
         }
 
         binding.btPreview.setOnClickListener {
+            ShopLive.init(requireActivity().application)
             setOptions()
             startPreview()
         }
@@ -133,47 +136,70 @@ class MainFragment : Fragment() {
         return userText
     }
 
-    private fun setOptions() {
-        // user set
+    private fun setUserOrJwt() {
         when(CampaignSettings.authType(requireContext())) {
             0 -> { CampaignSettings.user(requireContext())?.let { ShopLive.setUser(it) } }
             1 -> { CampaignSettings.jwt(requireContext())?.let { ShopLive.setAuthToken(it) } }
-            2 -> { }
+            2 -> { ShopLive.setUser(null)}
         }
+    }
 
-        ShopLive.setShareScheme(Options.shareSchemeUrl(requireContext()))
-        ShopLive.setLoadingProgressColor(Options.loadingProgressColor(requireContext()))
-
-        if (Options.useLoadingImageAnimation(requireContext())) {
+    private fun setLoadingProgress() {
+        if (Options.useLoadingImageAnimation()) {
             ShopLive.setLoadingAnimation(R.drawable.progress_animation1)
         } else {
-            ShopLive.setLoadingAnimation(0)
+            val hexColor = Options.loadingProgressColor()
+            ShopLive.setLoadingProgressColor(hexColor)
         }
+    }
 
-        var nanumGothic: Typeface?
-        var nanumGothicBold: Typeface?
-
-        if (Options.useCustomFontChatInput(requireContext())) {
-            nanumGothic = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                resources.getFont(R.font.nanumgothic)
-            } else {
-                ResourcesCompat.getFont(requireContext(), R.font.nanumgothic)
-            }
+    private fun setCustomFontForChatting() {
+        // 나눔 고딕
+        val nanumGothic = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            resources.getFont(R.font.nanumgothic)
         } else {
-            nanumGothic = null
+            ResourcesCompat.getFont(requireContext(), R.font.nanumgothic)
         }
 
-        if (Options.useCustomFontChatSendButton(requireContext())) {
-            nanumGothicBold = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                resources.getFont(R.font.nanumgothicbold)
-            } else {
-                ResourcesCompat.getFont(requireContext(), R.font.nanumgothicbold)
-            }
+        // 나눔 고딕 볼드
+        val nanumGothicBold = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            resources.getFont(R.font.nanumgothicbold)
         } else {
-            nanumGothicBold = null
+            ResourcesCompat.getFont(requireContext(), R.font.nanumgothicbold)
         }
 
-        ShopLive.setChatViewTypeface(nanumGothic, nanumGothicBold)
+        val chatInputTf = if (Options.useCustomFontChatInput()) nanumGothic else null
+        val chatSendTf = if (Options.useCustomFontChatSendButton()) nanumGothicBold else null
+        ShopLive.setChatViewTypeface(chatInputTf, chatSendTf)
+    }
+
+    private fun setOptions() {
+        setUserOrJwt()
+
+        setLoadingProgress()
+
+        setCustomFontForChatting()
+
+        ShopLive.setPIPRatio(Options.getPIPRatio())
+
+        ShopLive.setKeepPlayVideoOnHeadphoneUnplugged(
+            Options.isKeepPlayVideoOnHeadphoneUnplugged(),
+            Options.isMuteVideoOnHeadphoneUnplugged()
+        )
+
+        ShopLive.setAutoResumeVideoOnCallEnded(Options.isAutoResumeVideoOnCallEnded())
+
+        ShopLive.setEnterPipModeOnBackPressed(Options.isEnterPipModeOnBackPressed())
+
+        ShopLive.setMuteWhenPlayStart(Options.isMuteWhenPlayStart())
+
+        ShopLive.setShareScheme(Options.shareSchemeUrl())
+
+        ShopLive.setKeepAspectOnTabletPortrait(Options.isKeepAspectOnTabletPortrait())
+
+        ShopLive.setAutoCloseWhenAppDestroyed(Options.isAutoCloseWhenAppDestroyed())
+
+        ShopLive.setNextActionOnHandleNavigation(Options.getNextActionOnHandleNavigation())
     }
 
     private fun play() {
@@ -230,24 +256,20 @@ class MainFragment : Fragment() {
                 context: Context,
                 url: String
             ) {
-
-                val type = ShopLive.ActionType.getType(Options.playerNextAction(requireContext()))
-                type?.let {
-                    when(it) {
-                        ShopLive.ActionType.PIP,
-                        ShopLive.ActionType.CLOSE -> {
-                            val intent = Intent(requireContext(), WebViewActivity::class.java)
-                            intent.putExtra("url", url)
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                            startActivity(intent)
+                when(Options.getNextActionOnHandleNavigation()) {
+                    ShopLive.ActionType.PIP,
+                    ShopLive.ActionType.CLOSE -> {
+                        val intent = Intent(requireActivity(), WebViewActivity::class.java)
+                        intent.putExtra("url", url)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        startActivity(intent)
+                    }
+                    ShopLive.ActionType.KEEP -> {
+                        val fragment = WebViewDialogFragment()
+                        fragment.arguments = Bundle().apply {
+                            putString("url", url)
                         }
-                        ShopLive.ActionType.KEEP -> {
-                            val fragment = WebViewDialogFragment()
-                            fragment.arguments = Bundle().apply {
-                                putString("url", url)
-                            }
-                            ShopLive.showDialogFragment(fragment)
-                        }
+                        ShopLive.showDialogFragment(fragment)
                     }
                 }
             }

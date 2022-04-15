@@ -71,7 +71,7 @@ public class SampleActivity extends AppCompatActivity {
 
         @Override
         public void handleNavigation(@NonNull Context context, @NonNull String url) {
-            ShopLive.ActionType type = ShopLive.ActionType.getType(Options.INSTANCE.playerNextAction(context));
+            ShopLive.ActionType type = Options.INSTANCE.getNextActionOnHandleNavigation();
             switch (type) {
                 case PIP:
                 case CLOSE:

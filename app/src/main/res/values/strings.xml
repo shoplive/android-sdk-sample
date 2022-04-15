@@ -1,6 +1,8 @@
 <resources>
     <!-- app -->
     <string name="app_name">Shoplive SDK Sample</string>
+    <string name="dialog_confirm">Ok</string>
+    <string name="dialog_cancel">Cancel</string>
 
     <!-- button -->
     <string name="bt_step1">STEP 1. Campaign setting</string>
@@ -73,6 +75,7 @@
     <string name="setting_category_loading_progress">Progress bar</string>
     <string name="setting_category_chat_font">Using custom font</string>
     <string name="setting_category_exit">Exit</string>
+    <string name="setting_category_sound">Sound</string>
     <string name="setting_pipRatio_dialog_title">Aspect ratio</string>
     <string name="setting_loading_progress_color">Color (Hex color code)</string>
     <string name="setting_share">Sharing UI</string>
@@ -121,6 +124,9 @@
     <string name="preference_nextAction_key">nextAction</string>
     <string name="preference_nextAction_title">Synchronized player action when user taps link</string>
     <string name="preference_nextAction_summary">Set the Synchronized Shoplive Player action when a user taps a link.</string>
+    <string name="preference_mute_start_key">muteStart</string>
+    <string name="preference_mute_start_title">Muted play starts</string>
+    <string name="preference_mute_start_summary">Muted when play starts video.</string>
 
     <!-- general -->
     <string name="yes">Yes</string>

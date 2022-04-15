@@ -32,6 +32,21 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+            app:key="sound"
+            app:title="@string/setting_category_sound"
+            app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+                app:key="@string/preference_mute_start_key"
+                app:title="@string/preference_mute_start_title"
+                app:summary="@string/preference_mute_start_summary"
+                app:iconSpaceReserved="false"
+                app:defaultValue="false"
+                />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
             app:key="autoPlay"
             app:title="@string/setting_category_auto_play"
             app:iconSpaceReserved="false">

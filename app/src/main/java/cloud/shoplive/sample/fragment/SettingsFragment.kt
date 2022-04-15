@@ -32,19 +32,19 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, null)
 
+        Options.init(requireContext())
+
         val pipRatioPref: Preference? = findPreference(getString(R.string.preference_pipRatio_key))
         pipRatioPref?.let {
             var index: Int = 4
             val ratioArray = resources.getStringArray(R.array.ratio)
-            val ratio = ShopLive.getPIPRatio()
-            ratio?.let {
-                index = when(it) {
-                    ShopLivePIPRatio.RATIO_1X1  -> 0
-                    ShopLivePIPRatio.RATIO_1X2  -> 1
-                    ShopLivePIPRatio.RATIO_2X3  -> 2
-                    ShopLivePIPRatio.RATIO_3X4  -> 3
-                    ShopLivePIPRatio.RATIO_9X16 -> 4
-                }
+            val ratio = Options.getPIPRatio()
+            index = when(ratio) {
+                ShopLivePIPRatio.RATIO_1X1  -> 0
+                ShopLivePIPRatio.RATIO_1X2  -> 1
+                ShopLivePIPRatio.RATIO_2X3  -> 2
+                ShopLivePIPRatio.RATIO_3X4  -> 3
+                ShopLivePIPRatio.RATIO_9X16 -> 4
             }
             pipRatioPref.title = "${getString(R.string.preference_pipRatio_title)}\n(${ratioArray[index]})"
         }
@@ -52,19 +52,19 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         val playerNextActionPref: Preference? = findPreference(getString(R.string.preference_nextAction_key))
         playerNextActionPref?.let {
             val nextActionArray = resources.getStringArray(R.array.playerNextAction)
-            val action = Options.playerNextAction(requireContext())
-            playerNextActionPref.title = "${getString(R.string.preference_nextAction_title)}\n(${nextActionArray[action]})"
+            val action = Options.playerNextAction()
+            playerNextActionPref.title = "${getString(R.string.preference_nextAction_title)}\n(${nextActionArray[action.value]})"
         }
 
         val shareUrlPref: Preference? = findPreference(getString(R.string.preference_share_url_key))
         shareUrlPref?.let {
-            val schemeUrl = Options.shareSchemeUrl(requireContext())
+            val schemeUrl = Options.shareSchemeUrl()
             shareUrlPref.summary = if (schemeUrl.isNullOrEmpty()) getString(R.string.preference_share_url_summary) else schemeUrl
         }
 
         val loadingHexPref: Preference? = findPreference(getString(R.string.preference_loading_progress_key))
         loadingHexPref?.let {
-            val hex = Options.loadingProgressColor(requireContext())
+            val hex = Options.loadingProgressColor()
             loadingHexPref.summary = if (hex.isNullOrEmpty()) getString(R.string.preference_loading_progress_summary) else hex
         }
 
@@ -78,14 +78,14 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 
         if(ContextCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED){
-            ShopLive.setAutoResumeVideoOnCallEnded(true)
+            Options.setAutoResumeVideoOnCallEnded(true)
             val callPref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_call_key))
             callPref?.isChecked = true
         }
 
         // 방송 자동종료 옵션(기본값 true)
         val autoClosePref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_autoClose_key))
-        autoClosePref?.isChecked = ShopLive.isAutoCloseWhenAppDestroyed()
+        autoClosePref?.isChecked = Options.isAutoCloseWhenAppDestroyed()
     }
 
     override fun onPause() {
@@ -115,9 +115,9 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         when(key) {
             getString(R.string.preference_headset_key) -> {
                 sharedPreferences?.let {
-                    ShopLive.setKeepPlayVideoOnHeadphoneUnplugged(it.getBoolean(key, false))
+                    Options.setKeepPlayVideoOnHeadphoneUnplugged(it.getBoolean(key, false))
                     if (!it.getBoolean(key, false)) {
-                        ShopLive.setKeepPlayVideoOnHeadphoneUnplugged(false, false)
+                        Options.setKeepPlayVideoOnHeadphoneUnplugged(false, false)
                         val mutePref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_mute_key))
                         mutePref?.isChecked = false
                     }
@@ -125,14 +125,14 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
             }
             getString(R.string.preference_mute_key) -> {
                 sharedPreferences?.let {
-                    val isKeepPlayVideo = ShopLive.isKeepPlayVideoOnHeadphoneUnplugged()
+                    val isKeepPlayVideo = Options.isKeepPlayVideoOnHeadphoneUnplugged()
                     if (!isKeepPlayVideo && it.getBoolean(key, false) ) {
                         val mutePref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_mute_key))
                         mutePref?.isChecked = false
                         Toast.makeText(requireContext(), getString(R.string.toast_headset_mute_option), Toast.LENGTH_SHORT).show()
                         return
                     }
-                    ShopLive.setKeepPlayVideoOnHeadphoneUnplugged(isKeepPlayVideo, it.getBoolean(key, false))
+                    Options.setKeepPlayVideoOnHeadphoneUnplugged(isKeepPlayVideo, it.getBoolean(key, false))
                 }
             }
             getString(R.string.preference_call_key) -> {
@@ -141,13 +141,13 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
                     if (!value) {
                         requestReadPhoneStatePermissionLauncher.launch(Manifest.permission.READ_PHONE_STATE)
                     }
-                    ShopLive.setAutoResumeVideoOnCallEnded(value)
+                    Options.setAutoResumeVideoOnCallEnded(value)
                 }
             }
             getString(R.string.preference_custom_share_key) -> {
                 sharedPreferences?.let {
                     val value = it.getBoolean(key, true)
-                    Options.saveUseCustomShareSheet(requireContext(), value)
+                    Options.saveUseCustomShareSheet(value)
                 }
             }
             getString(R.string.preference_loading_image_animation_key) -> {
@@ -156,32 +156,37 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
                     val loadingProgressColorPref = findPreference<Preference>(getString(R.string.preference_loading_progress_key))
                     loadingProgressColorPref?.isEnabled = !value
 
-                    Options.useLoadingImageAnimation(requireContext(), value)
+                    Options.useLoadingImageAnimation(value)
                 }
             }
             getString(R.string.preference_chat_input_font_key) -> {
                 sharedPreferences?.let {
-                    Options.useCustomFontChatInput(requireContext(), it.getBoolean(key, false))
+                    Options.useCustomFontChatInput(it.getBoolean(key, false))
                 }
             }
             getString(R.string.preference_chat_send_font_key) -> {
                 sharedPreferences?.let {
-                    Options.useCustomFontChatSendButton(requireContext(), it.getBoolean(key, false))
+                    Options.useCustomFontChatSendButton(it.getBoolean(key, false))
                 }
             }
             getString(R.string.preference_pipModeOnBackPressed_key) -> {
                 sharedPreferences?.let {
-                    ShopLive.setEnterPipModeOnBackPressed(it.getBoolean(key, false))
+                    Options.setEnterPipModeOnBackPressed(it.getBoolean(key, false))
                 }
             }
             getString(R.string.preference_autoClose_key) -> {
                 sharedPreferences?.let {
-                    ShopLive.setAutoCloseWhenAppDestroyed(it.getBoolean(key, true))
+                    Options.setAutoCloseWhenAppDestroyed(it.getBoolean(key, true))
                 }
             }
             getString(R.string.preference_tabletAspect_key) -> {
                 sharedPreferences?.let {
-                    ShopLive.setKeepAspectOnTabletPortrait(it.getBoolean(key, false))
+                    Options.setKeepAspectOnTabletPortrait(it.getBoolean(key, false))
+                }
+            }
+            getString(R.string.preference_mute_start_key) -> {
+                sharedPreferences?.let {
+                    Options.setMuteWhenPlayStart(it.getBoolean(key, false))
                 }
             }
         }
@@ -202,7 +207,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
             val pipPref: Preference? = findPreference(getString(R.string.preference_pipRatio_key))
             pipPref?.let {
                 pipPref.title = "${getString(R.string.preference_pipRatio_title)}(${ratioTextArray[which]})"
-                ShopLive.setPIPRatio(ratioArray[which])
+                Options.setPIPRatio(ratioArray[which])
             }
         }
 
@@ -214,7 +219,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         val inflater = requireContext().getSystemService(Application.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.input_dialog, null)
         val etInput = view.findViewById<EditText>(R.id.etInput)
-        etInput.setText(Options.shareSchemeUrl(requireContext()))
+        etInput.setText(Options.shareSchemeUrl())
         etInput.hint = getString(R.string.hint_share_scheme_url)
 
         val builder = AlertDialog.Builder(requireContext())
@@ -230,7 +235,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
                 } else {
                     schemeUrlPref.summary = etInput.text.toString()
                 }
-                Options.shareSchemeUrl(requireContext(), schemeUrl)
+                Options.shareSchemeUrl(schemeUrl)
             }
             dialog.dismiss()
         }
@@ -246,7 +251,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         val inflater = requireContext().getSystemService(Application.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = inflater.inflate(R.layout.input_dialog, null)
         val etInput = view.findViewById<EditText>(R.id.etInput)
-        etInput.setText(Options.loadingProgressColor(requireContext()))
+        etInput.setText(Options.loadingProgressColor())
         etInput.hint = getString(R.string.hint_loading_progress_hex)
 
         val builder = AlertDialog.Builder(requireContext())
@@ -262,7 +267,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
                 } else {
                     loadingProgressColorPref.summary = etInput.text.toString()
                 }
-                Options.loadingProgressColor(requireContext(), hexColor)
+                Options.loadingProgressColor(hexColor)
             }
             dialog.dismiss()
         }
@@ -288,8 +293,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
             val nextActonPref: Preference? = findPreference(getString(R.string.preference_nextAction_key))
             nextActonPref?.let {
                 nextActonPref.title = "${getString(R.string.preference_nextAction_title)} (${nextActionTextArray[which]})"
-                ShopLive.setNextActionOnHandleNavigation(actionTypes[which])
-                Options.playerNextAction(requireContext(), which)
+                Options.setNextActionOnHandleNavigation(actionTypes[which])
             }
         }
 
@@ -301,7 +305,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         ActivityResultContracts.RequestPermission()) { isGranted ->
         if (!isGranted) {
             if(!ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_PHONE_STATE)){
-                ShopLive.setAutoResumeVideoOnCallEnded(true)
+                Options.setAutoResumeVideoOnCallEnded(true)
                 val inflater = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val view = inflater.inflate(R.layout.alert, null)
                 val tvMessage = view.findViewById<TextView>(R.id.tvMessage)
