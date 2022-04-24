@@ -2,35 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"
         android:orientation="vertical"
-        >
+        android:padding="12dp">
 
     <EditText
             android:id="@+id/etId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_login_id"
             android:enabled="false"
-            />
+            android:hint="@string/hint_login_id" />
 
     <EditText
             android:id="@+id/etPw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_login_pw"
             android:layout_marginTop="6dp"
-            android:inputType="textPassword"
             android:enabled="false"
-            />
+            android:hint="@string/hint_login_pw"
+            android:inputType="textPassword" />
 
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="@string/bt_login"
             android:layout_marginTop="6dp"
-            />
+            android:text="@string/bt_login"
+            android:textAllCaps="false" />
 
 </LinearLayout>

@@ -83,6 +83,8 @@ class MainFragment : Fragment() {
         }
 
         registerShopLiveHandler()
+
+        binding.tvSdkVersion.text = getString(R.string.label_sdk_version, ShopLive.getVersion())
     }
 
     override fun onResume() {
