@@ -62,5 +62,5 @@ dependencies {
     // alternately-if using Java8, use following instead of compiler
     implementation "android.arch.lifecycle:common-java8:1.1.1"
 
-    implementation 'cloud.shoplive:shoplive-sdk:1.2.6'
+    implementation 'cloud.shoplive:shoplive-sdk:1.2.7'
 }
