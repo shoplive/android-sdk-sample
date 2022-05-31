@@ -36,10 +36,8 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 
         val pipRatioPref: Preference? = findPreference(getString(R.string.preference_pipRatio_key))
         pipRatioPref?.let {
-            var index: Int = 4
             val ratioArray = resources.getStringArray(R.array.ratio)
-            val ratio = Options.getPIPRatio()
-            index = when(ratio) {
+            val index = when(Options.getPIPRatio()) {
                 ShopLivePIPRatio.RATIO_1X1  -> 0
                 ShopLivePIPRatio.RATIO_1X2  -> 1
                 ShopLivePIPRatio.RATIO_2X3  -> 2
