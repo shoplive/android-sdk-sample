@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 
 import org.json.JSONObject;
 
@@ -39,7 +38,6 @@ public class SampleActivity extends AppCompatActivity {
     }
 
     private void init() {
-        ShopLive.init(getApplication());
         ShopLive.setAccessKey("yourAccessKey");
         ShopLive.setHandler(handler);
 
