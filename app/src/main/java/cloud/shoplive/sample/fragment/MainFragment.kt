@@ -450,7 +450,7 @@ class MainFragment : Fragment() {
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.signin_fragment)
             setFragmentResultListener("requestKey") { requestKey, bundle ->
                 val userId = bundle.getString("userId")
-                Log.d(TAG, "userId=$userId")
+                Log.d(TAG, "requestKey=$requestKey, userId=$userId")
                 setOptions()
                 play()
             }
