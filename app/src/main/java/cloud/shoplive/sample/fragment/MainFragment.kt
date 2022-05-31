@@ -71,13 +71,11 @@ class MainFragment : Fragment() {
         }
 
         binding.btPlay.setOnClickListener {
-            ShopLive.init(requireActivity().application)
             setOptions()
             play()
         }
 
         binding.btPreview.setOnClickListener {
-            ShopLive.init(requireActivity().application)
             setOptions()
             startPreview()
         }
