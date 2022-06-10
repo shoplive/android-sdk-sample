@@ -71,8 +71,17 @@ class MainFragment : Fragment() {
         }
 
         binding.btPlay.setOnClickListener {
-            setOptions()
-            play()
+            if (!ShopLive.isSuccessCampaignJoin()) {
+                // first play
+                setOptions()
+                play()
+            } else {
+                // set user when pip mode
+                setUserOrJwt()
+                CampaignSettings.campaignKey(requireContext())?.let {
+                    ShopLive.play(it, true)
+                }
+            }
         }
 
         binding.btPreview.setOnClickListener {
