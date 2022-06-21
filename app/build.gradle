@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "cloud.shoplive.sample"
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -80,5 +80,18 @@ dependencies {
     // alternately-if using Java8, use following instead of compiler
     implementation "android.arch.lifecycle:common-java8:1.1.1"
 
+    
+
+    // shoplive player sdk only
     implementation 'cloud.shoplive:shoplive-sdk:1.2.7'
+
+    // already using exoplayer
+    /*
+    implementation "com.google.android.exoplayer:exoplayer-core:2.18.0"
+    implementation "com.google.android.exoplayer:exoplayer-hls:2.18.0"
+    implementation "com.google.android.exoplayer:exoplayer-ui:2.18.0"
+
+    implementation 'cloud.shoplive:shoplive-sdk-core:1.2.7'
+    implementation 'cloud.shoplive:shoplive-exoplayer:2.18.0.0'
+    */
 }
