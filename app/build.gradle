@@ -83,7 +83,7 @@ dependencies {
     
 
     // shoplive player sdk only
-    implementation 'cloud.shoplive:shoplive-sdk:1.2.7'
+    implementation 'cloud.shoplive:shoplive-sdk:1.2.7.1'
 
     // already using exoplayer
     /*
@@ -91,7 +91,7 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-hls:2.18.0"
     implementation "com.google.android.exoplayer:exoplayer-ui:2.18.0"
 
-    implementation 'cloud.shoplive:shoplive-sdk-core:1.2.7'
+    implementation 'cloud.shoplive:shoplive-sdk-core:1.2.7.1'
     implementation 'cloud.shoplive:shoplive-exoplayer:2.18.0.0'
     */
 }
