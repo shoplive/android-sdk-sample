@@ -187,6 +187,16 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
                     Options.setMuteWhenPlayStart(it.getBoolean(key, false))
                 }
             }
+            getString(R.string.preference_player_screen_capture_enabled_key) -> {
+                sharedPreferences?.let {
+                    Options.setPlayerScreenCaptureEnabled(it.getBoolean(key, true))
+                }
+            }
+            getString(R.string.preference_player_status_bar_transparent_key) -> {
+                sharedPreferences?.let {
+                    Options.setStatusBarTransparent(it.getBoolean(key, false))
+                }
+            }
         }
     }
 

@@ -161,6 +161,24 @@ object Options {
         return preferences?.getBoolean("isMuteVideoOnHeadphoneUnplugged", false) == true
     }
 
+    fun setPlayerScreenCaptureEnabled(isEnabled: Boolean) {
+        editor?.putBoolean("isPlayerScreenCaptureEnabled", isEnabled)
+        editor?.apply()
+    }
+
+    fun isPlayerScreenCaptureEnabled(): Boolean {
+        return preferences?.getBoolean("isPlayerScreenCaptureEnabled", true) ?: true
+    }
+
+    fun setStatusBarTransparent(value: Boolean) {
+        editor?.putBoolean("statusBarTransparent", value)
+        editor?.apply()
+    }
+
+    fun isStatusBarTransparent(): Boolean {
+        return preferences?.getBoolean("statusBarTransparent", false) ?: false
+    }
+
     fun setNextActionOnHandleNavigation(type: ShopLive.ActionType) {
         editor?.putInt("nextActionOnHandleNavigation", type.value)
         editor?.apply()

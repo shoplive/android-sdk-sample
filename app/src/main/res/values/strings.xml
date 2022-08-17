@@ -43,6 +43,7 @@
     <string name="alert_preview_permission_info">To use preview, you should allow "Display over other apps" permission. Do you want to allow this permission?</string>
     <string name="alert_need_login">Log in to use this feature. Are you sure to log in?</string>
     <string name="alert_call_permission">"\'Earphone/Headset Option 1\' feature requires \'Phone\' permission. Please \'Allow\' permission before using this feature.</string>
+    <string name="alert_not_support_pip">This device cannot support os pip.</string>
 
     <!-- menu -->
     <string name="menu_done">Done</string>
@@ -77,6 +78,7 @@
     <string name="setting_category_chat_font">Using custom font</string>
     <string name="setting_category_exit">Exit</string>
     <string name="setting_category_sound">Sound</string>
+    <string name="setting_category_secure">Secure</string>
     <string name="setting_pipRatio_dialog_title">Aspect ratio</string>
     <string name="setting_loading_progress_color">Color (Hex color code)</string>
     <string name="setting_share">Sharing UI</string>
@@ -128,6 +130,12 @@
     <string name="preference_mute_start_key">muteStart</string>
     <string name="preference_mute_start_title">Muted play starts</string>
     <string name="preference_mute_start_summary">Muted when play starts video.</string>
+    <string name="preference_player_status_bar_transparent_key">statusBarTransparent</string>
+    <string name="preference_player_status_bar_transparent_title">Player status bar transparent option</string>
+    <string name="preference_player_status_bar_transparent_summary">Transparent player\'s status bar</string>
+    <string name="preference_player_screen_capture_enabled_key">playerScreenCaptureEnabled</string>
+    <string name="preference_player_screen_capture_enabled_title">Player screen capture</string>
+    <string name="preference_player_screen_capture_enabled_summary">Capture the player\'s screen</string>
 
     <!-- general -->
     <string name="yes">Yes</string>

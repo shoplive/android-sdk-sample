@@ -209,6 +209,22 @@ class MainFragment : Fragment() {
         ShopLive.setAutoCloseWhenAppDestroyed(Options.isAutoCloseWhenAppDestroyed())
 
         ShopLive.setNextActionOnHandleNavigation(Options.getNextActionOnHandleNavigation())
+
+        ShopLive.setPlayerScreenCaptureEnabled(Options.isPlayerScreenCaptureEnabled())
+
+        ShopLive.setStatusBarTransparent(Options.isStatusBarTransparent())
+
+        ShopLive.setUiMessage(ShopLive.UiMessageType.NOT_SUPPORT_PIP, R.string.alert_not_support_pip)
+
+        ShopLive.setSoundFocusHandling(object : OnAudioFocusListener {
+            override fun onGain() {
+                ShopLive.unmute()
+            }
+
+            override fun onLoss() {
+                ShopLive.mute()
+            }
+        })
     }
 
     private fun play() {
@@ -403,11 +419,23 @@ class MainFragment : Fragment() {
 
             /**
              * @param isPipMode - pipMode:true, fullMode:false
-             * @param state - 'CREATE' or 'DESTROY'
+             * @param state - 'CREATED' or 'CLOSING' or 'DESTROYED'
              * */
-            override fun onChangedPlayerStatus(isPipMode: Boolean, state: String) {
-                super.onChangedPlayerStatus(isPipMode, state)
-                Log.d(TAG, "isPipMode=$isPipMode, state=$state")
+            override fun onChangedPlayerStatus(isPipMode: Boolean, playerLifecycle: ShopLive.PlayerLifecycle) {
+                super.onChangedPlayerStatus(isPipMode, playerLifecycle)
+                Log.d(TAG, "isPipMode=$isPipMode, playerLifecycle=${playerLifecycle.getText()}")
+
+                when(playerLifecycle) {
+                    ShopLive.PlayerLifecycle.CREATED -> {
+                        // created
+                    }
+                    ShopLive.PlayerLifecycle.CLOSING -> {
+                        // closing
+                    }
+                    ShopLive.PlayerLifecycle.DESTROYED -> {
+                        // destroyed
+                    }
+                }
             }
 
             override fun onSetUserName(jsonObject: JSONObject) {
