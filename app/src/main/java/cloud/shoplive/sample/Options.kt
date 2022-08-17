@@ -210,7 +210,8 @@ object Options {
     fun toString(context: Context): String {
         return "${context.getString(R.string.setting_category_player)}\n" +
                 "• ${context.getString(R.string.preference_pipRatio_title)} : ${pipRatioString(ShopLive.getPIPRatio())}\n" +
-                "• ${context.getString(R.string.setting_next_action_on_handle_navigation2)} : ${playerNextActionString()}\n\n" +
+                "• ${context.getString(R.string.setting_next_action_on_handle_navigation2)} : ${playerNextActionString()}\n" +
+                "• ${context.getString(R.string.setting_player_status_bar_transparent)} : ${if (isStatusBarTransparent()) "Yes" else "No"}\n\n" +
                 "${context.getString(R.string.setting_category_sound)}\n" +
                 "• ${context.getString(R.string.preference_mute_start_title)} : ${if (isMuteWhenPlayStart()) "Enabled" else "Disabled"}\n\n" +
                 "${context.getString(R.string.setting_category_auto_play)}\n" +
@@ -228,7 +229,9 @@ object Options {
                 "• ${context.getString(R.string.preference_chat_send_font_title)} : ${if (useCustomFontChatSendButton()) "Enabled" else "Disabled"}\n\n" +
                 "${context.getString(R.string.setting_category_exit)}\n" +
                 "• ${context.getString(R.string.preference_pipModeOnBackPressed_title)} : ${if (isEnterPipModeOnBackPressed()) "Enabled" else "Disabled"}\n"+
-                "• ${context.getString(R.string.preference_autoClose_title)} : ${if (isAutoCloseWhenAppDestroyed()) "Enabled" else "Disabled"}"
+                "• ${context.getString(R.string.preference_autoClose_title)} : ${if (isAutoCloseWhenAppDestroyed()) "Enabled" else "Disabled"}\n\n" +
+                "${context.getString(R.string.setting_category_secure)}\n" +
+                "• ${context.getString(R.string.preference_player_screen_capture_enabled_title)} : ${if (isPlayerScreenCaptureEnabled()) "Enabled" else "Disabled"}"
     }
 
 }

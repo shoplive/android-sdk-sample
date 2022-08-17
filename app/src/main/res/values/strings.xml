@@ -84,6 +84,7 @@
     <string name="setting_share">Sharing UI</string>
     <string name="setting_next_action_on_handle_navigation">Synchronized Player action</string>
     <string name="setting_next_action_on_handle_navigation2">When a user taps link</string>
+    <string name="setting_player_status_bar_transparent">Is Player status bar transparent?</string>
     <string name="preference_pipRatio_key">pipRatio</string>
     <string name="preference_pipRatio_title">Aspect ratio</string>
     <string name="preference_pipRatio_summary">Select an aspect ratio.</string>
