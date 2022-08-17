@@ -84,9 +84,65 @@ class MainFragment : Fragment() {
             }
         }
 
-        binding.btPreview.setOnClickListener {
+        binding.btWindowPreview.setOnClickListener {
             setOptions()
             startPreview()
+        }
+
+        binding.btInAppPreview.setOnClickListener {
+            if (binding.preview.visibility == View.VISIBLE) {
+                binding.preview.release()
+            } else {
+                val accessKey =
+                    CampaignSettings.accessKey(requireContext()) ?: return@setOnClickListener
+                val campaignKey =
+                    CampaignSettings.campaignKey(requireContext()) ?: return@setOnClickListener
+
+                binding.preview.start(accessKey, campaignKey)
+                binding.preview.visibility = View.VISIBLE
+            }
+        }
+
+        binding.btPreviewSwipe.setOnClickListener {
+            if (binding.previewSwipe.visibility == View.VISIBLE) {
+                binding.previewSwipe.release()
+            } else {
+                val accessKey =
+                    CampaignSettings.accessKey(requireContext()) ?: return@setOnClickListener
+                val campaignKey =
+                    CampaignSettings.campaignKey(requireContext()) ?: return@setOnClickListener
+
+                binding.previewSwipe.start(accessKey, campaignKey)
+                binding.previewSwipe.visibility = View.VISIBLE
+            }
+        }
+
+        binding.preview.setLifecycleObserver(this.viewLifecycleOwner)
+        binding.preview.setOnClickListener {
+            setOptions()
+            val campaignKey =
+                CampaignSettings.campaignKey(requireContext()) ?: return@setOnClickListener
+            // Preview transition animation
+            ShopLive.setPreviewTransitionAnimation(requireActivity(), binding.preview)
+            ShopLive.play(requireActivity(), campaignKey)
+            binding.preview.release()
+        }
+        binding.preview.setOnCloseListener {
+            binding.preview.visibility = View.GONE
+        }
+
+        binding.previewSwipe.setLifecycleObserver(this.viewLifecycleOwner)
+        binding.previewSwipe.setOnPreviewClickListener {
+            setOptions()
+            val campaignKey =
+                CampaignSettings.campaignKey(requireContext()) ?: return@setOnPreviewClickListener
+            // Preview transition animation
+            ShopLive.setPreviewTransitionAnimation(requireActivity(), binding.previewSwipe.preview)
+            ShopLive.play(requireActivity(), campaignKey)
+            binding.previewSwipe.release()
+        }
+        binding.previewSwipe.setOnCloseListener {
+            binding.previewSwipe.visibility = View.GONE
         }
 
         registerShopLiveHandler()
