@@ -35,14 +35,6 @@ object Options {
         return result
     }
 
-    private fun playerNextActionString(): String {
-        return when (preferences?.getInt("playerNextAction", 0)) {
-            1 -> "KEEP"
-            2 -> "CLOSE"
-            else -> "PIP"
-        }
-    }
-
     fun saveUseCustomShareSheet(value: Boolean) {
         editor?.putBoolean("useCustomShareSheet", value)
         editor?.apply()
@@ -240,12 +232,12 @@ object Options {
     }
 
     fun setNextActionOnHandleNavigation(type: ShopLive.ActionType) {
-        editor?.putInt("nextActionOnHandleNavigation", type.value)
+        editor?.putInt(App.instance.getString(R.string.preference_next_action_key), type.value)
         editor?.apply()
     }
 
     fun getNextActionOnHandleNavigation(): ShopLive.ActionType {
-        val type = preferences?.getInt("nextActionOnHandleNavigation", 0)
+        val type = preferences?.getInt(App.instance.getString(R.string.preference_next_action_key), 0)
         type?.let {
             return ShopLive.ActionType.getType(it)
         }
@@ -253,12 +245,12 @@ object Options {
     }
 
     fun setPIPRatio(ratio: ShopLivePIPRatio) {
-        editor?.putInt("pipRatio", ratio.value)
+        editor?.putInt(App.instance.getString(R.string.preference_pip_ratio_key), ratio.value)
         editor?.apply()
     }
 
     fun getPIPRatio(): ShopLivePIPRatio {
-        return when (preferences?.getInt("pipRatio", 4)) {
+        return when (preferences?.getInt(App.instance.getString(R.string.preference_pip_ratio_key), 4)) {
             0 -> ShopLivePIPRatio.RATIO_1X1
             1 -> ShopLivePIPRatio.RATIO_1X2
             2 -> ShopLivePIPRatio.RATIO_2X3
@@ -269,8 +261,8 @@ object Options {
 
     fun toString(context: Context): String {
         return "${context.getString(R.string.setting_category_player)}\n" +
-                "• ${context.getString(R.string.preference_pip_ratio_title)} : ${pipRatioString(ShopLive.getPIPRatio())}\n" +
-                "• ${context.getString(R.string.setting_next_action_on_handle_navigation2)} : ${playerNextActionString()}\n" +
+                "• ${context.getString(R.string.preference_pip_ratio_title)} : ${pipRatioString(getPIPRatio())}\n" +
+                "• ${context.getString(R.string.setting_next_action_on_handle_navigation2)} : ${getNextActionOnHandleNavigation().name}\n" +
                 "• ${context.getString(R.string.setting_player_status_bar_transparent)} : ${if (isStatusBarTransparent()) "Yes" else "No"}\n\n" +
                 "${context.getString(R.string.setting_category_sound)}\n" +
                 "• ${context.getString(R.string.preference_mute_start_title)} : ${if (isMuteWhenPlayStart()) "Enabled" else "Disabled"}\n" +

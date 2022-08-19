@@ -92,7 +92,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
     }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-        when(preference?.key!!) {
+        when(preference?.key) {
             getString(R.string.preference_pip_ratio_key) -> {
                 showPipRatioDialog()
             }
