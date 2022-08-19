@@ -9,15 +9,15 @@
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="@string/preference_pipRatio_key"
-            app:summary="@string/preference_pipRatio_summary"
-            app:title="@string/preference_pipRatio_title" />
+            app:key="@string/preference_pip_ratio_key"
+            app:summary="@string/preference_pip_ratio_summary"
+            app:title="@string/preference_pip_ratio_title" />
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="@string/preference_nextAction_key"
-            app:summary="@string/preference_nextAction_summary"
-            app:title="@string/preference_nextAction_title" />
+            app:key="@string/preference_next_action_key"
+            app:summary="@string/preference_next_action_summary"
+            app:title="@string/preference_next_action_title" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
@@ -29,9 +29,9 @@
         <SwitchPreferenceCompat
             app:enabled="false"
             app:iconSpaceReserved="false"
-            app:key="@string/preference_tabletAspect_key"
-            app:summary="@string/preference_tabletAspect_summary"
-            app:title="@string/preference_tabletAspect_title" />
+            app:key="@string/preference_tablet_aspect_key"
+            app:summary="@string/preference_tablet_aspect_summary"
+            app:title="@string/preference_tablet_aspect_title" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -45,6 +45,14 @@
             app:key="@string/preference_mute_start_key"
             app:summary="@string/preference_mute_start_summary"
             app:title="@string/preference_mute_start_title" />
+
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="@string/preference_mute_loss_focus_key"
+            app:summary="@string/preference_mute_loss_focus_summary"
+            app:title="@string/preference_mute_loss_focus_title" />
 
     </PreferenceCategory>
 
@@ -133,15 +141,15 @@
 
         <SwitchPreferenceCompat
             app:iconSpaceReserved="false"
-            app:key="@string/preference_pipModeOnBackPressed_key"
-            app:summary="@string/preference_pipModeOnBackPressed_summary"
-            app:title="@string/preference_pipModeOnBackPressed_title" />
+            app:key="@string/preference_pip_mode_on_back_pressed_key"
+            app:summary="@string/preference_pip_mode_on_back_pressed_summary"
+            app:title="@string/preference_pip_mode_on_back_pressed_title" />
 
         <SwitchPreferenceCompat
             app:iconSpaceReserved="false"
-            app:key="@string/preference_autoClose_key"
-            app:summary="@string/preference_autoClose_summary"
-            app:title="@string/preference_autoClose_title" />
+            app:key="@string/preference_auto_close_key"
+            app:summary="@string/preference_auto_close_summary"
+            app:title="@string/preference_auto_close_title" />
     </PreferenceCategory>
 
     <PreferenceCategory

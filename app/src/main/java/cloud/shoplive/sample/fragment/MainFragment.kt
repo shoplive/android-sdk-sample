@@ -272,14 +272,18 @@ class MainFragment : Fragment() {
 
         ShopLive.setUiMessage(ShopLive.UiMessageType.NOT_SUPPORT_PIP, R.string.alert_not_support_pip)
 
-        ShopLive.setSoundFocusHandling(object : OnAudioFocusListener {
-            override fun onGain() {
-                ShopLive.unmute()
-            }
+        ShopLive.setSoundFocusHandling(if (Options.isMuteWhenLossAudioFocus()) {
+            object : OnAudioFocusListener {
+                override fun onGain() {
+                    ShopLive.unmute()
+                }
 
-            override fun onLoss() {
-                ShopLive.mute()
+                override fun onLoss() {
+                    ShopLive.mute()
+                }
             }
+        } else {
+            null
         })
     }
 

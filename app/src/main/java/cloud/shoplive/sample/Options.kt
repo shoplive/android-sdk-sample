@@ -7,7 +7,7 @@ import cloud.shoplive.sdk.ShopLivePIPRatio
 
 object Options {
 
-    private const val PREFERENCE_NAME = "sample_ui_preferences"
+    private val PREFERENCE_NAME = App.instance.packageName + "_preferences"
     private var preferences: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
 
@@ -17,7 +17,7 @@ object Options {
     }
 
     fun playerNextAction(): ShopLive.ActionType {
-        return when(preferences?.getInt("playerNextAction", 0)) {
+        return when (preferences?.getInt("playerNextAction", 0)) {
             1 -> ShopLive.ActionType.KEEP
             2 -> ShopLive.ActionType.CLOSE
             else -> ShopLive.ActionType.PIP
@@ -25,7 +25,7 @@ object Options {
     }
 
     private fun pipRatioString(ratio: ShopLivePIPRatio): String {
-        val result = when(ratio) {
+        val result = when (ratio) {
             ShopLivePIPRatio.RATIO_1X1 -> "1:1"
             ShopLivePIPRatio.RATIO_1X2 -> "1:2"
             ShopLivePIPRatio.RATIO_2X3 -> "2:3"
@@ -36,7 +36,7 @@ object Options {
     }
 
     private fun playerNextActionString(): String {
-        return when(preferences?.getInt("playerNextAction", 0)) {
+        return when (preferences?.getInt("playerNextAction", 0)) {
             1 -> "KEEP"
             2 -> "CLOSE"
             else -> "PIP"
@@ -71,112 +71,172 @@ object Options {
     }
 
     fun useLoadingImageAnimation(use: Boolean) {
-        editor?.putBoolean("loadingImageAnimation", use)
+        editor?.putBoolean(
+            App.instance.getString(R.string.preference_loading_image_animation_key),
+            use
+        )
         editor?.apply()
     }
 
     fun useLoadingImageAnimation(): Boolean {
-        return preferences?.getBoolean("loadingImageAnimation", false) == true
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_loading_image_animation_key),
+            false
+        ) == true
     }
 
     fun useCustomFontChatInput(use: Boolean) {
-        editor?.putBoolean("useCustomFontChatInput", use)
+        editor?.putBoolean(App.instance.getString(R.string.preference_chat_input_font_key), use)
         editor?.apply()
     }
 
     fun useCustomFontChatInput(): Boolean {
-        return preferences?.getBoolean("useCustomFontChatInput", false) == true
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_chat_input_font_key),
+            false
+        ) == true
     }
 
     fun useCustomFontChatSendButton(use: Boolean) {
-        editor?.putBoolean("useCustomFontChatSendButton", use)
+        editor?.putBoolean(App.instance.getString(R.string.preference_chat_send_font_key), use)
         editor?.apply()
     }
 
     fun useCustomFontChatSendButton(): Boolean {
-        return preferences?.getBoolean("useCustomFontChatSendButton", false) == true
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_chat_send_font_key),
+            false
+        ) == true
     }
 
     fun setAutoCloseWhenAppDestroyed(isAutoClosed: Boolean) {
-        editor?.putBoolean("isAutoClosed", isAutoClosed)
+        editor?.putBoolean(App.instance.getString(R.string.preference_auto_close_key), isAutoClosed)
         editor?.apply()
     }
 
     fun isAutoCloseWhenAppDestroyed(): Boolean {
-        return preferences?.getBoolean("isAutoClosed", true) == true
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_auto_close_key),
+            true
+        ) == true
+    }
+
+    fun setMuteWhenLossAudioFocus(isMute: Boolean) {
+        editor?.putBoolean(App.instance.getString(R.string.preference_mute_loss_focus_key), isMute)
+        editor?.apply()
+    }
+
+    fun isMuteWhenLossAudioFocus(): Boolean {
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_mute_loss_focus_key),
+            false
+        ) == true
     }
 
     fun setMuteWhenPlayStart(isMute: Boolean) {
-        editor?.putBoolean("isMuteWhenPlayStart", isMute)
+        editor?.putBoolean(App.instance.getString(R.string.preference_mute_start_key), isMute)
         editor?.apply()
     }
 
     fun isMuteWhenPlayStart(): Boolean {
-        return preferences?.getBoolean("isMuteWhenPlayStart", false) == true
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_mute_start_key),
+            false
+        ) == true
     }
 
     fun setKeepAspectOnTabletPortrait(isKeep: Boolean) {
-        editor?.putBoolean("isKeepAspectOnTabletPortrait", isKeep)
+        editor?.putBoolean(App.instance.getString(R.string.preference_tablet_aspect_key), isKeep)
         editor?.apply()
     }
 
     fun isKeepAspectOnTabletPortrait(): Boolean {
-        return preferences?.getBoolean("isKeepAspectOnTabletPortrait", false) == true
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_tablet_aspect_key),
+            false
+        ) == true
     }
 
     fun setEnterPipModeOnBackPressed(isEnterPipMode: Boolean) {
-        editor?.putBoolean("isEnterPipModeOnBackPressed", isEnterPipMode)
+        editor?.putBoolean(
+            App.instance.getString(R.string.preference_pip_mode_on_back_pressed_key),
+            isEnterPipMode
+        )
         editor?.apply()
     }
 
     fun isEnterPipModeOnBackPressed(): Boolean {
-        return preferences?.getBoolean("isEnterPipModeOnBackPressed", false) == true
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_pip_mode_on_back_pressed_key),
+            false
+        ) == true
     }
 
     fun setAutoResumeVideoOnCallEnded(isAutoResume: Boolean) {
-        editor?.putBoolean("isAutoResumeVideoOnCallEnded", isAutoResume)
+        editor?.putBoolean(App.instance.getString(R.string.preference_call_key), isAutoResume)
         editor?.apply()
     }
 
     fun isAutoResumeVideoOnCallEnded(): Boolean {
-        return preferences?.getBoolean("isAutoResumeVideoOnCallEnded", true) == true
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_call_key),
+            true
+        ) == true
     }
 
     fun setKeepPlayVideoOnHeadphoneUnplugged(isKeep: Boolean) {
-        editor?.putBoolean("isKeepPlayVideoOnHeadphoneUnplugged", isKeep)
+        editor?.putBoolean(App.instance.getString(R.string.preference_headset_key), isKeep)
         editor?.apply()
     }
 
     fun setKeepPlayVideoOnHeadphoneUnplugged(isKeep: Boolean, isMute: Boolean) {
-        editor?.putBoolean("isKeepPlayVideoOnHeadphoneUnplugged", isKeep)
-        editor?.putBoolean("isMuteVideoOnHeadphoneUnplugged", isMute)
+        editor?.putBoolean(App.instance.getString(R.string.preference_headset_key), isKeep)
+        editor?.putBoolean(App.instance.getString(R.string.preference_mute_key), isMute)
         editor?.apply()
     }
 
     fun isKeepPlayVideoOnHeadphoneUnplugged(): Boolean {
-        return preferences?.getBoolean("isKeepPlayVideoOnHeadphoneUnplugged", false) == true
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_headset_key),
+            false
+        ) == true
     }
 
     fun isMuteVideoOnHeadphoneUnplugged(): Boolean {
-        return preferences?.getBoolean("isMuteVideoOnHeadphoneUnplugged", false) == true
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_mute_key),
+            false
+        ) == true
     }
 
     fun setPlayerScreenCaptureEnabled(isEnabled: Boolean) {
-        editor?.putBoolean("isPlayerScreenCaptureEnabled", isEnabled)
+        editor?.putBoolean(
+            App.instance.getString(R.string.preference_player_screen_capture_enabled_key),
+            isEnabled
+        )
         editor?.apply()
     }
 
     fun isPlayerScreenCaptureEnabled(): Boolean {
-        return preferences?.getBoolean("isPlayerScreenCaptureEnabled", true) ?: true
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_player_screen_capture_enabled_key),
+            true
+        ) ?: true
     }
 
     fun setStatusBarTransparent(value: Boolean) {
-        editor?.putBoolean("statusBarTransparent", value)
+        editor?.putBoolean(
+            App.instance.getString(R.string.preference_player_status_bar_transparent_key),
+            value
+        )
         editor?.apply()
     }
 
     fun isStatusBarTransparent(): Boolean {
-        return preferences?.getBoolean("statusBarTransparent", false) ?: false
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_player_status_bar_transparent_key),
+            false
+        ) ?: false
     }
 
     fun setNextActionOnHandleNavigation(type: ShopLive.ActionType) {
@@ -198,7 +258,7 @@ object Options {
     }
 
     fun getPIPRatio(): ShopLivePIPRatio {
-        return when(preferences?.getInt("pipRatio", 4)) {
+        return when (preferences?.getInt("pipRatio", 4)) {
             0 -> ShopLivePIPRatio.RATIO_1X1
             1 -> ShopLivePIPRatio.RATIO_1X2
             2 -> ShopLivePIPRatio.RATIO_2X3
@@ -209,11 +269,12 @@ object Options {
 
     fun toString(context: Context): String {
         return "${context.getString(R.string.setting_category_player)}\n" +
-                "• ${context.getString(R.string.preference_pipRatio_title)} : ${pipRatioString(ShopLive.getPIPRatio())}\n" +
+                "• ${context.getString(R.string.preference_pip_ratio_title)} : ${pipRatioString(ShopLive.getPIPRatio())}\n" +
                 "• ${context.getString(R.string.setting_next_action_on_handle_navigation2)} : ${playerNextActionString()}\n" +
                 "• ${context.getString(R.string.setting_player_status_bar_transparent)} : ${if (isStatusBarTransparent()) "Yes" else "No"}\n\n" +
                 "${context.getString(R.string.setting_category_sound)}\n" +
-                "• ${context.getString(R.string.preference_mute_start_title)} : ${if (isMuteWhenPlayStart()) "Enabled" else "Disabled"}\n\n" +
+                "• ${context.getString(R.string.preference_mute_start_title)} : ${if (isMuteWhenPlayStart()) "Enabled" else "Disabled"}\n" +
+                "• ${context.getString(R.string.preference_mute_loss_focus_title)} : ${if (isMuteWhenLossAudioFocus()) "Enabled" else "Disabled"}\n\n" +
                 "${context.getString(R.string.setting_category_auto_play)}\n" +
                 "• ${context.getString(R.string.preference_headset_title)} : ${if (isKeepPlayVideoOnHeadphoneUnplugged()) "Enabled" else "Disabled"}\n" +
                 "• ${context.getString(R.string.preference_mute_title)} : ${if (isMuteVideoOnHeadphoneUnplugged()) "Enabled" else "Disabled"}\n" +
@@ -228,8 +289,8 @@ object Options {
                 "• ${context.getString(R.string.preference_chat_input_font_title)} : ${if (useCustomFontChatInput()) "Enabled" else "Disabled"}\n" +
                 "• ${context.getString(R.string.preference_chat_send_font_title)} : ${if (useCustomFontChatSendButton()) "Enabled" else "Disabled"}\n\n" +
                 "${context.getString(R.string.setting_category_exit)}\n" +
-                "• ${context.getString(R.string.preference_pipModeOnBackPressed_title)} : ${if (isEnterPipModeOnBackPressed()) "Enabled" else "Disabled"}\n"+
-                "• ${context.getString(R.string.preference_autoClose_title)} : ${if (isAutoCloseWhenAppDestroyed()) "Enabled" else "Disabled"}\n\n" +
+                "• ${context.getString(R.string.preference_pip_mode_on_back_pressed_title)} : ${if (isEnterPipModeOnBackPressed()) "Enabled" else "Disabled"}\n" +
+                "• ${context.getString(R.string.preference_auto_close_title)} : ${if (isAutoCloseWhenAppDestroyed()) "Enabled" else "Disabled"}\n\n" +
                 "${context.getString(R.string.setting_category_secure)}\n" +
                 "• ${context.getString(R.string.preference_player_screen_capture_enabled_title)} : ${if (isPlayerScreenCaptureEnabled()) "Enabled" else "Disabled"}"
     }
