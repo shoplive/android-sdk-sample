@@ -131,17 +131,17 @@
     <string name="preference_next_action_title">Synchronized player action when user taps link</string>
     <string name="preference_next_action_summary">Set the Synchronized Shoplive Player action when a user taps a link.</string>
     <string name="preference_mute_start_key">muteStart</string>
-    <string name="preference_mute_start_title">Muted play starts</string>
-    <string name="preference_mute_start_summary">Muted when play starts video.</string>
+    <string name="preference_mute_start_title">Muted when the player starts</string>
+    <string name="preference_mute_start_summary">On: Muted, Off: Unmuted</string>
     <string name="preference_mute_loss_focus_key">muteLossFocus</string>
-    <string name="preference_mute_loss_focus_title">Muted loss audio focus</string>
-    <string name="preference_mute_loss_focus_summary">Muted when other player get audio.</string>
+    <string name="preference_mute_loss_focus_title">When loss audio focus</string>
+    <string name="preference_mute_loss_focus_summary">On: Muted, Off: Unmuted\n(Whether to mute audio when running another application while watching a shoplive stream)</string>
     <string name="preference_player_status_bar_transparent_key">statusBarTransparent</string>
-    <string name="preference_player_status_bar_transparent_title">Player status bar transparent option</string>
-    <string name="preference_player_status_bar_transparent_summary">Transparent player\'s status bar</string>
+    <string name="preference_player_status_bar_transparent_title">Whether to extend system status bar area</string>
+    <string name="preference_player_status_bar_transparent_summary">On: extend, Off: not extend\n(Whether to play the video by extending it to the status bar area)</string>
     <string name="preference_player_screen_capture_enabled_key">playerScreenCaptureEnabled</string>
-    <string name="preference_player_screen_capture_enabled_title">Player screen capture</string>
-    <string name="preference_player_screen_capture_enabled_summary">Capture the player\'s screen</string>
+    <string name="preference_player_screen_capture_enabled_title">Can be captured with screenshots</string>
+    <string name="preference_player_screen_capture_enabled_summary">On: Allowed, Off: Not allowed</string>
 
     <!-- general -->
     <string name="yes">Yes</string>
