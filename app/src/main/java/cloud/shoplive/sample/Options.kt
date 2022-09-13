@@ -263,10 +263,10 @@ object Options {
         return "${context.getString(R.string.setting_category_player)}\n" +
                 "• ${context.getString(R.string.preference_pip_ratio_title)} : ${pipRatioString(getPIPRatio())}\n" +
                 "• ${context.getString(R.string.setting_next_action_on_handle_navigation2)} : ${getNextActionOnHandleNavigation().name}\n" +
-                "• ${context.getString(R.string.setting_player_status_bar_transparent)} : ${if (isStatusBarTransparent()) "Yes" else "No"}\n\n" +
+                "• ${context.getString(R.string.preference_player_status_bar_transparent_title)} : ${if (isStatusBarTransparent()) "Extend" else "Not extend"}\n\n" +
                 "${context.getString(R.string.setting_category_sound)}\n" +
-                "• ${context.getString(R.string.preference_mute_start_title)} : ${if (isMuteWhenPlayStart()) "Enabled" else "Disabled"}\n" +
-                "• ${context.getString(R.string.preference_mute_loss_focus_title)} : ${if (isMuteWhenLossAudioFocus()) "Enabled" else "Disabled"}\n\n" +
+                "• ${context.getString(R.string.preference_mute_start_title)} : ${if (isMuteWhenPlayStart()) "Muted" else "Unmuted"}\n" +
+                "• ${context.getString(R.string.preference_mute_loss_focus_title)} : ${if (isMuteWhenLossAudioFocus()) "Muted" else "Unmuted"}\n\n" +
                 "${context.getString(R.string.setting_category_auto_play)}\n" +
                 "• ${context.getString(R.string.preference_headset_title)} : ${if (isKeepPlayVideoOnHeadphoneUnplugged()) "Enabled" else "Disabled"}\n" +
                 "• ${context.getString(R.string.preference_mute_title)} : ${if (isMuteVideoOnHeadphoneUnplugged()) "Enabled" else "Disabled"}\n" +
@@ -284,7 +284,7 @@ object Options {
                 "• ${context.getString(R.string.preference_pip_mode_on_back_pressed_title)} : ${if (isEnterPipModeOnBackPressed()) "Enabled" else "Disabled"}\n" +
                 "• ${context.getString(R.string.preference_auto_close_title)} : ${if (isAutoCloseWhenAppDestroyed()) "Enabled" else "Disabled"}\n\n" +
                 "${context.getString(R.string.setting_category_secure)}\n" +
-                "• ${context.getString(R.string.preference_player_screen_capture_enabled_title)} : ${if (isPlayerScreenCaptureEnabled()) "Enabled" else "Disabled"}"
+                "• ${context.getString(R.string.preference_player_screen_capture_enabled_title)} : ${if (isPlayerScreenCaptureEnabled()) "Allowed" else "Not allowed"}"
     }
 
 }
