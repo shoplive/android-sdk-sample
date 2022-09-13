@@ -18,8 +18,7 @@ object CampaignSettings {
 
     fun accessKey(context: Context): String? {
         val preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
-        //return preferences.getString("accessKey", null)
-        return "a1AW6QRCXeoZ9MEWRdDQ"
+        return preferences.getString("accessKey", null)
     }
 
     fun campaignKey(context: Context, key: String) {
@@ -31,8 +30,7 @@ object CampaignSettings {
 
     fun campaignKey(context: Context): String? {
         val preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
-        //return preferences.getString("campaignKey", null)
-        return "5a101c5e50b3"
+        return preferences.getString("campaignKey", null)
     }
 
     fun user(context: Context, user: ShopLiveUser?) {
