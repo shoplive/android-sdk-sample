@@ -84,9 +84,65 @@ class MainFragment : Fragment() {
             }
         }
 
-        binding.btPreview.setOnClickListener {
+        binding.btWindowPreview.setOnClickListener {
             setOptions()
             startPreview()
+        }
+
+        binding.btInAppPreview.setOnClickListener {
+            if (binding.preview.visibility == View.VISIBLE) {
+                binding.preview.release()
+            } else {
+                val accessKey =
+                    CampaignSettings.accessKey(requireContext()) ?: return@setOnClickListener
+                val campaignKey =
+                    CampaignSettings.campaignKey(requireContext()) ?: return@setOnClickListener
+
+                binding.preview.start(accessKey, campaignKey)
+                binding.preview.visibility = View.VISIBLE
+            }
+        }
+
+        binding.btPreviewSwipe.setOnClickListener {
+            if (binding.previewSwipe.visibility == View.VISIBLE) {
+                binding.previewSwipe.release()
+            } else {
+                val accessKey =
+                    CampaignSettings.accessKey(requireContext()) ?: return@setOnClickListener
+                val campaignKey =
+                    CampaignSettings.campaignKey(requireContext()) ?: return@setOnClickListener
+
+                binding.previewSwipe.start(accessKey, campaignKey)
+                binding.previewSwipe.visibility = View.VISIBLE
+            }
+        }
+
+        binding.preview.setLifecycleObserver(this.viewLifecycleOwner)
+        binding.preview.setOnClickListener {
+            setOptions()
+            val campaignKey =
+                CampaignSettings.campaignKey(requireContext()) ?: return@setOnClickListener
+            // Preview transition animation
+            ShopLive.setPreviewTransitionAnimation(requireActivity(), binding.preview)
+            ShopLive.play(requireActivity(), campaignKey)
+            binding.preview.release()
+        }
+        binding.preview.setOnCloseListener {
+            binding.preview.visibility = View.GONE
+        }
+
+        binding.previewSwipe.setLifecycleObserver(this.viewLifecycleOwner)
+        binding.previewSwipe.setOnPreviewClickListener {
+            setOptions()
+            val campaignKey =
+                CampaignSettings.campaignKey(requireContext()) ?: return@setOnPreviewClickListener
+            // Preview transition animation
+            ShopLive.setPreviewTransitionAnimation(requireActivity(), binding.previewSwipe.preview)
+            ShopLive.play(requireActivity(), campaignKey)
+            binding.previewSwipe.release()
+        }
+        binding.previewSwipe.setOnCloseListener {
+            binding.previewSwipe.visibility = View.GONE
         }
 
         registerShopLiveHandler()
@@ -209,6 +265,26 @@ class MainFragment : Fragment() {
         ShopLive.setAutoCloseWhenAppDestroyed(Options.isAutoCloseWhenAppDestroyed())
 
         ShopLive.setNextActionOnHandleNavigation(Options.getNextActionOnHandleNavigation())
+
+        ShopLive.setPlayerScreenCaptureEnabled(Options.isPlayerScreenCaptureEnabled())
+
+        ShopLive.setStatusBarTransparent(Options.isStatusBarTransparent())
+
+        ShopLive.setUiMessage(ShopLive.UiMessageType.NOT_SUPPORT_PIP, R.string.alert_not_support_pip)
+
+        ShopLive.setSoundFocusHandling(if (Options.isMuteWhenLossAudioFocus()) {
+            object : OnAudioFocusListener {
+                override fun onGain() {
+                    ShopLive.unmute()
+                }
+
+                override fun onLoss() {
+                    ShopLive.mute()
+                }
+            }
+        } else {
+            null
+        })
     }
 
     private fun play() {
@@ -403,11 +479,23 @@ class MainFragment : Fragment() {
 
             /**
              * @param isPipMode - pipMode:true, fullMode:false
-             * @param state - 'CREATE' or 'DESTROY'
+             * @param state - 'CREATED' or 'CLOSING' or 'DESTROYED'
              * */
-            override fun onChangedPlayerStatus(isPipMode: Boolean, state: String) {
-                super.onChangedPlayerStatus(isPipMode, state)
-                Log.d(TAG, "isPipMode=$isPipMode, state=$state")
+            override fun onChangedPlayerStatus(isPipMode: Boolean, playerLifecycle: ShopLive.PlayerLifecycle) {
+                super.onChangedPlayerStatus(isPipMode, playerLifecycle)
+                Log.d(TAG, "isPipMode=$isPipMode, playerLifecycle=${playerLifecycle.getText()}")
+
+                when(playerLifecycle) {
+                    ShopLive.PlayerLifecycle.CREATED -> {
+                        // created
+                    }
+                    ShopLive.PlayerLifecycle.CLOSING -> {
+                        // closing
+                    }
+                    ShopLive.PlayerLifecycle.DESTROYED -> {
+                        // destroyed
+                    }
+                }
             }
 
             override fun onSetUserName(jsonObject: JSONObject) {

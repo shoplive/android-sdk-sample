@@ -34,7 +34,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 
         Options.init(requireContext())
 
-        val pipRatioPref: Preference? = findPreference(getString(R.string.preference_pipRatio_key))
+        val pipRatioPref: Preference? = findPreference(getString(R.string.preference_pip_ratio_key))
         pipRatioPref?.let {
             val ratioArray = resources.getStringArray(R.array.ratio)
             val index = when(Options.getPIPRatio()) {
@@ -44,14 +44,14 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
                 ShopLivePIPRatio.RATIO_3X4  -> 3
                 ShopLivePIPRatio.RATIO_9X16 -> 4
             }
-            pipRatioPref.title = "${getString(R.string.preference_pipRatio_title)}\n(${ratioArray[index]})"
+            pipRatioPref.title = "${getString(R.string.preference_pip_ratio_title)}\n(${ratioArray[index]})"
         }
 
-        val playerNextActionPref: Preference? = findPreference(getString(R.string.preference_nextAction_key))
+        val playerNextActionPref: Preference? = findPreference(getString(R.string.preference_next_action_key))
         playerNextActionPref?.let {
             val nextActionArray = resources.getStringArray(R.array.playerNextAction)
             val action = Options.playerNextAction()
-            playerNextActionPref.title = "${getString(R.string.preference_nextAction_title)}\n(${nextActionArray[action.value]})"
+            playerNextActionPref.title = "${getString(R.string.preference_next_action_title)}\n(${nextActionArray[action.value]})"
         }
 
         val shareUrlPref: Preference? = findPreference(getString(R.string.preference_share_url_key))
@@ -66,7 +66,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
             loadingHexPref.summary = if (hex.isNullOrEmpty()) getString(R.string.preference_loading_progress_summary) else hex
         }
 
-        val tabletAspectPref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_tabletAspect_key))
+        val tabletAspectPref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_tablet_aspect_key))
         tabletAspectPref?.isEnabled = isTablet()
     }
 
@@ -82,7 +82,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         }
 
         // 방송 자동종료 옵션(기본값 true)
-        val autoClosePref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_autoClose_key))
+        val autoClosePref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_auto_close_key))
         autoClosePref?.isChecked = Options.isAutoCloseWhenAppDestroyed()
     }
 
@@ -92,8 +92,8 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
     }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-        when(preference?.key!!) {
-            getString(R.string.preference_pipRatio_key) -> {
+        when(preference?.key) {
+            getString(R.string.preference_pip_ratio_key) -> {
                 showPipRatioDialog()
             }
             getString(R.string.preference_share_url_key) -> {
@@ -102,7 +102,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
             getString(R.string.preference_loading_progress_key) -> {
                 showLoadingProgressColorInputDialog()
             }
-            getString(R.string.preference_nextAction_key) -> {
+            getString(R.string.preference_next_action_key) -> {
                 showPlayerNextActionDialog()
             }
         }
@@ -111,26 +111,15 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when(key) {
-            getString(R.string.preference_headset_key) -> {
-                sharedPreferences?.let {
-                    Options.setKeepPlayVideoOnHeadphoneUnplugged(it.getBoolean(key, false))
-                    if (!it.getBoolean(key, false)) {
-                        Options.setKeepPlayVideoOnHeadphoneUnplugged(false, false)
-                        val mutePref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_mute_key))
-                        mutePref?.isChecked = false
-                    }
-                }
-            }
             getString(R.string.preference_mute_key) -> {
                 sharedPreferences?.let {
                     val isKeepPlayVideo = Options.isKeepPlayVideoOnHeadphoneUnplugged()
-                    if (!isKeepPlayVideo && it.getBoolean(key, false) ) {
+                    if (!isKeepPlayVideo) {
                         val mutePref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_mute_key))
                         mutePref?.isChecked = false
                         Toast.makeText(requireContext(), getString(R.string.toast_headset_mute_option), Toast.LENGTH_SHORT).show()
                         return
                     }
-                    Options.setKeepPlayVideoOnHeadphoneUnplugged(isKeepPlayVideo, it.getBoolean(key, false))
                 }
             }
             getString(R.string.preference_call_key) -> {
@@ -139,52 +128,6 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
                     if (!value) {
                         requestReadPhoneStatePermissionLauncher.launch(Manifest.permission.READ_PHONE_STATE)
                     }
-                    Options.setAutoResumeVideoOnCallEnded(value)
-                }
-            }
-            getString(R.string.preference_custom_share_key) -> {
-                sharedPreferences?.let {
-                    val value = it.getBoolean(key, true)
-                    Options.saveUseCustomShareSheet(value)
-                }
-            }
-            getString(R.string.preference_loading_image_animation_key) -> {
-                sharedPreferences?.let {
-                    val value = it.getBoolean(key, false)
-                    val loadingProgressColorPref = findPreference<Preference>(getString(R.string.preference_loading_progress_key))
-                    loadingProgressColorPref?.isEnabled = !value
-
-                    Options.useLoadingImageAnimation(value)
-                }
-            }
-            getString(R.string.preference_chat_input_font_key) -> {
-                sharedPreferences?.let {
-                    Options.useCustomFontChatInput(it.getBoolean(key, false))
-                }
-            }
-            getString(R.string.preference_chat_send_font_key) -> {
-                sharedPreferences?.let {
-                    Options.useCustomFontChatSendButton(it.getBoolean(key, false))
-                }
-            }
-            getString(R.string.preference_pipModeOnBackPressed_key) -> {
-                sharedPreferences?.let {
-                    Options.setEnterPipModeOnBackPressed(it.getBoolean(key, false))
-                }
-            }
-            getString(R.string.preference_autoClose_key) -> {
-                sharedPreferences?.let {
-                    Options.setAutoCloseWhenAppDestroyed(it.getBoolean(key, true))
-                }
-            }
-            getString(R.string.preference_tabletAspect_key) -> {
-                sharedPreferences?.let {
-                    Options.setKeepAspectOnTabletPortrait(it.getBoolean(key, false))
-                }
-            }
-            getString(R.string.preference_mute_start_key) -> {
-                sharedPreferences?.let {
-                    Options.setMuteWhenPlayStart(it.getBoolean(key, false))
                 }
             }
         }
@@ -202,9 +145,9 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.setting_pipRatio_dialog_title))
         builder.setItems(ratioTextArray) { _, which ->
-            val pipPref: Preference? = findPreference(getString(R.string.preference_pipRatio_key))
+            val pipPref: Preference? = findPreference(getString(R.string.preference_pip_ratio_key))
             pipPref?.let {
-                pipPref.title = "${getString(R.string.preference_pipRatio_title)}(${ratioTextArray[which]})"
+                pipPref.title = "${getString(R.string.preference_pip_ratio_title)}(${ratioTextArray[which]})"
                 Options.setPIPRatio(ratioArray[which])
             }
         }
@@ -288,9 +231,9 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.setting_next_action_on_handle_navigation))
         builder.setItems(nextActionTextArray) { _, which ->
-            val nextActonPref: Preference? = findPreference(getString(R.string.preference_nextAction_key))
+            val nextActonPref: Preference? = findPreference(getString(R.string.preference_next_action_key))
             nextActonPref?.let {
-                nextActonPref.title = "${getString(R.string.preference_nextAction_title)} (${nextActionTextArray[which]})"
+                nextActonPref.title = "${getString(R.string.preference_next_action_title)} (${nextActionTextArray[which]})"
                 Options.setNextActionOnHandleNavigation(actionTypes[which])
             }
         }

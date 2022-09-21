@@ -1,106 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp"
+    tools:targetApi="m">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSdkVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:stateListAnimator="@null"
+        android:textColor="@android:color/black"
+        android:textSize="15sp"
+        android:textStyle="italic"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btCampaign"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="#bbbbbb"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/bt_step1"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/tvSdkVersion" />
 
     <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvSdkVersion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="15sp"
-            android:textStyle="italic"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/tvCampaign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:text="@string/label_no_campaign"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btCampaign" />
 
     <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btCampaign"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#bbbbbb"
-            android:text="@string/bt_step1"
-            android:textAllCaps="false"
-            app:layout_constraintTop_toBottomOf="@id/tvSdkVersion" />
+        android:id="@+id/btUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="#bbbbbb"
+        android:foreground="?attr/selectableItemBackground"
+        android:stateListAnimator="@null"
+        android:text="@string/bt_step2"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/tvCampaign" />
 
     <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvCampaign"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="6dp"
-            android:text="@string/label_no_campaign"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btCampaign" />
+        android:id="@+id/tvUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:text="@string/label_no_user"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btUser" />
 
     <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#bbbbbb"
-            android:text="@string/bt_step2"
-            android:textAllCaps="false"
-            app:layout_constraintTop_toBottomOf="@id/tvCampaign" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvUser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="6dp"
-            android:text="@string/label_no_user"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btUser" />
-
-    <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btOption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#bbbbbb"
-            android:text="@string/bt_step3"
-            android:textAllCaps="false"
-            app:layout_constraintTop_toBottomOf="@id/tvUser" />
+        android:id="@+id/btOption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="#bbbbbb"
+        android:foreground="?attr/selectableItemBackground"
+        android:stateListAnimator="@null"
+        android:text="@string/bt_step3"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/tvUser" />
 
     <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:padding="6dp"
-            app:layout_constraintBottom_toTopOf="@id/btPlay"
-            app:layout_constraintTop_toBottomOf="@id/btOption">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="6dp"
+        app:layout_constraintBottom_toTopOf="@id/btPlay"
+        app:layout_constraintTop_toBottomOf="@id/btOption">
 
         <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvOption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                android:id="@+id/tvOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
 
-    <Button
-            android:id="@+id/btPlay"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/bt_play"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/btPreview" />
+    <cloud.shoplive.sdk.ShopLiveSwipePreview
+        android:id="@+id/previewSwipe"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/btPlay"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <cloud.shoplive.sdk.ShopLivePreview
+        android:id="@+id/preview"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/btWindowPreview"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-            android:id="@+id/btPreview"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/bt_preview"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/btPlay"
-            app:layout_constraintRight_toRightOf="parent" />
+        android:id="@+id/btPlay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:text="@string/bt_play"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@id/btPreviewSwipe"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btWindowPreview" />
+
+    <Button
+        android:id="@+id/btPreviewSwipe"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:text="@string/bt_swipe_preview"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btInAppPreview" />
+
+    <Button
+        android:id="@+id/btWindowPreview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="@string/bt_window_preview"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@id/btInAppPreview"
+        app:layout_constraintLeft_toRightOf="@id/btPlay"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/btInAppPreview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="@string/bt_in_app_preview"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/btPreviewSwipe"
+        app:layout_constraintRight_toRightOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

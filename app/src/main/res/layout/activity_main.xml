@@ -29,8 +29,10 @@
             app:navGraph="@navigation/navigation_graph" />
 
     <FrameLayout
-            android:id="@+id/player_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        android:id="@+id/player_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_anchor="@+id/nav_host_fragment"
+        app:layout_anchorGravity="center" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
