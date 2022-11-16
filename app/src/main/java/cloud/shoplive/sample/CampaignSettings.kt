@@ -8,7 +8,7 @@ object CampaignSettings {
 
     private const val PREFERENCE_NAME = "sample_ui_preferences"
 
-    fun accessKey(context: Context, key: String) {
+    fun setAccessKey(context: Context, key: String) {
         val preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
         val editor = preferences.edit()
 
@@ -21,7 +21,7 @@ object CampaignSettings {
         return preferences.getString("accessKey", null)
     }
 
-    fun campaignKey(context: Context, key: String) {
+    fun setCampaignKey(context: Context, key: String) {
         val preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
         val editor = preferences.edit()
         editor.putString("campaignKey", if (key.isEmpty()) null else key)
