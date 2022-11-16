@@ -21,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.Navigation
 import cloud.shoplive.sample.*
@@ -31,13 +32,15 @@ import org.json.JSONObject
 
 class MainFragment : Fragment() {
 
+    companion object {
+        val TAG: String = MainFragment::class.java.name
+    }
+
     private var _binding: FragmentMainBinding? = null
 
     private val binding get() = _binding!!
 
-    companion object {
-        val TAG: String = MainFragment::class.java.name
-    }
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +60,14 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Options.init(requireContext())
+
+        viewModel.liveInfo.observe(requireActivity()) {
+            CampaignSettings.setAccessKey(requireContext(), it.accessKey)
+            CampaignSettings.setCampaignKey(requireContext(), it.campaignKey)
+            binding.tvCampaign.text = loadCampaignData()
+            setOptions()
+            play()
+        }
 
         binding.btCampaign.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.campaign_fragment)

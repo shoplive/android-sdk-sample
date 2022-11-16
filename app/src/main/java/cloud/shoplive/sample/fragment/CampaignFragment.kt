@@ -46,8 +46,8 @@ class CampaignFragment: Fragment() {
                 val accessKey = binding.etAccessKey.text.toString()
                 val campaignKey = binding.etCampaignKey.text.toString()
 
-                CampaignSettings.accessKey(requireContext(), accessKey)
-                CampaignSettings.campaignKey(requireContext(), campaignKey)
+                CampaignSettings.setAccessKey(requireContext(), accessKey)
+                CampaignSettings.setCampaignKey(requireContext(), campaignKey)
 
                 activity?.supportFragmentManager?.popBackStack()
             }

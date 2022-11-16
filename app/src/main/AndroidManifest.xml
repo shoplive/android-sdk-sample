@@ -34,5 +34,23 @@
             android:name="cloud.shoplive.sample.WebViewActivity"
             android:theme="@style/Theme.ShopLiveSample" />
 
+        <activity
+            android:name=".SchemeActivity"
+            android:exported="true"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.ShopLiveSample">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="live"
+                    android:scheme="shoplive" />
+            </intent-filter>
+        </activity>
+
     </application>
 </manifest>
