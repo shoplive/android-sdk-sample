@@ -72,7 +72,7 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 
     override fun onResume() {
         super.onResume()
-        preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        preferenceScreen.sharedPreferences?.registerOnSharedPreferenceChangeListener(this)
 
         if(ContextCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED){
@@ -88,11 +88,11 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 
     override fun onPause() {
         super.onPause()
-        preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        preferenceScreen.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-        when(preference?.key) {
+    override fun onPreferenceTreeClick(preference: Preference): Boolean {
+        when(preference.key) {
             getString(R.string.preference_pip_ratio_key) -> {
                 showPipRatioDialog()
             }
