@@ -36,6 +36,20 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
+        app:key="preview"
+        app:title="@string/setting_category_preview">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="@string/preference_preview_use_close_button_key"
+            app:summary="@string/preference_preview_use_close_button_summary"
+            app:title="@string/preference_preview_use_close_button_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
         app:key="sound"
         app:title="@string/setting_category_sound">
 

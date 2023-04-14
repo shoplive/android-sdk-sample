@@ -259,6 +259,21 @@ object Options {
         }
     }
 
+    fun useCloseButton(value: Boolean) {
+        editor?.putBoolean(
+            App.instance.getString(R.string.preference_preview_use_close_button_key),
+            value
+        )
+        editor?.apply()
+    }
+
+    fun isUseCloseButton(): Boolean {
+        return preferences?.getBoolean(
+            App.instance.getString(R.string.preference_preview_use_close_button_key),
+            false
+        ) ?: false
+    }
+
     fun toString(context: Context): String {
         return "${context.getString(R.string.setting_category_player)}\n" +
                 "• ${context.getString(R.string.preference_pip_ratio_title)} : ${pipRatioString(getPIPRatio())}\n" +

@@ -4,12 +4,10 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -95,7 +92,7 @@ class MainFragment : Fragment() {
             }
         }
 
-        binding.btWindowPreview.setOnClickListener {
+        binding.btPopupPreview.setOnClickListener {
             setOptions()
             startPreview()
         }
@@ -309,41 +306,10 @@ class MainFragment : Fragment() {
     }
 
     private fun startPreview() {
-        CampaignSettings.accessKey(requireContext())?.let {
-            ShopLive.setAccessKey(it)
-        }
+        val accessKey = CampaignSettings.accessKey(requireContext())
+        val campaignKey = CampaignSettings.campaignKey(requireContext())
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (Settings.canDrawOverlays(requireContext())) {
-                CampaignSettings.campaignKey(requireContext())?.let {
-                    ShopLive.showPreview(it)
-                }
-            } else {
-                val builder = AlertDialog.Builder(requireContext())
-                builder.setMessage(getString(R.string.alert_preview_permission_info))
-                builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-                    val intent = Intent(
-                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:${requireContext().packageName}")
-                    )
-                    overlaysSettingResult.launch(intent)
-                }
-                builder.setNegativeButton(getString(R.string.no), null)
-
-                val dialog: AlertDialog = builder.create()
-                dialog.show()
-            }
-        }
-    }
-
-    private val overlaysSettingResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (Settings.canDrawOverlays(requireContext())) {
-                CampaignSettings.campaignKey(requireContext())?.let {
-                    ShopLive.showPreview(it)
-                }
-            }
-        }
+        ShopLive.showPreviewPopup(requireActivity(), accessKey ?: return, campaignKey ?: return, true, true, Options.isUseCloseButton(), ShopLivePreviewPositionConfig.BOTTOM_RIGHT)
     }
 
     private fun registerShopLiveHandler() {

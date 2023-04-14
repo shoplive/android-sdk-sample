@@ -105,7 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/btWindowPreview"
+        app:layout_constraintBottom_toTopOf="@id/btPopupPreview"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
@@ -117,7 +117,7 @@
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@id/btPreviewSwipe"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btWindowPreview" />
+        app:layout_constraintRight_toLeftOf="@id/btPopupPreview" />
 
     <Button
         android:id="@+id/btPreviewSwipe"
@@ -131,11 +131,11 @@
         app:layout_constraintRight_toLeftOf="@id/btInAppPreview" />
 
     <Button
-        android:id="@+id/btWindowPreview"
+        android:id="@+id/btPopupPreview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:text="@string/bt_window_preview"
+        android:text="@string/bt_popup_preview"
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@id/btInAppPreview"
         app:layout_constraintLeft_toRightOf="@id/btPlay"
