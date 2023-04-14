@@ -110,25 +110,24 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        sharedPreferences ?: return
         when(key) {
             getString(R.string.preference_mute_key) -> {
-                sharedPreferences?.let {
-                    val isKeepPlayVideo = Options.isKeepPlayVideoOnHeadphoneUnplugged()
-                    if (!isKeepPlayVideo) {
-                        val mutePref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_mute_key))
-                        mutePref?.isChecked = false
-                        Toast.makeText(requireContext(), getString(R.string.toast_headset_mute_option), Toast.LENGTH_SHORT).show()
-                        return
-                    }
+                val isKeepPlayVideo = Options.isKeepPlayVideoOnHeadphoneUnplugged()
+                if (!isKeepPlayVideo) {
+                    val mutePref = findPreference<SwitchPreferenceCompat>(getString(R.string.preference_mute_key))
+                    mutePref?.isChecked = false
+                    Toast.makeText(requireContext(), getString(R.string.toast_headset_mute_option), Toast.LENGTH_SHORT).show()
                 }
             }
             getString(R.string.preference_call_key) -> {
-                sharedPreferences?.let {
-                    val value = it.getBoolean(key, true)
-                    if (!value) {
-                        requestReadPhoneStatePermissionLauncher.launch(Manifest.permission.READ_PHONE_STATE)
-                    }
+                val value = sharedPreferences.getBoolean(key, true)
+                if (!value) {
+                    requestReadPhoneStatePermissionLauncher.launch(Manifest.permission.READ_PHONE_STATE)
                 }
+            }
+            getString(R.string.preference_preview_use_close_button_key) -> {
+                Options.useCloseButton(sharedPreferences.getBoolean(key, false))
             }
         }
     }

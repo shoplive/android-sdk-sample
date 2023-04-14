@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -311,17 +309,7 @@ class MainFragment : Fragment() {
         val accessKey = CampaignSettings.accessKey(requireContext())
         val campaignKey = CampaignSettings.campaignKey(requireContext())
 
-        ShopLive.showPreviewPopup(requireActivity(), accessKey ?: return, campaignKey ?: return)
-    }
-
-    private val overlaysSettingResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (Settings.canDrawOverlays(requireContext())) {
-                CampaignSettings.campaignKey(requireContext())?.let {
-                    ShopLive.showPreview(it)
-                }
-            }
-        }
+        ShopLive.showPreviewPopup(requireActivity(), accessKey ?: return, campaignKey ?: return, true, true, Options.isUseCloseButton(), ShopLivePreviewPositionConfig.BOTTOM_RIGHT)
     }
 
     private fun registerShopLiveHandler() {

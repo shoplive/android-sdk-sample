@@ -75,6 +75,7 @@
 
     <!-- settings -->
     <string name="setting_category_player">Shoplive Player setting</string>
+    <string name="setting_category_preview">Preview</string>
     <string name="setting_category_auto_play">Keep Playing</string>
     <string name="setting_category_share">Sharing UI</string>
     <string name="setting_category_loading_progress">Progress bar</string>
@@ -143,6 +144,9 @@
     <string name="preference_player_screen_capture_enabled_key">playerScreenCaptureEnabled</string>
     <string name="preference_player_screen_capture_enabled_title">Can be captured with screenshots</string>
     <string name="preference_player_screen_capture_enabled_summary">On: Allowed, Off: Not allowed</string>
+    <string name="preference_preview_use_close_button_key">useCloseButton</string>
+    <string name="preference_preview_use_close_button_title">Use close button</string>
+    <string name="preference_preview_use_close_button_summary">Set whether to use the close button in Preview. (Default is not used)</string>
 
     <!-- general -->
     <string name="yes">Yes</string>
