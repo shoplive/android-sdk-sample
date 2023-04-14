@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -95,7 +94,7 @@ class MainFragment : Fragment() {
             }
         }
 
-        binding.btWindowPreview.setOnClickListener {
+        binding.btPopupPreview.setOnClickListener {
             setOptions()
             startPreview()
         }
@@ -309,31 +308,10 @@ class MainFragment : Fragment() {
     }
 
     private fun startPreview() {
-        CampaignSettings.accessKey(requireContext())?.let {
-            ShopLive.setAccessKey(it)
-        }
+        val accessKey = CampaignSettings.accessKey(requireContext())
+        val campaignKey = CampaignSettings.campaignKey(requireContext())
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (Settings.canDrawOverlays(requireContext())) {
-                CampaignSettings.campaignKey(requireContext())?.let {
-                    ShopLive.showPreview(it)
-                }
-            } else {
-                val builder = AlertDialog.Builder(requireContext())
-                builder.setMessage(getString(R.string.alert_preview_permission_info))
-                builder.setPositiveButton(getString(R.string.yes)) { _, _ ->
-                    val intent = Intent(
-                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:${requireContext().packageName}")
-                    )
-                    overlaysSettingResult.launch(intent)
-                }
-                builder.setNegativeButton(getString(R.string.no), null)
-
-                val dialog: AlertDialog = builder.create()
-                dialog.show()
-            }
-        }
+        ShopLive.showPreviewPopup(requireActivity(), accessKey ?: return, campaignKey ?: return)
     }
 
     private val overlaysSettingResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
