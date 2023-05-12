@@ -16,7 +16,7 @@
         android:textColor="@android:color/black"
         android:textSize="15sp"
         android:textStyle="italic"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:padding="6dp"
         android:text="@string/label_no_campaign"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btCampaign" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:padding="6dp"
         android:text="@string/label_no_user"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btUser" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -116,8 +116,8 @@
         android:text="@string/bt_play"
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@id/btPreviewSwipe"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btPopupPreview" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btPopupPreview" />
 
     <Button
         android:id="@+id/btPreviewSwipe"
@@ -126,9 +126,9 @@
         android:layout_marginEnd="5dp"
         android:text="@string/bt_swipe_preview"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btInAppPreview" />
+        app:layout_constraintBottom_toTopOf="@id/btHybridShortform"
+        app:layout_constraintEnd_toStartOf="@id/btInAppPreview"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btPopupPreview"
@@ -138,8 +138,8 @@
         android:text="@string/bt_popup_preview"
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@id/btInAppPreview"
-        app:layout_constraintLeft_toRightOf="@id/btPlay"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/btPlay"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/btInAppPreview"
@@ -148,9 +148,31 @@
         android:layout_marginStart="5dp"
         android:text="@string/bt_in_app_preview"
         android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@id/btHybridShortform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btPreviewSwipe" />
+
+    <Button
+        android:id="@+id/btHybridShortform"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:text="@string/bt_hybrid_shortform"
+        android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/btPreviewSwipe"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintEnd_toStartOf="@id/btNativeShortform"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btNativeShortform"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="@string/bt_native_shortform"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btHybridShortform" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

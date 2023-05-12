@@ -14,6 +14,8 @@
     <string name="bt_in_app_preview">In App Preview</string>
     <string name="bt_swipe_preview">Swipe Preview</string>
     <string name="bt_login">Login</string>
+    <string name="bt_hybrid_shortform">Hybrid Shortform</string>
+    <string name="bt_native_shortform">Native Shortform</string>
 
     <!-- title -->
     <string name="title_main">Shoplive SDK Sample</string>

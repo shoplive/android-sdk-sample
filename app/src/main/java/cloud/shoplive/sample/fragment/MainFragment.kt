@@ -24,7 +24,9 @@ import androidx.navigation.Navigation
 import cloud.shoplive.sample.*
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.FragmentMainBinding
+import cloud.shoplive.sample.shortform.ShortformWebActivity
 import cloud.shoplive.sdk.*
+import cloud.shoplive.sdk.common.ShopLivePreviewPositionConfig
 import org.json.JSONObject
 
 class MainFragment : Fragment() {
@@ -151,6 +153,14 @@ class MainFragment : Fragment() {
         }
         binding.previewSwipe.setOnCloseListener {
             binding.previewSwipe.visibility = View.GONE
+        }
+
+        binding.btHybridShortform.setOnClickListener {
+            startActivity(ShortformWebActivity.buildIntent(requireContext(), "https://shopliveshorts.cafe24.com/index.html"))
+        }
+
+        binding.btNativeShortform.setOnClickListener {
+
         }
 
         registerShopLiveHandler()
