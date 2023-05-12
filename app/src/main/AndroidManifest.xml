@@ -35,6 +35,10 @@
             android:theme="@style/Theme.ShopLiveSample" />
 
         <activity
+            android:name="cloud.shoplive.sample.shortform.ShortformWebActivity"
+            android:theme="@style/Theme.ShopLiveSample" />
+
+        <activity
             android:name=".SchemeActivity"
             android:exported="true"
             android:noHistory="true"
