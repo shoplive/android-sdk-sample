@@ -35,7 +35,15 @@
             android:theme="@style/Theme.ShopLiveSample" />
 
         <activity
-            android:name="cloud.shoplive.sample.shortform.ShortformWebActivity"
+            android:name="cloud.shoplive.sample.shortform.HybridShortformActivity"
+            android:theme="@style/Theme.ShopLiveSample" />
+
+        <activity
+            android:name="cloud.shoplive.sample.shortform.NativeShortformActivity"
+            android:theme="@style/Theme.ShopLiveSample" />
+
+        <activity
+            android:name="cloud.shoplive.sample.shortform.ShortformProductActivity"
             android:theme="@style/Theme.ShopLiveSample" />
 
         <activity
