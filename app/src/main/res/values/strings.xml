@@ -1,6 +1,7 @@
 <resources>
     <!-- app -->
     <string name="app_name">Shoplive SDK Sample</string>
+    <string name="shoplive">Shoplive</string>
     <string name="dialog_confirm">Ok</string>
     <string name="dialog_cancel">Cancel</string>
 
@@ -14,6 +15,8 @@
     <string name="bt_in_app_preview">In App Preview</string>
     <string name="bt_swipe_preview">Swipe Preview</string>
     <string name="bt_login">Login</string>
+    <string name="bt_hybrid_shortform">Hybrid Shortform</string>
+    <string name="bt_native_shortform">Native Shortform</string>
 
     <!-- title -->
     <string name="title_main">Shoplive SDK Sample</string>
@@ -166,5 +169,16 @@
     <string name="sample_copy_link">Copy the link</string>
     <string name="sample_share_kakao">Share the link on Kakaotalk</string>
     <string name="sample_share_line">Share the link on Line</string>
+
+    <!-- shortform -->
+    <string name="shortform_tab_card">Card</string>
+    <string name="shortform_tab_vertical">Col</string>
+    <string name="shortform_tab_horizontal">Row</string>
+    <string name="shortform_snap">SNAP</string>
+    <string name="shortform_tab_main_subtitle">Highlight content</string>
+    <string name="shortform_tab_vertical_subtitle">Highlight exposure</string>
+    <string name="shortform_tab_horizontal_subtitle">Free space, Banner</string>
+    <string name="shortform_view_type1">type1</string>
+    <string name="shortform_view_type2">type2</string>
 
 </resources>

@@ -1,5 +1,7 @@
 package cloud.shoplive.sample
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +10,12 @@ class WebViewActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "WebViewActivity"
+
+        fun buildIntent(context: Context, url: String): Intent {
+            return Intent(context, WebViewActivity::class.java).apply {
+                putExtra("url", url)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
