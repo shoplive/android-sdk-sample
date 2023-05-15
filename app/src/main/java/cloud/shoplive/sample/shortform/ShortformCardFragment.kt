@@ -42,8 +42,6 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         binding.shortsCardType1View.setViewType(ShopLiveShortform.CardViewType.CARD_TYPE1)
         binding.shortsCardType2View.spanCount = 1
         binding.shortsCardType2View.setViewType(ShopLiveShortform.CardViewType.CARD_TYPE2)
-//        binding.shortsCardType3View.spanCount = 1
-//        binding.shortsCardType3View.setViewType(ShopLiveShortform.CardViewType.CARD_TYPE3)
         if (binding.shortsCardTypeSnap.isChecked) {
             currentCardTypeView?.enableSnap()
         }
@@ -72,15 +70,6 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
                 ).show()
             }
         }
-//        binding.shortsCardType3View.handler = object : ShopLiveShortformBaseTypeHandler() {
-//            override fun onError(error: ShopLiveCommonError) {
-//                Toast.makeText(
-//                    requireContext(),
-//                    error.message ?: error.toString(),
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//        }
         submit()
 
         binding.shortsCardTypeRadioGroup.setOnCheckedChangeListener { _, checkedId ->
@@ -104,16 +93,6 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
                         currentCardTypeView?.disableSnap()
                     }
                     submit()
-                }
-                R.id.shortsCardTypeRadioType3 -> {
-//                    toggleCardTypeView(ShopLiveShortform.CardViewType.CARD_TYPE3)
-//                    scrollToTop(false)
-//                    if (binding.shortsCardTypeSnap.isChecked) {
-//                        currentCardTypeView?.enableSnap()
-//                    } else {
-//                        currentCardTypeView?.disableSnap()
-//                    }
-//                    submit()
                 }
             }
         }
@@ -141,11 +120,7 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
                 _binding?.shortsCardType1View
             } else if (_binding?.shortsCardType2View?.visibility == View.VISIBLE) {
                 _binding?.shortsCardType2View
-            }
-//            else if (_binding?.shortsCardType3View?.visibility == View.VISIBLE) {
-//                _binding?.shortsCardType3View
-//            }
-            else {
+            } else {
                 null
             }
         }
@@ -155,11 +130,9 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
             ShopLiveShortform.CardViewType.CARD_TYPE1 -> {
                 _binding?.shortsCardType1View?.visibility = View.VISIBLE
                 _binding?.shortsCardType2View?.visibility = View.INVISIBLE
-//                _binding?.shortsCardType3View?.visibility = View.INVISIBLE
 
                 _binding?.shortsCardType1View?.enablePlayVideos()
                 _binding?.shortsCardType2View?.disablePlayVideos()
-//                _binding?.shortsCardType3View?.disablePlayVideos()
 
                 _binding?.shortsCardType1View?.startAnimation(
                     AnimationUtils.loadAnimation(
@@ -171,11 +144,9 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
             ShopLiveShortform.CardViewType.CARD_TYPE2 -> {
                 _binding?.shortsCardType1View?.visibility = View.INVISIBLE
                 _binding?.shortsCardType2View?.visibility = View.VISIBLE
-//                _binding?.shortsCardType3View?.visibility = View.INVISIBLE
 
                 _binding?.shortsCardType1View?.disablePlayVideos()
                 _binding?.shortsCardType2View?.enablePlayVideos()
-//                _binding?.shortsCardType3View?.disablePlayVideos()
 
                 _binding?.shortsCardType2View?.startAnimation(
                     AnimationUtils.loadAnimation(
@@ -184,22 +155,6 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
                     )
                 )
             }
-//            ShopLiveShortform.CardViewType.CARD_TYPE3 -> {
-//                _binding?.shortsCardType1View?.visibility = View.INVISIBLE
-//                _binding?.shortsCardType2View?.visibility = View.INVISIBLE
-//                _binding?.shortsCardType3View?.visibility = View.VISIBLE
-//
-//                _binding?.shortsCardType1View?.disablePlayVideos()
-//                _binding?.shortsCardType2View?.disablePlayVideos()
-//                _binding?.shortsCardType3View?.enablePlayVideos()
-//
-//                _binding?.shortsCardType3View?.startAnimation(
-//                    AnimationUtils.loadAnimation(
-//                        requireContext(),
-//                        R.anim.shoplive_fade_in
-//                    )
-//                )
-//            }
         }
     }
 
