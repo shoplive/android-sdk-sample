@@ -24,8 +24,10 @@ import androidx.navigation.Navigation
 import cloud.shoplive.sample.*
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.FragmentMainBinding
-import cloud.shoplive.sample.shortform.ShortformWebActivity
+import cloud.shoplive.sample.shortform.HybridShortformActivity
+import cloud.shoplive.sample.shortform.NativeShortformActivity
 import cloud.shoplive.sdk.*
+import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLivePreviewPositionConfig
 import org.json.JSONObject
 
@@ -156,11 +158,13 @@ class MainFragment : Fragment() {
         }
 
         binding.btHybridShortform.setOnClickListener {
-            startActivity(ShortformWebActivity.buildIntent(requireContext(), "https://shopliveshorts.cafe24.com/index.html"))
+            startActivity(HybridShortformActivity.buildIntent(requireContext(), "https://shopliveshorts.cafe24.com/index.html"))
         }
 
         binding.btNativeShortform.setOnClickListener {
-
+            val accessKey: String = CampaignSettings.accessKey(requireContext()) ?: return@setOnClickListener
+            ShopLiveCommon.setAccessKey(accessKey)
+            startActivity(NativeShortformActivity.buildIntent(requireContext()))
         }
 
         registerShopLiveHandler()

@@ -82,18 +82,20 @@ dependencies {
     // alternately-if using Java8, use following instead of compiler
     implementation "android.arch.lifecycle:common-java8:1.1.1"
 
+    def shoplive_sdk_version = "1.4.0"
+    implementation "cloud.shoplive:shoplive-sdk-all:$shoplive_sdk_version"
 
-    // shoplive player sdk only
-    implementation 'cloud.shoplive:shoplive-sdk:1.3.4'
+//    def shoplive_exoplayer_version = "2.18.1.3"
+//    implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version"
+//    implementation "cloud.shoplive:shoplive-exoplayer:$shoplive_exoplayer_version"
+//    implementation "cloud.shoplive:shoplive-network:$shoplive_sdk_version"
+//    implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version"
 
-    /*
-    // already using exoplayer
-    implementation "com.google.android.exoplayer:exoplayer-core:2.18.1"
-    implementation "com.google.android.exoplayer:exoplayer-hls:2.18.1"
-    implementation "com.google.android.exoplayer:exoplayer-ui:2.18.1"
-    implementation "com.google.android.exoplayer:extension-okhttp:2.18.1"
-
-    implementation 'cloud.shoplive:shoplive-sdk-core:1.3.4'
-    implementation 'cloud.shoplive:shoplive-exoplayer:2.18.1.2'
-    */
+//    implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version" // must required
+//    implementation "cloud.shoplive:shoplive-exoplayer:$shoplive_exoplayer_version" // must required
+//    implementation "cloud.shoplive:shoplive-sdk-core:$shoplive_sdk_version" // for live player
+//    implementation "cloud.shoplive:shoplive-network:$shoplive_sdk_version" // for shot-form player && editor
+//    implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version" // for short-form player
+//    implementation "cloud.shoplive:shoplive-permission:$shoplive_sdk_version" // for short-form editor
+//    implementation "cloud.shoplive:shoplive-video-editor:$shoplive_sdk_version" // for short-form editor
 }
