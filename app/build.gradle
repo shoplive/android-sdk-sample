@@ -84,7 +84,7 @@ dependencies {
 
     def shoplive_sdk_version = "1.4.1"
     def your_exoplayer_version = "2.18.1"
-    def shoplive_exoplayer_version = your_exoplayer_version + "." + "3"
+    def shoplive_exoplayer_version = your_exoplayer_version + "." + "4"
 
     // For library - combined packaging
     implementation "cloud.shoplive:shoplive-sdk-all:$shoplive_sdk_version" // live + short-form
