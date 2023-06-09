@@ -32,15 +32,15 @@ The minimum requirements for the Player SDK for Android are:
 
 ## Getting started
 
-단계별로 따라해 보세요. <br />
+Please follow the step by step. <br />
 
 ## Step by step
 
-### Step 1: Shoplive 어드민 계정 생성하기
+### Step 1: Creating an admin account
 
-Shoplive Android SDK를 사용하려면 Shoplive 담당자에게 관리자 계정과 비밀번호를 요청하세요. [Shoplive 어드민 계정 발급받기 가이드](https://docs.shoplive.kr/docs/admin-account)
+To use the Shoplive SDK for Android, ask the Shoplive representative for an admin account and password. [Admin Guide - Creating Admin Account](https://en.shoplive.guide/docs/admin-account)
 
-> **Note**: Shoplive 담당자에게 관리자 계정 발급을 요청하시기 바랍니다. 등록하실 이메일과 성함을 전달해 주시면 계정을 발급해 드립니다. 관리자 계정 생성이 완료되면 해당 이메일로 계정 생성 안내 메일이 전송됩니다. 절차에 따라 계정 등록을 완료해 주시기 바랍니다.
+> **Note**: Please request for your admin account to a Shoplive representative. Your account will be issued once you provide your registered email and name. Once your account is issued, a temporary password will be sent to your email. Please reset the password on your first login.
 
 <br />
 
@@ -75,9 +75,10 @@ The Shoplive SDK requires system permissions, add the following lines to your `A
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-### Step 4: Handler 등록하기
+### Step 4: Registering Handler
 
-Shoplive Android SDK 로부터 여러 이벤트를 수신할 Handler를 등록하세요.
+Register a handler to receive multiple events from the Shoplive SDK for Android. <br />
+
 ```
 ShopLive.setHandler(object : ShopLiveHandler {
     override fun handleNavigation(context: Context, url: String) {
@@ -130,18 +131,21 @@ ShopLive.setHandler(object : ShopLiveHandler {
 })
 ```
 
-### Step 5: Shoplive Player 실행하기
+### Step 5: Running Shoplive Player
 
-AccessKey와 Campaign키를 사용하여 방송을 재생할 수 있습니다.
+Play the video using the access key and campaign key.
 
-#### A. 방송 재생하기
+
+#### A. Play the campaign
+
 ```
 ShopLive.setAccessKey("{accessKey}")
 
 ShopLive.play("{campaignKey}") 
 ```
 
-#### B. 방송 미리보기
+#### B. Preview the campaign
+
 ```
 ShopLive.showPreviewPopup(ShopLivePreviewData(this@YourActivity, "{accessKey}", "{campaignKey}"))
 ```
