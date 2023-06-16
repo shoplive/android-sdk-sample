@@ -64,6 +64,10 @@ class ShortformVerticalFragment : Fragment(), ShopLiveShortformPlayEnableListene
         _binding?.shortsVerticalTypeView?.scrollToTop(isSmooth)
     }
 
+    override fun scrollToTop() {
+
+    }
+
     override fun enablePlayVideos() {
         _binding?.shortsVerticalTypeView?.enablePlayVideos()
     }

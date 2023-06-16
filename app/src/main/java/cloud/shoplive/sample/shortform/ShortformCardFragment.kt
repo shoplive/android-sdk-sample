@@ -106,6 +106,10 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         currentCardTypeView?.scrollToTop(isSmooth)
     }
 
+    override fun scrollToTop() {
+
+    }
+
     override fun enablePlayVideos() {
         currentCardTypeView?.enablePlayVideos()
     }
