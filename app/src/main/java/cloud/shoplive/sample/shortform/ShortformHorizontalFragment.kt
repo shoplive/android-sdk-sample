@@ -68,6 +68,10 @@ class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListe
         _binding?.shortsHorizontalType1View?.scrollToTop(isSmooth)
     }
 
+    override fun scrollToTop() {
+
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
