@@ -37,7 +37,7 @@ class UserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        title = "User"
+        title = getString(R.string.title_user)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewModel.user.observe(this) {

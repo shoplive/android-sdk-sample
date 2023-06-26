@@ -72,6 +72,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        title = getString(R.string.title_main)
+
         Options.init(this)
 
 //        viewModel.liveInfo.observe(this) {

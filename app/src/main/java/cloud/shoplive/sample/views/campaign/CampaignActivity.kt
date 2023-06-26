@@ -29,7 +29,7 @@ class CampaignActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        title = "Campaign"
+        title = getString(R.string.title_campaign)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewModel.campaignInfo.observe(this) {

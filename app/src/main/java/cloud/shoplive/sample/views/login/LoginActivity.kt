@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.ActivityLoginBinding
 import kotlinx.coroutines.launch
 
@@ -29,7 +30,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        title = "Login"
+        title = getString(R.string.title_login)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewModel.done.observe(this) { userId ->

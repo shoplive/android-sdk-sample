@@ -20,8 +20,8 @@
 
     <!-- title -->
     <string name="title_main">Shoplive SDK Sample</string>
-    <string name="title_campaign">Campaign setting</string>
-    <string name="title_user">User setting</string>
+    <string name="title_campaign">Campaign</string>
+    <string name="title_user">User</string>
     <string name="title_option">Advanced setting</string>
     <string name="title_login">Login</string>
 
