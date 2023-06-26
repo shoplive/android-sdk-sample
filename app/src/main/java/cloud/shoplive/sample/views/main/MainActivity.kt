@@ -23,6 +23,7 @@ import cloud.shoplive.sample.WebViewDialogFragment
 import cloud.shoplive.sample.databinding.ActivityMainBinding
 import cloud.shoplive.sample.shortform.HybridShortformActivity
 import cloud.shoplive.sample.shortform.NativeShortformActivity
+import cloud.shoplive.sample.views.campaign.CampaignActivity
 import cloud.shoplive.sdk.OnAudioFocusListener
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveHandler
@@ -126,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btCampaign.setOnClickListener {
-//            Navigation.findNavController(view).navigate(R.id.campaign_fragment)
+            startActivity(CampaignActivity.buildIntent(this))
         }
 
         binding.btUser.setOnClickListener {
