@@ -24,6 +24,7 @@ import cloud.shoplive.sample.databinding.ActivityMainBinding
 import cloud.shoplive.sample.shortform.HybridShortformActivity
 import cloud.shoplive.sample.shortform.NativeShortformActivity
 import cloud.shoplive.sample.views.campaign.CampaignActivity
+import cloud.shoplive.sample.views.user.UserActivity
 import cloud.shoplive.sdk.OnAudioFocusListener
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveHandler
@@ -131,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btUser.setOnClickListener {
-//            Navigation.findNavController(view).navigate(R.id.user_fragment)
+            startActivity(UserActivity.buildIntent(this))
         }
 
         binding.btOption.setOnClickListener {

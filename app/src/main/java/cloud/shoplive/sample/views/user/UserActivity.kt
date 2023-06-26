@@ -1,43 +1,42 @@
-package cloud.shoplive.sample.fragment
+package cloud.shoplive.sample.views.user
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.Fragment
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import cloud.shoplive.sample.CampaignSettings
 import cloud.shoplive.sample.R
-import cloud.shoplive.sample.databinding.FragmentUserBinding
+import cloud.shoplive.sample.databinding.ActivityUserBinding
 import cloud.shoplive.sdk.ShopLiveUser
 import cloud.shoplive.sdk.ShopLiveUserGender
-import java.lang.NumberFormatException
 
-class UserFragment: Fragment() {
+class UserActivity : AppCompatActivity() {
 
-    private var _binding: FragmentUserBinding? = null
-
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        setHasOptionsMenu(true)
-        _binding = FragmentUserBinding.inflate(inflater, container, false)
-        return binding.root
+    companion object {
+        fun buildIntent(context: Context): Intent {
+            return Intent(context, UserActivity::class.java)
+        }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private val binding: ActivityUserBinding by lazy {
+        ActivityUserBinding.inflate(layoutInflater)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private val viewModel: UserViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+
+        title = "User"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding.tvTokenGuide.paintFlags = Paint.UNDERLINE_TEXT_FLAG
         binding.tvTokenGuide.setOnClickListener {
@@ -66,34 +65,36 @@ class UserFragment: Fragment() {
             }
         }
 
-        when(CampaignSettings.authType(requireContext())) {
+        when(CampaignSettings.authType(this)) {
             0 -> binding.rgAuth.check(R.id.rbUser)
             1 -> binding.rgAuth.check(R.id.rbToken)
             2 -> binding.rgAuth.check(R.id.rbGuest)
         }
-        setUser(CampaignSettings.user(requireContext()))
-        binding.etToken.setText(CampaignSettings.jwt(requireContext()))
-
+        setUser(CampaignSettings.user(this))
+        binding.etToken.setText(CampaignSettings.jwt(this))
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.user_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.user_menu, menu)
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+            }
             R.id.action_save -> {
                 saveUser()
-                CampaignSettings.jwt(requireContext(), binding.etToken.text.toString())
+                CampaignSettings.jwt(this, binding.etToken.text.toString())
                 CampaignSettings.authType(
-                    requireContext(), when (binding.rgAuth.checkedRadioButtonId) {
+                    this, when (binding.rgAuth.checkedRadioButtonId) {
                         R.id.rbUser -> 0
                         R.id.rbToken -> 1
                         else -> 2
                     }
                 )
-                activity?.supportFragmentManager?.popBackStack()
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -134,7 +135,7 @@ class UserFragment: Fragment() {
     }
 
     private fun saveUser() {
-        val inputManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(binding.etUserId.windowToken, 0)
 
         val user = ShopLiveUser().apply {
@@ -171,6 +172,6 @@ class UserFragment: Fragment() {
             }
         }
 
-        CampaignSettings.user(requireContext(), user)
+        CampaignSettings.user(this, user)
     }
 }
