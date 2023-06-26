@@ -75,6 +75,7 @@
     <string name="label_gender_female">Female</string>
     <string name="label_gender_none">Other</string>
     <string name="label_sdk_version">SDK v%1$s</string>
+    <string name="label_ak_ck">• Access Key : %1$s\n• Campaign Key : %2$s</string>
 
     <!-- settings -->
     <string name="setting_category_player">Shoplive Player setting</string>

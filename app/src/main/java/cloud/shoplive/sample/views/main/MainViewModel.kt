@@ -8,6 +8,8 @@ import cloud.shoplive.sample.CampaignInfo
 import cloud.shoplive.sample.CampaignSettings
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveUser
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MainViewModel : ViewModel() {
 
@@ -23,19 +25,28 @@ class MainViewModel : ViewModel() {
     val sdkVersion: LiveData<String>
         get() = _sdkVersion
 
-//    fun playFromDeeplink(accessKey: String, campaignKey: String) {
-//        _liveInfo.value = CampaignInfo(accessKey, campaignKey)
-//    }
+    private val _deeplinkInfo: MutableLiveData<CampaignInfo> = MutableLiveData()
+    val deeplinkInfo: LiveData<CampaignInfo>
+        get() = _deeplinkInfo
+
+
+    fun playFromDeeplink(accessKey: String, campaignKey: String) {
+        _deeplinkInfo.value = CampaignInfo(accessKey, campaignKey)
+    }
 
     fun getSdkVersion() {
         _sdkVersion.value = ShopLive.getVersion()
     }
 
-    fun loadCampaignData(context: Context) {
-        _campaignInfo.value = CampaignInfo(CampaignSettings.accessKey(context), CampaignSettings.campaignKey(context))
+    suspend fun loadCampaignData(context: Context) {
+        _campaignInfo.value = withContext(Dispatchers.IO) {
+            CampaignInfo(CampaignSettings.accessKey(context), CampaignSettings.campaignKey(context))
+        }
     }
 
-    fun loadUserData(context: Context) {
-        _shopliveUser.value = CampaignSettings.user(context)
+    suspend fun loadUserData(context: Context) {
+        _shopliveUser.value = withContext(Dispatchers.IO) {
+            CampaignSettings.user(context)
+        }
     }
 }

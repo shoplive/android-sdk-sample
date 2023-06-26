@@ -1,6 +1,6 @@
 package cloud.shoplive.sample.views.main
 
-import android.app.Dialog
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,6 +15,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.lifecycleScope
 import cloud.shoplive.sample.CampaignSettings
 import cloud.shoplive.sample.Options
 import cloud.shoplive.sample.R
@@ -35,6 +35,8 @@ import cloud.shoplive.sdk.ShopLiveHandlerCallback
 import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLivePreviewPositionConfig
+import com.google.gson.JsonParseException
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
@@ -76,28 +78,26 @@ class MainActivity : AppCompatActivity() {
 
         Options.init(this)
 
-//        viewModel.liveInfo.observe(this) {
-//            CampaignSettings.setAccessKey(this, it.accessKey)
-//            CampaignSettings.setCampaignKey(this, it.campaignKey)
-//            binding.tvCampaign.text = loadCampaignData()
-//            setOptions()
-//            play()
-//        }
+        viewModel.deeplinkInfo.observe(this) {
+            CampaignSettings.setAccessKey(this, it.accessKey ?: return@observe)
+            CampaignSettings.setCampaignKey(this, it.campaignKey ?: return@observe)
+            binding.tvCampaign.text = getString(R.string.label_ak_ck, it.accessKey, it.campaignKey)
+            setOptions()
+            play()
+        }
 
         viewModel.campaignInfo.observe(this) {
-            binding.tvCampaign.text =
-                "• Access Key : ${it.accessKey ?: getString(R.string.label_none)}\n" + "• Campaign Key : ${
-                    it.campaignKey ?: getString(R.string.label_none)
-                }"
+            binding.tvCampaign.text = getString(
+                R.string.label_ak_ck,
+                it.accessKey ?: getString(R.string.label_none),
+                it.campaignKey ?: getString(R.string.label_none)
+            )
         }
 
         viewModel.shopliveUser.observe(this) {user ->
-            var userText = ""
-            when(CampaignSettings.authType(this)) {
+            val userText = when(CampaignSettings.authType(this)) {
                 CampaignSettings.UserType.USER.ordinal -> {
-                    // user
-                    userText = getString(R.string.label_use_user2) + "\n"
-                    userText += if (user == null) {
+                    getString(R.string.label_use_user2) + "\n" + if (user == null) {
                         getString(R.string.label_no_user)
                     } else {
                         val gender = when(user.gender) {
@@ -114,15 +114,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 CampaignSettings.UserType.JWT.ordinal -> {
-                    // token
-                    userText = getString(R.string.label_use_token2) + "\n"
-
-                    val token = CampaignSettings.jwt(this)
-                    userText += token ?: getString(R.string.label_no_token)
+                    getString(R.string.label_use_token2) + "\n" + (CampaignSettings.jwt(this) ?: getString(R.string.label_no_token))
                 }
-                CampaignSettings.UserType.GUEST.ordinal -> {
-                    // guest
-                    userText = getString(R.string.label_use_guest2)
+                else -> {
+                    getString(R.string.label_use_guest2)
                 }
             }
             binding.tvUser.text = userText
@@ -237,54 +232,58 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.loadCampaignData(this)
-        viewModel.loadUserData(this)
-        binding.tvOption.text = Options.toString(this)
+        lifecycleScope.launch {
+            viewModel.loadCampaignData(this@MainActivity)
+            viewModel.loadUserData(this@MainActivity)
+            binding.tvOption.text = Options.toString(this@MainActivity)
+        }
     }
 
     private fun setUserOrJwt() {
         when(CampaignSettings.authType(this)) {
-            0 -> { CampaignSettings.user(this)?.let { ShopLive.setUser(it) } }
-            1 -> { CampaignSettings.jwt(this)?.let { ShopLive.setAuthToken(it) } }
-            2 -> { ShopLive.setUser(null)}
+            CampaignSettings.UserType.USER.ordinal -> {
+                ShopLive.setUser(CampaignSettings.user(this) ?: return)
+            }
+            CampaignSettings.UserType.JWT.ordinal -> {
+                ShopLive.setAuthToken(CampaignSettings.jwt(this) ?: return)
+            }
+            CampaignSettings.UserType.GUEST.ordinal -> {
+                ShopLive.setUser(null)
+            }
         }
-    }
-
-    private fun setLoadingProgress() {
-        if (Options.useLoadingImageAnimation()) {
-            ShopLive.setLoadingAnimation(R.drawable.progress_animation1)
-        } else {
-            val hexColor = Options.loadingProgressColor()
-            ShopLive.setLoadingProgressColor(hexColor)
-        }
-    }
-
-    private fun setCustomFontForChatting() {
-        // 나눔 고딕
-        val nanumGothic = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            resources.getFont(R.font.nanumgothic)
-        } else {
-            ResourcesCompat.getFont(this, R.font.nanumgothic)
-        }
-
-        // 나눔 고딕 볼드
-        val nanumGothicBold = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            resources.getFont(R.font.nanumgothicbold)
-        } else {
-            ResourcesCompat.getFont(this, R.font.nanumgothicbold)
-        }
-
-        val chatInputTf = if (Options.useCustomFontChatInput()) nanumGothic else null
-        val chatSendTf = if (Options.useCustomFontChatSendButton()) nanumGothicBold else null
-        ShopLive.setChatViewTypeface(chatInputTf, chatSendTf)
     }
 
     private fun setOptions() {
         setUserOrJwt()
 
-        setLoadingProgress()
+        // loading progress option
+        if (Options.useLoadingImageAnimation()) {
+            ShopLive.setLoadingAnimation(R.drawable.progress_animation1)
+        } else {
+            ShopLive.setLoadingProgressColor(Options.loadingProgressColor())
+        }
 
-        setCustomFontForChatting()
+        // custom font option
+        ShopLive.setChatViewTypeface(
+            if (Options.useCustomFontChatInput()) kotlin.run {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    resources.getFont(R.font.nanumgothic)
+                } else {
+                    ResourcesCompat.getFont(this, R.font.nanumgothic)
+                }
+            } else {
+                null
+            },
+            if (Options.useCustomFontChatSendButton()) kotlin.run {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    resources.getFont(R.font.nanumgothicbold)
+                } else {
+                    ResourcesCompat.getFont(this, R.font.nanumgothicbold)
+                }
+            } else {
+                null
+            }
+        )
 
         ShopLive.setPIPRatio(Options.getPIPRatio())
 
@@ -329,20 +328,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun play() {
-        CampaignSettings.accessKey(this)?.let {
-            ShopLive.setAccessKey(it)
-        }
-
-        CampaignSettings.campaignKey(this)?.let {
-            ShopLive.play(it)
-        }
+        ShopLive.setAccessKey(CampaignSettings.accessKey(this) ?: return)
+        ShopLive.play(CampaignSettings.campaignKey(this) ?: return)
     }
 
     private fun startPreview() {
-        val accessKey = CampaignSettings.accessKey(this)
-        val campaignKey = CampaignSettings.campaignKey(this)
-
-        ShopLive.showPreviewPopup(this, accessKey ?: return, campaignKey ?: return, true, true, Options.isUseCloseButton(), ShopLivePreviewPositionConfig.BOTTOM_RIGHT)
+        ShopLive.showPreviewPopup(
+            this,
+            CampaignSettings.accessKey(this) ?: return,
+            CampaignSettings.campaignKey(this) ?: return,
+            true,
+            true,
+            Options.isUseCloseButton(),
+            ShopLivePreviewPositionConfig.BOTTOM_RIGHT
+        )
     }
 
     private val shopliveHandler = object : ShopLiveHandler {
@@ -353,17 +352,21 @@ class MainActivity : AppCompatActivity() {
             when(Options.getNextActionOnHandleNavigation()) {
                 ShopLive.ActionType.PIP,
                 ShopLive.ActionType.CLOSE -> {
-                    val intent = Intent(this@MainActivity, WebViewActivity::class.java)
-                    intent.putExtra("url", url)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    startActivity(intent)
+                    Intent(this@MainActivity, WebViewActivity::class.java).apply {
+                        putExtra("url", url)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }.run {
+                        startActivity(this)
+                    }
                 }
                 ShopLive.ActionType.KEEP -> {
-                    val fragment = WebViewDialogFragment()
-                    fragment.arguments = Bundle().apply {
-                        putString("url", url)
+                    WebViewDialogFragment().apply {
+                        arguments = Bundle().apply {
+                            putString("url", url)
+                        }
+                    }.run {
+                        ShopLive.showDialogFragment(this)
                     }
-                    ShopLive.showDialogFragment(fragment)
                 }
             }
         }
@@ -373,37 +376,37 @@ class MainActivity : AppCompatActivity() {
             couponId: String,
             callback: ShopLiveHandlerCallback
         ) {
-            val builder = AlertDialog.Builder(context)
-            builder.setTitle(getString(R.string.sample_coupon_download))
-            builder.setMessage(getString(R.string.sample_coupon_download_id, couponId))
-            builder.setPositiveButton(getString(R.string.success)) { _, _ ->
-                callback.couponResult(
-                    true,
-                    getString(R.string.alert_coupon_download_success),
-                    ShopLive.CouponPopupStatus.HIDE,
-                    ShopLive.CouponPopupResultAlertType.TOAST
-                )
+            AlertDialog.Builder(context).apply {
+                setTitle(getString(R.string.sample_coupon_download))
+                setMessage(getString(R.string.sample_coupon_download_id, couponId))
+                setPositiveButton(getString(R.string.success)) { _, _ ->
+                    callback.couponResult(
+                        true,
+                        getString(R.string.alert_coupon_download_success),
+                        ShopLive.CouponPopupStatus.HIDE,
+                        ShopLive.CouponPopupResultAlertType.TOAST
+                    )
+                }
+                setNegativeButton(getString(R.string.fail)) { _, _ ->
+                    callback.couponResult(
+                        false,
+                        getString(R.string.alert_coupon_download_fail),
+                        ShopLive.CouponPopupStatus.SHOW,
+                        ShopLive.CouponPopupResultAlertType.ALERT
+                    )
+                }
+                setCancelable(false)
+            }.run {
+                this.create().show()
             }
-            builder.setNegativeButton(getString(R.string.fail)) { _, _ ->
-                callback.couponResult(
-                    false,
-                    getString(R.string.alert_coupon_download_fail),
-                    ShopLive.CouponPopupStatus.SHOW,
-                    ShopLive.CouponPopupResultAlertType.ALERT
-                )
-            }
-            builder.setCancelable(false)
-
-            val dialog = builder.create()
-            dialog.show()
         }
 
         override fun onChangeCampaignStatus(context: Context, campaignStatus: String) {
-            Log.d(TAG, "campaignStatus >> $campaignStatus")
+            Log.d(TAG, "campaignStatus=$campaignStatus")
         }
 
         override fun onCampaignInfo(campaignInfo: JSONObject) {
-            Log.d(TAG, campaignInfo.toString())
+            Log.d(TAG, "campaignInfo=$campaignInfo")
         }
 
         override fun onError(context: Context, code: String, message: String) {
@@ -416,75 +419,68 @@ class MainActivity : AppCompatActivity() {
             //Toast.makeText(context, "ck=$campaignKey", Toast.LENGTH_SHORT).show()
         }*/
 
+        @SuppressLint("InflateParams")
         override fun handleShare(context: Context, shareUrl: String) {
-            val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = inflater.inflate(R.layout.custom_share_dialog, null)
-            val tvMessage = view.findViewById<TextView>(R.id.tvMessage)
-            tvMessage.text = shareUrl
+            (getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater).run {
+                val view = this.inflate(R.layout.custom_share_dialog, null).also {
+                    val tvMessage = it.findViewById<TextView>(R.id.tvMessage)
+                    tvMessage.text = shareUrl
 
-            val btCopy: Button = view.findViewById(R.id.btCopy)
-            val btKakao: Button = view.findViewById(R.id.btKakao)
-            val btLine: Button = view.findViewById(R.id.btLine)
+                    (it.findViewById(R.id.btCopy) as View).setOnClickListener {
+                        Toast.makeText(context, "${getString(R.string.sample_copy_link)}!", Toast.LENGTH_SHORT).show()
+                    }
+                    (it.findViewById(R.id.btKakao) as View).setOnClickListener {
+                        Toast.makeText(context, "${getString(R.string.sample_share_kakao)}!", Toast.LENGTH_SHORT).show()
+                    }
+                    (it.findViewById(R.id.btLine) as View).setOnClickListener {
+                        Toast.makeText(context, "${getString(R.string.sample_share_line)}!", Toast.LENGTH_SHORT).show()
+                    }
+                }
 
-            val builder = AlertDialog.Builder(context)
-            builder.setTitle(getString(R.string.sample_share))
-            builder.setView(view)
-
-            val dialog = builder.create()
-            dialog.show()
-
-            btCopy.setOnClickListener {
-                Toast.makeText(context, "${getString(R.string.sample_copy_link)}!", Toast.LENGTH_SHORT).show()
-                dialog.dismiss()
-            }
-
-            btKakao.setOnClickListener {
-                Toast.makeText(context, "${getString(R.string.sample_share_kakao)}!", Toast.LENGTH_SHORT).show()
-                dialog.dismiss()
-            }
-
-            btLine.setOnClickListener {
-                Toast.makeText(context, "${getString(R.string.sample_share_line)}!", Toast.LENGTH_SHORT).show()
-                dialog.dismiss()
+                AlertDialog.Builder(context).apply {
+                    setTitle(getString(R.string.sample_share))
+                    setView(view)
+                }.run {
+                    this.create().show()
+                }
             }
         }
 
+        @SuppressLint("InflateParams")
         override fun handleCustomAction(context: Context, id: String, type: String, payload: String,
                                         callback: ShopLiveHandlerCallback
         ) {
-            val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = inflater.inflate(R.layout.custom_action_dialog, null)
-            val tvId = view.findViewById<TextView>(R.id.tvId)
-            val tvType = view.findViewById<TextView>(R.id.tvType)
-            val tvPayload = view.findViewById<TextView>(R.id.tvPayload)
+            (getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater).run {
+                val view = this.inflate(R.layout.custom_action_dialog, null).also {
+                    it.findViewById<TextView>(R.id.tvId).text = getString(R.string.sample_custom_action_id, id)
+                    it.findViewById<TextView>(R.id.tvType).text = getString(R.string.sample_custom_action_type, type)
+                    it.findViewById<TextView>(R.id.tvPayload).text = getString(R.string.sample_custom_action_payload, payload)
+                }
 
-            tvId.text = getString(R.string.sample_custom_action_id, id)
-            tvType.text = getString(R.string.sample_custom_action_type, type)
-            tvPayload.text = getString(R.string.sample_custom_action_payload, payload)
-
-            val builder = AlertDialog.Builder(context)
-            builder.setTitle(getString(R.string.sample_custom_action))
-            builder.setView(view)
-            builder.setPositiveButton(getString(R.string.success)) { _, _ ->
-                callback.customActionResult(
-                    true,
-                    getString(R.string.alert_custom_action_success),
-                    ShopLive.CouponPopupStatus.HIDE,
-                    ShopLive.CouponPopupResultAlertType.TOAST
-                )
+                AlertDialog.Builder(context).apply {
+                    setTitle(getString(R.string.sample_custom_action))
+                    setView(view)
+                    setPositiveButton(getString(R.string.success)) { _, _ ->
+                        callback.customActionResult(
+                            true,
+                            getString(R.string.alert_custom_action_success),
+                            ShopLive.CouponPopupStatus.HIDE,
+                            ShopLive.CouponPopupResultAlertType.TOAST
+                        )
+                    }
+                    setNegativeButton(getString(R.string.fail)) { _, _ ->
+                        callback.customActionResult(
+                            false,
+                            getString(R.string.alert_custom_action_fail),
+                            ShopLive.CouponPopupStatus.SHOW,
+                            ShopLive.CouponPopupResultAlertType.ALERT
+                        )
+                    }
+                    setCancelable(false)
+                }.run {
+                    this.create().show()
+                }
             }
-            builder.setNegativeButton(getString(R.string.fail)) { _, _ ->
-                callback.customActionResult(
-                    false,
-                    getString(R.string.alert_custom_action_fail),
-                    ShopLive.CouponPopupStatus.SHOW,
-                    ShopLive.CouponPopupResultAlertType.ALERT
-                )
-            }
-            builder.setCancelable(false)
-
-            val dialog = builder.create()
-            dialog.show()
         }
 
         /**
@@ -510,12 +506,12 @@ class MainActivity : AppCompatActivity() {
 
         override fun onSetUserName(jsonObject: JSONObject) {
             super.onSetUserName(jsonObject)
-            Log.d(TAG, "onSetUserName = ${jsonObject.toString()}")
+            Log.d(TAG, "onSetUserName = $jsonObject")
             try {
                 Toast.makeText(this@MainActivity,
                     "userId=${jsonObject.get("userId")}, userName=${jsonObject.get("userName")}", Toast.LENGTH_SHORT)
                     .show()
-            } catch (e: Exception) {
+            } catch (e: JsonParseException) {
                 e.printStackTrace()
             }
         }
@@ -525,16 +521,17 @@ class MainActivity : AppCompatActivity() {
 
             when(command) {
                 "LOGIN_REQUIRED" -> {
-                    val builder = AlertDialog.Builder(context)
-                    builder.setMessage(getString(R.string.alert_need_login))
-                    builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
-                        ShopLive.startPictureInPicture()
-                        loginResult.launch(LoginActivity.buildIntent(this@MainActivity))
-                        dialog.dismiss()
+                    AlertDialog.Builder(context).apply {
+                        setMessage(getString(R.string.alert_need_login))
+                        setPositiveButton(getString(R.string.yes)) { dialog, _ ->
+                            ShopLive.startPictureInPicture()
+                            loginResult.launch(LoginActivity.buildIntent(this@MainActivity))
+                            dialog.dismiss()
+                        }
+                        setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
+                    }.run {
+                        this.create().show()
                     }
-                    builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-                    val dialog: Dialog = builder.create()
-                    dialog.show()
                 }
                 "CLICK_PRODUCT_CART" -> {
 
