@@ -60,6 +60,11 @@ object CampaignSettings {
         return preferences.getString("jwt", null)
     }
 
+    enum class UserType {
+        USER,
+        JWT,
+        GUEST
+    }
     /**
      * @param type - 0:user, 1:token, 2:guest
      * */
@@ -72,7 +77,7 @@ object CampaignSettings {
 
     fun authType(context: Context): Int {
         val preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
-        return preferences.getInt("authType", 2)
+        return preferences.getInt("authType", UserType.GUEST.ordinal)
     }
 
 
