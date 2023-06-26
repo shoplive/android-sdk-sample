@@ -11,11 +11,13 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import cloud.shoplive.sample.CampaignSettings
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.ActivityUserBinding
 import cloud.shoplive.sdk.ShopLiveUser
 import cloud.shoplive.sdk.ShopLiveUserGender
+import kotlinx.coroutines.launch
 
 class UserActivity : AppCompatActivity() {
 
@@ -37,6 +39,42 @@ class UserActivity : AppCompatActivity() {
 
         title = "User"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        viewModel.user.observe(this) {
+            binding.etUserId.setText(it.userId)
+            binding.etUserName.setText(it.userName)
+
+            try {
+                binding.etAge.setText(it.age.toString())
+            } catch (e: NumberFormatException) {
+                binding.etAge.setText("")
+                e.printStackTrace()
+            }
+
+            try {
+                it.userScore?.let { score ->
+                    binding.etUserScore.setText(score.toString())
+                }
+            } catch (e: NumberFormatException) {
+                binding.etUserScore.setText("")
+                e.printStackTrace()
+            }
+
+            try {
+                when(it.gender) {
+                    ShopLiveUserGender.Male -> binding.rgGender.check(R.id.rbMale)
+                    ShopLiveUserGender.Female -> binding.rgGender.check(R.id.rbFemale)
+                    else -> binding.rgGender.check(R.id.rbNone)
+                }
+            } catch (e: Exception) {
+                binding.rgGender.check(R.id.rbNone)
+                e.printStackTrace()
+            }
+        }
+
+        viewModel.jwt.observe(this) {
+            binding.etToken.setText(it)
+        }
 
         binding.tvTokenGuide.paintFlags = Paint.UNDERLINE_TEXT_FLAG
         binding.tvTokenGuide.setOnClickListener {
@@ -70,8 +108,9 @@ class UserActivity : AppCompatActivity() {
             1 -> binding.rgAuth.check(R.id.rbToken)
             2 -> binding.rgAuth.check(R.id.rbGuest)
         }
-        setUser(CampaignSettings.user(this))
-        binding.etToken.setText(CampaignSettings.jwt(this))
+
+        viewModel.loadUserData(this)
+        viewModel.loadJwt(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -85,93 +124,57 @@ class UserActivity : AppCompatActivity() {
                 finish()
             }
             R.id.action_save -> {
-                saveUser()
-                CampaignSettings.jwt(this, binding.etToken.text.toString())
-                CampaignSettings.authType(
-                    this, when (binding.rgAuth.checkedRadioButtonId) {
-                        R.id.rbUser -> 0
-                        R.id.rbToken -> 1
-                        else -> 2
+                lifecycleScope.launch {
+                    (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).run {
+                        hideSoftInputFromWindow(binding.etUserId.windowToken, 0)
                     }
-                )
-                finish()
+
+                    val user = ShopLiveUser().apply {
+                        userId = binding.etUserId.text.toString()
+                        userName = binding.etUserName.text.toString()
+
+                        try {
+                            age = binding.etAge.text.toString().toInt()
+                        } catch (e: NumberFormatException) {
+                            e.printStackTrace()
+                        }
+
+                        try {
+                            gender = when(binding.rgGender.checkedRadioButtonId) {
+                                R.id.rbMale -> {
+                                    ShopLiveUserGender.Male
+                                }
+                                R.id.rbFemale -> {
+                                    ShopLiveUserGender.Female
+                                }
+                                else -> {
+                                    ShopLiveUserGender.Neutral
+                                }
+                            }
+                        } catch (e: Exception) {
+                            gender = ShopLiveUserGender.Neutral
+                            e.printStackTrace()
+                        }
+
+                        try {
+                            userScore = binding.etUserScore.text.toString().toInt()
+                        } catch (e: NumberFormatException) {
+                            e.printStackTrace()
+                        }
+                    }
+                    viewModel.saveUserData(this@UserActivity, user)
+
+                    viewModel.saveJwt(this@UserActivity, binding.etToken.text.toString())
+
+                    viewModel.saveAuthType(this@UserActivity, when(binding.rgAuth.checkedRadioButtonId) {
+                        R.id.rbUser -> CampaignSettings.UserType.USER
+                        R.id.rbToken -> CampaignSettings.UserType.JWT
+                        else -> CampaignSettings.UserType.GUEST
+                    })
+                    finish()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun setUser(user: ShopLiveUser?) {
-        user?.let {
-            binding.etUserId.setText(it.userId)
-            binding.etUserName.setText(it.userName)
-
-            try {
-                binding.etAge.setText(it.age.toString())
-            } catch (e: NumberFormatException) {
-                binding.etAge.setText("")
-                e.printStackTrace()
-            }
-
-            try {
-                it.userScore?.let { score ->
-                    binding.etUserScore.setText(score.toString())
-                }
-            } catch (e: NumberFormatException) {
-                binding.etUserScore.setText("")
-                e.printStackTrace()
-            }
-
-            try {
-                when(it.gender) {
-                    ShopLiveUserGender.Male -> binding.rgGender.check(R.id.rbMale)
-                    ShopLiveUserGender.Female -> binding.rgGender.check(R.id.rbFemale)
-                    else -> binding.rgGender.check(R.id.rbNone)
-                }
-            } catch (e: Exception) {
-                binding.rgGender.check(R.id.rbNone)
-                e.printStackTrace()
-            }
-        }
-    }
-
-    private fun saveUser() {
-        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(binding.etUserId.windowToken, 0)
-
-        val user = ShopLiveUser().apply {
-            userId = binding.etUserId.text.toString()
-            userName = binding.etUserName.text.toString()
-
-            try {
-                age = binding.etAge.text.toString().toInt()
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
-            }
-
-            try {
-                gender = when(binding.rgGender.checkedRadioButtonId) {
-                    R.id.rbMale -> {
-                        ShopLiveUserGender.Male
-                    }
-                    R.id.rbFemale -> {
-                        ShopLiveUserGender.Female
-                    }
-                    else -> {
-                        ShopLiveUserGender.Neutral
-                    }
-                }
-            } catch (e: Exception) {
-                gender = ShopLiveUserGender.Neutral
-                e.printStackTrace()
-            }
-
-            try {
-                userScore = binding.etUserScore.text.toString().toInt()
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
-            }
-        }
-
-        CampaignSettings.user(this, user)
     }
 }
