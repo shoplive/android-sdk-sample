@@ -7,9 +7,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import cloud.shoplive.sample.CampaignInfo
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.ActivityCampaignBinding
+import kotlinx.coroutines.launch
 
 class CampaignActivity : AppCompatActivity() {
 
@@ -37,7 +39,9 @@ class CampaignActivity : AppCompatActivity() {
             binding.etCampaignKey.setText(it.campaignKey)
         }
 
-        viewModel.loadCampaign(this)
+        lifecycleScope.launch {
+            viewModel.loadCampaign(this@CampaignActivity)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -50,15 +54,18 @@ class CampaignActivity : AppCompatActivity() {
             android.R.id.home -> {
                 finish()
             }
+
             R.id.action_save -> {
-                viewModel.saveCampaign(
-                    this,
-                    CampaignInfo(
-                        binding.etAccessKey.text.toString(),
-                        binding.etCampaignKey.text.toString()
+                lifecycleScope.launch {
+                    viewModel.saveCampaign(
+                        this@CampaignActivity,
+                        CampaignInfo(
+                            binding.etAccessKey.text.toString(),
+                            binding.etCampaignKey.text.toString()
+                        )
                     )
-                )
-                finish()
+                    finish()
+                }
             }
         }
         return super.onOptionsItemSelected(item)

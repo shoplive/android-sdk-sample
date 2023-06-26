@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cloud.shoplive.sample.CampaignInfo
 import cloud.shoplive.sample.CampaignSettings
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class CampaignViewModel : ViewModel() {
 
@@ -13,16 +15,24 @@ class CampaignViewModel : ViewModel() {
     val campaignInfo: LiveData<CampaignInfo>
         get() = _campaignInfo
 
-    fun loadCampaign(context: Context) {
-        _campaignInfo.value = CampaignInfo(CampaignSettings.accessKey(context), CampaignSettings.campaignKey(context))
+    suspend fun loadCampaign(context: Context) {
+        _campaignInfo.value =
+            withContext(Dispatchers.IO) {
+                CampaignInfo(
+                    CampaignSettings.accessKey(context),
+                    CampaignSettings.campaignKey(context)
+                )
+            }
     }
 
-    fun saveCampaign(context: Context, campaignInfo: CampaignInfo?) {
+    suspend fun saveCampaign(context: Context, campaignInfo: CampaignInfo?) {
         campaignInfo ?: return
 
         if (campaignInfo.accessKey?.isNotEmpty() == true && campaignInfo.campaignKey?.isNotEmpty() == true) {
-            CampaignSettings.setAccessKey(context, campaignInfo.accessKey)
-            CampaignSettings.setCampaignKey(context, campaignInfo.campaignKey)
+            withContext(Dispatchers.IO) {
+                CampaignSettings.setAccessKey(context, campaignInfo.accessKey)
+                CampaignSettings.setCampaignKey(context, campaignInfo.campaignKey)
+            }
         }
     }
 }
