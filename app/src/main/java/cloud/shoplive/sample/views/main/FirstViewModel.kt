@@ -1,10 +1,11 @@
-package cloud.shoplive.sample
+package cloud.shoplive.sample.views.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import cloud.shoplive.sample.DeeplinkInfo
 
-class MainViewModel : ViewModel() {
+class FirstViewModel : ViewModel() {
 
     private val _liveInfo: MutableLiveData<DeeplinkInfo> = MutableLiveData()
     val liveInfo: LiveData<DeeplinkInfo>

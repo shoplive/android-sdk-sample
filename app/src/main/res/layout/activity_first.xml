@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="12dp"
-    tools:targetApi="m">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvSdkVersion"
@@ -116,8 +113,8 @@
         android:text="@string/bt_play"
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@id/btPreviewSwipe"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btPopupPreview" />
+        app:layout_constraintEnd_toStartOf="@id/btPopupPreview"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btPreviewSwipe"
@@ -138,8 +135,8 @@
         android:text="@string/bt_popup_preview"
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@id/btInAppPreview"
-        app:layout_constraintStart_toEndOf="@id/btPlay"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btPlay" />
 
     <Button
         android:id="@+id/btInAppPreview"
@@ -173,6 +170,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btHybridShortform" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

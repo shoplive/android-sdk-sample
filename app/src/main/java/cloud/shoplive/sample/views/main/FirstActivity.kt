@@ -1,85 +1,92 @@
-package cloud.shoplive.sample.fragment
+package cloud.shoplive.sample.views.main
 
 import android.app.Dialog
 import android.content.Context
-import android.content.Context.LAYOUT_INFLATER_SERVICE
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResultListener
-import androidx.navigation.Navigation
-import cloud.shoplive.sample.*
+import cloud.shoplive.sample.CampaignSettings
+import cloud.shoplive.sample.Options
 import cloud.shoplive.sample.R
-import cloud.shoplive.sample.databinding.FragmentMainBinding
+import cloud.shoplive.sample.WebViewActivity
+import cloud.shoplive.sample.WebViewDialogFragment
+import cloud.shoplive.sample.databinding.ActivityFirstBinding
 import cloud.shoplive.sample.shortform.HybridShortformActivity
 import cloud.shoplive.sample.shortform.NativeShortformActivity
-import cloud.shoplive.sdk.*
+import cloud.shoplive.sdk.OnAudioFocusListener
+import cloud.shoplive.sdk.ShopLive
+import cloud.shoplive.sdk.ShopLiveHandler
+import cloud.shoplive.sdk.ShopLiveHandlerCallback
+import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLivePreviewPositionConfig
 import org.json.JSONObject
 
-class MainFragment : Fragment() {
+class FirstActivity : AppCompatActivity() {
 
     companion object {
-        val TAG: String = MainFragment::class.java.name
+        const val TAG = "MainActivity"
+
+        private const val ACCESS_KEY = "accessKey"
+        private const val CAMPAIGN_KEY = "campaignKey"
+
+        fun buildIntent(context: Context) : Intent {
+            return Intent(context, FirstActivity::class.java)
+        }
+
+        fun buildIntentFromDeeplink(
+            context: Context,
+            accessKey: String?,
+            campaignKey: String?
+        ): Intent {
+            val intent = Intent(context, FirstActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.putExtra(ACCESS_KEY, accessKey)
+            intent.putExtra(CAMPAIGN_KEY, campaignKey)
+            return intent
+        }
     }
 
-    private var _binding: FragmentMainBinding? = null
-
-    private val binding get() = _binding!!
-
-    private val viewModel: MainViewModel by activityViewModels()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
-        return binding.root
+    private val binding: ActivityFirstBinding by lazy {
+        ActivityFirstBinding.inflate(layoutInflater)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    private val viewModel: FirstViewModel by viewModels()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
 
-        Options.init(requireContext())
+        Options.init(this)
 
-        viewModel.liveInfo.observe(requireActivity()) {
-            CampaignSettings.setAccessKey(requireContext(), it.accessKey)
-            CampaignSettings.setCampaignKey(requireContext(), it.campaignKey)
+        viewModel.liveInfo.observe(this) {
+            CampaignSettings.setAccessKey(this, it.accessKey)
+            CampaignSettings.setCampaignKey(this, it.campaignKey)
             binding.tvCampaign.text = loadCampaignData()
             setOptions()
             play()
         }
 
         binding.btCampaign.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.campaign_fragment)
+//            Navigation.findNavController(view).navigate(R.id.campaign_fragment)
         }
 
         binding.btUser.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.user_fragment)
+//            Navigation.findNavController(view).navigate(R.id.user_fragment)
         }
 
         binding.btOption.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.settings_fragment)
+//            Navigation.findNavController(view).navigate(R.id.settings_fragment)
         }
 
         binding.btPlay.setOnClickListener {
@@ -90,7 +97,7 @@ class MainFragment : Fragment() {
             } else {
                 // set user when pip mode
                 setUserOrJwt()
-                CampaignSettings.campaignKey(requireContext())?.let {
+                CampaignSettings.campaignKey(this)?.let {
                     ShopLive.play(it, true)
                 }
             }
@@ -106,9 +113,9 @@ class MainFragment : Fragment() {
                 binding.preview.release()
             } else {
                 val accessKey =
-                    CampaignSettings.accessKey(requireContext()) ?: return@setOnClickListener
+                    CampaignSettings.accessKey(this) ?: return@setOnClickListener
                 val campaignKey =
-                    CampaignSettings.campaignKey(requireContext()) ?: return@setOnClickListener
+                    CampaignSettings.campaignKey(this) ?: return@setOnClickListener
 
                 binding.preview.start(accessKey, campaignKey)
                 binding.preview.visibility = View.VISIBLE
@@ -120,37 +127,37 @@ class MainFragment : Fragment() {
                 binding.previewSwipe.release()
             } else {
                 val accessKey =
-                    CampaignSettings.accessKey(requireContext()) ?: return@setOnClickListener
+                    CampaignSettings.accessKey(this) ?: return@setOnClickListener
                 val campaignKey =
-                    CampaignSettings.campaignKey(requireContext()) ?: return@setOnClickListener
+                    CampaignSettings.campaignKey(this) ?: return@setOnClickListener
 
                 binding.previewSwipe.start(accessKey, campaignKey)
                 binding.previewSwipe.visibility = View.VISIBLE
             }
         }
 
-        binding.preview.setLifecycleObserver(this.viewLifecycleOwner)
+        binding.preview.setLifecycleObserver(this)
         binding.preview.setOnClickListener {
             setOptions()
             val campaignKey =
-                CampaignSettings.campaignKey(requireContext()) ?: return@setOnClickListener
+                CampaignSettings.campaignKey(this) ?: return@setOnClickListener
             // Preview transition animation
-            ShopLive.setPreviewTransitionAnimation(requireActivity(), binding.preview)
-            ShopLive.play(requireActivity(), campaignKey)
+            ShopLive.setPreviewTransitionAnimation(this, binding.preview)
+            ShopLive.play(this, campaignKey)
             binding.preview.release()
         }
         binding.preview.setOnCloseListener {
             binding.preview.visibility = View.GONE
         }
 
-        binding.previewSwipe.setLifecycleObserver(this.viewLifecycleOwner)
+        binding.previewSwipe.setLifecycleObserver(this)
         binding.previewSwipe.setOnPreviewClickListener {
             setOptions()
             val campaignKey =
-                CampaignSettings.campaignKey(requireContext()) ?: return@setOnPreviewClickListener
+                CampaignSettings.campaignKey(this) ?: return@setOnPreviewClickListener
             // Preview transition animation
-            ShopLive.setPreviewTransitionAnimation(requireActivity(), binding.previewSwipe.preview)
-            ShopLive.play(requireActivity(), campaignKey)
+            ShopLive.setPreviewTransitionAnimation(this, binding.previewSwipe.preview)
+            ShopLive.play(this, campaignKey)
             binding.previewSwipe.release()
         }
         binding.previewSwipe.setOnCloseListener {
@@ -158,13 +165,13 @@ class MainFragment : Fragment() {
         }
 
         binding.btHybridShortform.setOnClickListener {
-            startActivity(HybridShortformActivity.buildIntent(requireContext(), "https://shopliveshorts.cafe24.com/index.html"))
+            startActivity(HybridShortformActivity.buildIntent(this, "https://shopliveshorts.cafe24.com/index.html"))
         }
 
         binding.btNativeShortform.setOnClickListener {
-            val accessKey: String = CampaignSettings.accessKey(requireContext()) ?: return@setOnClickListener
+            val accessKey: String = CampaignSettings.accessKey(this) ?: return@setOnClickListener
             ShopLiveCommon.setAccessKey(accessKey)
-            startActivity(NativeShortformActivity.buildIntent(requireContext()))
+            startActivity(NativeShortformActivity.buildIntent(this))
         }
 
         registerShopLiveHandler()
@@ -177,21 +184,21 @@ class MainFragment : Fragment() {
 
         binding.tvCampaign.text = loadCampaignData()
         binding.tvUser.text = loadUserData()
-        binding.tvOption.text = Options.toString(requireContext())
+        binding.tvOption.text = Options.toString(this)
     }
 
     private fun loadCampaignData(): String {
-        return "• Access Key : ${CampaignSettings.accessKey(requireContext()) ?: getString(R.string.label_none)}\n" +
-                "• Campaign Key : ${CampaignSettings.campaignKey(requireContext()) ?: getString(R.string.label_none)}"
+        return "• Access Key : ${CampaignSettings.accessKey(this) ?: getString(R.string.label_none)}\n" +
+                "• Campaign Key : ${CampaignSettings.campaignKey(this) ?: getString(R.string.label_none)}"
     }
 
     private fun loadUserData(): String {
         var userText = ""
-        when(CampaignSettings.authType(requireContext())) {
+        when(CampaignSettings.authType(this)) {
             0 -> {
                 // user
                 userText = getString(R.string.label_use_user2) + "\n"
-                val user = CampaignSettings.user(requireContext())
+                val user = CampaignSettings.user(this)
                 userText += if (user == null) {
                     getString(R.string.label_no_user)
                 } else {
@@ -212,7 +219,7 @@ class MainFragment : Fragment() {
                 // token
                 userText = getString(R.string.label_use_token2) + "\n"
 
-                val token = CampaignSettings.jwt(requireContext())
+                val token = CampaignSettings.jwt(this)
                 userText += token ?: getString(R.string.label_no_token)
             }
             2 -> {
@@ -224,9 +231,9 @@ class MainFragment : Fragment() {
     }
 
     private fun setUserOrJwt() {
-        when(CampaignSettings.authType(requireContext())) {
-            0 -> { CampaignSettings.user(requireContext())?.let { ShopLive.setUser(it) } }
-            1 -> { CampaignSettings.jwt(requireContext())?.let { ShopLive.setAuthToken(it) } }
+        when(CampaignSettings.authType(this)) {
+            0 -> { CampaignSettings.user(this)?.let { ShopLive.setUser(it) } }
+            1 -> { CampaignSettings.jwt(this)?.let { ShopLive.setAuthToken(it) } }
             2 -> { ShopLive.setUser(null)}
         }
     }
@@ -245,14 +252,14 @@ class MainFragment : Fragment() {
         val nanumGothic = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             resources.getFont(R.font.nanumgothic)
         } else {
-            ResourcesCompat.getFont(requireContext(), R.font.nanumgothic)
+            ResourcesCompat.getFont(this, R.font.nanumgothic)
         }
 
         // 나눔 고딕 볼드
         val nanumGothicBold = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             resources.getFont(R.font.nanumgothicbold)
         } else {
-            ResourcesCompat.getFont(requireContext(), R.font.nanumgothicbold)
+            ResourcesCompat.getFont(this, R.font.nanumgothicbold)
         }
 
         val chatInputTf = if (Options.useCustomFontChatInput()) nanumGothic else null
@@ -310,20 +317,20 @@ class MainFragment : Fragment() {
     }
 
     private fun play() {
-        CampaignSettings.accessKey(requireContext())?.let {
+        CampaignSettings.accessKey(this)?.let {
             ShopLive.setAccessKey(it)
         }
 
-        CampaignSettings.campaignKey(requireContext())?.let {
+        CampaignSettings.campaignKey(this)?.let {
             ShopLive.play(it)
         }
     }
 
     private fun startPreview() {
-        val accessKey = CampaignSettings.accessKey(requireContext())
-        val campaignKey = CampaignSettings.campaignKey(requireContext())
+        val accessKey = CampaignSettings.accessKey(this)
+        val campaignKey = CampaignSettings.campaignKey(this)
 
-        ShopLive.showPreviewPopup(requireActivity(), accessKey ?: return, campaignKey ?: return, true, true, Options.isUseCloseButton(), ShopLivePreviewPositionConfig.BOTTOM_RIGHT)
+        ShopLive.showPreviewPopup(this, accessKey ?: return, campaignKey ?: return, true, true, Options.isUseCloseButton(), ShopLivePreviewPositionConfig.BOTTOM_RIGHT)
     }
 
     private fun registerShopLiveHandler() {
@@ -335,7 +342,7 @@ class MainFragment : Fragment() {
                 when(Options.getNextActionOnHandleNavigation()) {
                     ShopLive.ActionType.PIP,
                     ShopLive.ActionType.CLOSE -> {
-                        val intent = Intent(requireActivity(), WebViewActivity::class.java)
+                        val intent = Intent(this@FirstActivity, WebViewActivity::class.java)
                         intent.putExtra("url", url)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                         startActivity(intent)
@@ -399,7 +406,7 @@ class MainFragment : Fragment() {
             }*/
 
             override fun handleShare(context: Context, shareUrl: String) {
-                val inflater = requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val view = inflater.inflate(R.layout.custom_share_dialog, null)
                 val tvMessage = view.findViewById<TextView>(R.id.tvMessage)
                 tvMessage.text = shareUrl
@@ -432,8 +439,9 @@ class MainFragment : Fragment() {
             }
 
             override fun handleCustomAction(context: Context, id: String, type: String, payload: String,
-                                            callback: ShopLiveHandlerCallback) {
-                val inflater = requireActivity().getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                                            callback: ShopLiveHandlerCallback
+            ) {
+                val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val view = inflater.inflate(R.layout.custom_action_dialog, null)
                 val tvId = view.findViewById<TextView>(R.id.tvId)
                 val tvType = view.findViewById<TextView>(R.id.tvType)
@@ -493,7 +501,7 @@ class MainFragment : Fragment() {
                 super.onSetUserName(jsonObject)
                 Log.d(TAG, "onSetUserName = ${jsonObject.toString()}")
                 try {
-                    Toast.makeText(requireContext(),
+                    Toast.makeText(this@FirstActivity,
                         "userId=${jsonObject.get("userId")}, userName=${jsonObject.get("userName")}", Toast.LENGTH_SHORT)
                         .show()
                 } catch (e: Exception) {
@@ -532,14 +540,15 @@ class MainFragment : Fragment() {
     }
 
     private fun goToSignIn() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.signin_fragment)
-            setFragmentResultListener("requestKey") { requestKey, bundle ->
-                val userId = bundle.getString("userId")
-                Log.d(TAG, "requestKey=$requestKey, userId=$userId")
-                setOptions()
-                play()
-            }
-        }, 100)
+        // Todo - 작업 해야함.
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.signin_fragment)
+//            setFragmentResultListener("requestKey") { requestKey, bundle ->
+//                val userId = bundle.getString("userId")
+//                Log.d(MainFragment.TAG, "requestKey=$requestKey, userId=$userId")
+//                setOptions()
+//                play()
+//            }
+//        }, 100)
     }
 }

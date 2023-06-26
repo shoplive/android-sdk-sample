@@ -1,8 +1,8 @@
 package cloud.shoplive.sample
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import cloud.shoplive.sample.views.main.FirstActivity
 
 class SchemeActivity : AppCompatActivity() {
 
@@ -21,7 +21,7 @@ class SchemeActivity : AppCompatActivity() {
             intent.putExtra("campaignKey", campaignKey)
             startActivity(intent)
             */
-            startActivity(MainActivity.buildIntentFromDeeplink(this, accessKey, campaignKey))
+            startActivity(FirstActivity.buildIntentFromDeeplink(this, accessKey, campaignKey))
             finish()
         }
     }

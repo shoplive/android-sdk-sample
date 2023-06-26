@@ -15,20 +15,16 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".views.main.FirstActivity"
             android:exported="true"
-            android:theme="@style/SplashTheme">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.ShopLiveSample"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.ShopLiveSample"
-            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name="cloud.shoplive.sample.WebViewActivity"
