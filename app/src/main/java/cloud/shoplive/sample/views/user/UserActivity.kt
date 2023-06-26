@@ -86,19 +86,19 @@ class UserActivity : AppCompatActivity() {
             when(checkedId) {
                 R.id.rbUser -> {
                     binding.tvAuth.text = getString(R.string.label_use_user)
-                    binding.scrollView.visibility = View.VISIBLE
+                    binding.userLayout.visibility = View.VISIBLE
                     binding.tvTokenGuide.visibility = View.GONE
                     binding.etTokenLayout.visibility = View.GONE
                 }
                 R.id.rbToken -> {
                     binding.tvAuth.text = getString(R.string.label_use_token)
-                    binding.scrollView.visibility = View.VISIBLE
+                    binding.userLayout.visibility = View.VISIBLE
                     binding.tvTokenGuide.visibility = View.VISIBLE
                     binding.etTokenLayout.visibility = View.VISIBLE
                 }
                 R.id.rbGuest -> {
                     binding.tvAuth.text = getString(R.string.label_use_guest)
-                    binding.scrollView.visibility = View.GONE
+                    binding.userLayout.visibility = View.GONE
                 }
             }
         }
