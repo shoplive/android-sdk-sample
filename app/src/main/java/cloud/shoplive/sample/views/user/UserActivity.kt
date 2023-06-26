@@ -44,31 +44,26 @@ class UserActivity : AppCompatActivity() {
             binding.etUserId.setText(it.userId)
             binding.etUserName.setText(it.userName)
 
-            try {
-                binding.etAge.setText(it.age.toString())
-            } catch (e: NumberFormatException) {
-                binding.etAge.setText("")
-                e.printStackTrace()
+            kotlin.runCatching {
+                it.age.toString()
+            }.getOrNull().run {
+               binding.etAge.setText(this)
             }
 
-            try {
-                it.userScore?.let { score ->
-                    binding.etUserScore.setText(score.toString())
-                }
-            } catch (e: NumberFormatException) {
-                binding.etUserScore.setText("")
-                e.printStackTrace()
+            kotlin.runCatching {
+               it.userScore.toString()
+            }.getOrNull().run {
+               binding.etUserScore.setText(this)
             }
 
-            try {
-                when(it.gender) {
+            kotlin.runCatching {
+               it.gender
+            }.getOrNull().run {
+                when(this) {
                     ShopLiveUserGender.Male -> binding.rgGender.check(R.id.rbMale)
                     ShopLiveUserGender.Female -> binding.rgGender.check(R.id.rbFemale)
                     else -> binding.rgGender.check(R.id.rbNone)
                 }
-            } catch (e: Exception) {
-                binding.rgGender.check(R.id.rbNone)
-                e.printStackTrace()
             }
         }
 
