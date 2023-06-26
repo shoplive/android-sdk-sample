@@ -129,18 +129,18 @@ class UserActivity : AppCompatActivity() {
                         hideSoftInputFromWindow(binding.etUserId.windowToken, 0)
                     }
 
-                    val user = ShopLiveUser().apply {
+                    ShopLiveUser().apply {
                         userId = binding.etUserId.text.toString()
                         userName = binding.etUserName.text.toString()
 
-                        try {
-                            age = binding.etAge.text.toString().toInt()
-                        } catch (e: NumberFormatException) {
-                            e.printStackTrace()
+                        kotlin.runCatching {
+                            binding.etAge.text.toString().toInt()
+                        }.getOrNull().run {
+                            age = this
                         }
 
-                        try {
-                            gender = when(binding.rgGender.checkedRadioButtonId) {
+                        kotlin.runCatching {
+                            when(binding.rgGender.checkedRadioButtonId) {
                                 R.id.rbMale -> {
                                     ShopLiveUserGender.Male
                                 }
@@ -151,18 +151,18 @@ class UserActivity : AppCompatActivity() {
                                     ShopLiveUserGender.Neutral
                                 }
                             }
-                        } catch (e: Exception) {
-                            gender = ShopLiveUserGender.Neutral
-                            e.printStackTrace()
+                        }.getOrNull().run {
+                            gender = this
                         }
 
-                        try {
-                            userScore = binding.etUserScore.text.toString().toInt()
-                        } catch (e: NumberFormatException) {
-                            e.printStackTrace()
+                        kotlin.runCatching {
+                            binding.etUserScore.text.toString().toInt()
+                        }.getOrNull().run {
+                            userScore = this
                         }
+                    }.run {
+                        viewModel.saveUserData(this@UserActivity, this)
                     }
-                    viewModel.saveUserData(this@UserActivity, user)
 
                     viewModel.saveJwt(this@UserActivity, binding.etToken.text.toString())
 
