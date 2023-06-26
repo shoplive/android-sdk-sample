@@ -37,6 +37,11 @@
             android:theme="@style/Theme.ShopLiveSample" />
 
         <activity
+            android:name="cloud.shoplive.sample.views.login.LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.ShopLiveSample" />
+
+        <activity
             android:name="cloud.shoplive.sample.WebViewActivity"
             android:theme="@style/Theme.ShopLiveSample" />
 

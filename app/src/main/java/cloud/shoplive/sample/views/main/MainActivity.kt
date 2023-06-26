@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,7 @@ import cloud.shoplive.sample.databinding.ActivityMainBinding
 import cloud.shoplive.sample.shortform.HybridShortformActivity
 import cloud.shoplive.sample.shortform.NativeShortformActivity
 import cloud.shoplive.sample.views.campaign.CampaignActivity
+import cloud.shoplive.sample.views.login.LoginActivity
 import cloud.shoplive.sample.views.user.UserActivity
 import cloud.shoplive.sdk.OnAudioFocusListener
 import cloud.shoplive.sdk.ShopLive
@@ -137,6 +139,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.btOption.setOnClickListener {
 //            Navigation.findNavController(view).navigate(R.id.settings_fragment)
+            loginResult.launch(LoginActivity.buildIntent(this@MainActivity))
+
         }
 
         binding.btPlay.setOnClickListener {
@@ -524,7 +528,7 @@ class MainActivity : AppCompatActivity() {
                     builder.setMessage(getString(R.string.alert_need_login))
                     builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
                         ShopLive.startPictureInPicture()
-                        goToSignIn()
+                        loginResult.launch(LoginActivity.buildIntent(this@MainActivity))
                         dialog.dismiss()
                     }
                     builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
@@ -544,16 +548,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun goToSignIn() {
-        // Todo - 작업 해야함.
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            Navigation.findNavController(this, R.id.nav_host_fragment).navigate(R.id.signin_fragment)
-//            setFragmentResultListener("requestKey") { requestKey, bundle ->
-//                val userId = bundle.getString("userId")
-//                Log.d(MainFragment.TAG, "requestKey=$requestKey, userId=$userId")
-//                setOptions()
-//                play()
-//            }
-//        }, 100)
-    }
+    private val loginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                RESULT_OK -> {
+                    result.data?.let {
+                        val userId = it.getStringExtra(LoginActivity.USER_ID)
+                        Log.d(TAG, "login userId=$userId")
+                        setOptions()
+                        play()
+                    }
+                }
+            }
+        }
+
 }
