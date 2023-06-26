@@ -26,6 +26,7 @@ import cloud.shoplive.sample.shortform.HybridShortformActivity
 import cloud.shoplive.sample.shortform.NativeShortformActivity
 import cloud.shoplive.sample.views.campaign.CampaignActivity
 import cloud.shoplive.sample.views.login.LoginActivity
+import cloud.shoplive.sample.views.settings.SettingsActivity
 import cloud.shoplive.sample.views.user.UserActivity
 import cloud.shoplive.sdk.OnAudioFocusListener
 import cloud.shoplive.sdk.ShopLive
@@ -138,9 +139,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btOption.setOnClickListener {
-//            Navigation.findNavController(view).navigate(R.id.settings_fragment)
-            loginResult.launch(LoginActivity.buildIntent(this@MainActivity))
-
+            startActivity(SettingsActivity.buildIntent(this))
         }
 
         binding.btPlay.setOnClickListener {

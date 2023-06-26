@@ -1,4 +1,4 @@
-package cloud.shoplive.sample.fragment
+package cloud.shoplive.sample.views.settings
 
 import android.Manifest
 import android.app.Application
