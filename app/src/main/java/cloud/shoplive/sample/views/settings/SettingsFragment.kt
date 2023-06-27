@@ -2,7 +2,6 @@ package cloud.shoplive.sample.views.settings
 
 import android.Manifest
 import android.app.Application
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -11,7 +10,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -141,18 +139,18 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
             ShopLivePIPRatio.RATIO_9X16)
 
         val ratioTextArray = resources.getStringArray(R.array.ratio)
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        builder.setTitle(getString(R.string.setting_pipRatio_dialog_title))
-        builder.setItems(ratioTextArray) { _, which ->
-            val pipPref: Preference? = findPreference(getString(R.string.preference_pip_ratio_key))
-            pipPref?.let {
-                pipPref.title = "${getString(R.string.preference_pip_ratio_title)}(${ratioTextArray[which]})"
-                Options.setPIPRatio(ratioArray[which])
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(getString(R.string.setting_pipRatio_dialog_title))
+            setItems(ratioTextArray) { _, which ->
+                val pipPref: Preference? = findPreference(getString(R.string.preference_pip_ratio_key))
+                pipPref?.let {
+                    pipPref.title = "${getString(R.string.preference_pip_ratio_title)}(${ratioTextArray[which]})"
+                    Options.setPIPRatio(ratioArray[which])
+                }
             }
+        }.run {
+            create().show()
         }
-
-        val dialog = builder.create()
-        dialog.show()
     }
 
     private fun showShareUrlInputDialog() {
@@ -162,29 +160,28 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         etInput.setText(Options.shareSchemeUrl())
         etInput.hint = getString(R.string.hint_share_scheme_url)
 
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle(getString(R.string.setting_share))
-        builder.setView(view)
-
-        builder.setPositiveButton(getString(R.string.dialog_confirm)) { dialog, _ ->
-            val schemeUrlPref: Preference? = findPreference(getString(R.string.preference_share_url_key))
-            schemeUrlPref?.let {
-                val schemeUrl = etInput.text.toString()
-                if (schemeUrl.isEmpty()) {
-                    schemeUrlPref.summary = getString(R.string.preference_share_url_summary)
-                } else {
-                    schemeUrlPref.summary = etInput.text.toString()
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(getString(R.string.setting_share))
+            setView(view)
+            setPositiveButton(getString(R.string.dialog_confirm)) { dialog, _ ->
+                val schemeUrlPref: Preference? = findPreference(getString(R.string.preference_share_url_key))
+                schemeUrlPref?.let {
+                    val schemeUrl = etInput.text.toString()
+                    if (schemeUrl.isEmpty()) {
+                        schemeUrlPref.summary = getString(R.string.preference_share_url_summary)
+                    } else {
+                        schemeUrlPref.summary = etInput.text.toString()
+                    }
+                    Options.shareSchemeUrl(schemeUrl)
                 }
-                Options.shareSchemeUrl(schemeUrl)
+                dialog.dismiss()
             }
-            dialog.dismiss()
+            setNegativeButton(getString(R.string.dialog_cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        }.run {
+            create().show()
         }
-
-        builder.setNegativeButton(getString(R.string.dialog_cancel)) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.show()
     }
 
     private fun showLoadingProgressColorInputDialog() {
@@ -194,29 +191,28 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         etInput.setText(Options.loadingProgressColor())
         etInput.hint = getString(R.string.hint_loading_progress_hex)
 
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle(getString(R.string.setting_loading_progress_color))
-        builder.setView(view)
-
-        builder.setPositiveButton(getString(R.string.dialog_confirm)) { dialog, _ ->
-            val loadingProgressColorPref: Preference? = findPreference(getString(R.string.preference_loading_progress_key))
-            loadingProgressColorPref?.let {
-                val hexColor = etInput.text.toString()
-                if (hexColor.isEmpty()) {
-                    loadingProgressColorPref.summary = getString(R.string.preference_loading_progress_summary)
-                } else {
-                    loadingProgressColorPref.summary = etInput.text.toString()
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(getString(R.string.setting_loading_progress_color))
+            setView(view)
+            setPositiveButton(getString(R.string.dialog_confirm)) { dialog, _ ->
+                val loadingProgressColorPref: Preference? = findPreference(getString(R.string.preference_loading_progress_key))
+                loadingProgressColorPref?.let {
+                    val hexColor = etInput.text.toString()
+                    if (hexColor.isEmpty()) {
+                        loadingProgressColorPref.summary = getString(R.string.preference_loading_progress_summary)
+                    } else {
+                        loadingProgressColorPref.summary = etInput.text.toString()
+                    }
+                    Options.loadingProgressColor(hexColor)
                 }
-                Options.loadingProgressColor(hexColor)
+                dialog.dismiss()
             }
-            dialog.dismiss()
+            setNegativeButton(getString(R.string.dialog_cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+        }.run {
+            create().show()
         }
-
-        builder.setNegativeButton(getString(R.string.dialog_cancel)) { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.show()
     }
 
     private fun showPlayerNextActionDialog() {
@@ -227,18 +223,18 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         )
 
         val nextActionTextArray = resources.getStringArray(R.array.playerNextAction)
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-        builder.setTitle(getString(R.string.setting_next_action_on_handle_navigation))
-        builder.setItems(nextActionTextArray) { _, which ->
-            val nextActonPref: Preference? = findPreference(getString(R.string.preference_next_action_key))
-            nextActonPref?.let {
-                nextActonPref.title = "${getString(R.string.preference_next_action_title)} (${nextActionTextArray[which]})"
-                Options.setNextActionOnHandleNavigation(actionTypes[which])
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle(getString(R.string.setting_next_action_on_handle_navigation))
+            setItems(nextActionTextArray) { _, which ->
+                val nextActonPref: Preference? = findPreference(getString(R.string.preference_next_action_key))
+                nextActonPref?.let {
+                    nextActonPref.title = "${getString(R.string.preference_next_action_title)} (${nextActionTextArray[which]})"
+                    Options.setNextActionOnHandleNavigation(actionTypes[which])
+                }
             }
+        }.run {
+            create().show()
         }
-
-        val dialog = builder.create()
-        dialog.show()
     }
 
     private val requestReadPhoneStatePermissionLauncher = registerForActivityResult(
@@ -246,21 +242,17 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
         if (!isGranted) {
             if(!ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.READ_PHONE_STATE)){
                 Options.setAutoResumeVideoOnCallEnded(true)
-                val inflater = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val view = inflater.inflate(R.layout.alert, null)
-                val tvMessage = view.findViewById<TextView>(R.id.tvMessage)
-                tvMessage.text = getString(R.string.alert_call_permission)
-
-                val builder = AlertDialog.Builder(requireContext())
-                builder.setView(view)
-                builder.setPositiveButton("OK") { dialog, _ ->
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        .setData(Uri.parse("package:" + BuildConfig.APPLICATION_ID))
-                    startActivity(intent)
-                    dialog.dismiss()
+                AlertDialog.Builder(requireContext()).apply {
+                    setMessage(getString(R.string.alert_call_permission))
+                    setPositiveButton("OK") { dialog, _ ->
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            .setData(Uri.parse("package:" + BuildConfig.APPLICATION_ID))
+                        startActivity(intent)
+                        dialog.dismiss()
+                    }
+                }.run {
+                    create().show()
                 }
-                val dialog = builder.create()
-                dialog.show()
             }
         }
     }
