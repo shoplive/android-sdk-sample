@@ -56,11 +56,11 @@ class MainActivity : AppCompatActivity() {
             accessKey: String?,
             campaignKey: String?
         ): Intent {
-            val intent = Intent(context, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            intent.putExtra(ACCESS_KEY, accessKey)
-            intent.putExtra(CAMPAIGN_KEY, campaignKey)
-            return intent
+            return Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                putExtra(ACCESS_KEY, accessKey)
+                putExtra(CAMPAIGN_KEY, campaignKey)
+            }
         }
     }
 
