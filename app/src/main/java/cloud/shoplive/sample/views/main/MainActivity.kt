@@ -227,6 +227,8 @@ class MainActivity : AppCompatActivity() {
         ShopLive.setHandler(shopliveHandler)
 
         viewModel.getSdkVersion()
+
+        viewModel.playFromDeeplink(intent)
     }
 
     override fun onResume() {

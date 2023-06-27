@@ -1,11 +1,13 @@
 package cloud.shoplive.sample.views.main
 
 import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cloud.shoplive.sample.CampaignInfo
 import cloud.shoplive.sample.CampaignSettings
+import cloud.shoplive.sample.SchemeActivity
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveUser
 import kotlinx.coroutines.Dispatchers
@@ -30,8 +32,11 @@ class MainViewModel : ViewModel() {
         get() = _deeplinkInfo
 
 
-    fun playFromDeeplink(accessKey: String, campaignKey: String) {
-        _deeplinkInfo.value = CampaignInfo(accessKey, campaignKey)
+    fun playFromDeeplink(data: Intent) {
+        _deeplinkInfo.value = CampaignInfo(
+            data.getStringExtra(SchemeActivity.ACCESS_KEY),
+            data.getStringExtra(SchemeActivity.CAMPAIGN_KEY)
+        )
     }
 
     fun getSdkVersion() {
