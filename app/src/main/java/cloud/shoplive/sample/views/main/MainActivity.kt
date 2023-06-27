@@ -47,10 +47,6 @@ class MainActivity : AppCompatActivity() {
         private const val ACCESS_KEY = "accessKey"
         private const val CAMPAIGN_KEY = "campaignKey"
 
-        fun buildIntent(context: Context) : Intent {
-            return Intent(context, MainActivity::class.java)
-        }
-
         fun buildIntentFromDeeplink(
             context: Context,
             accessKey: String?,
