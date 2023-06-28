@@ -44,8 +44,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val TAG = "MainActivity"
 
-        private const val ACCESS_KEY = "accessKey"
-        private const val CAMPAIGN_KEY = "campaignKey"
+        const val ACCESS_KEY = "accessKey"
+        const val CAMPAIGN_KEY = "campaignKey"
 
         fun buildIntentFromDeeplink(
             context: Context,
@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getSdkVersion()
 
-        viewModel.playFromDeeplink(intent)
+        viewModel.playFromDeeplink(intent.getStringExtra(ACCESS_KEY), intent.getStringExtra(CAMPAIGN_KEY))
     }
 
     override fun onResume() {

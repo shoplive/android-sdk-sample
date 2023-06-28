@@ -6,17 +6,12 @@ import cloud.shoplive.sample.views.main.MainActivity
 
 class SchemeActivity : AppCompatActivity() {
 
-    companion object {
-        const val ACCESS_KEY = "ak"
-        const val CAMPAIGN_KEY = "ck"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val data = intent.data
-        val accessKey = data?.getQueryParameter(ACCESS_KEY) ?: return
-        val campaignKey = data.getQueryParameter(CAMPAIGN_KEY)
+        val accessKey = data?.getQueryParameter(MainActivity.ACCESS_KEY) ?: return
+        val campaignKey = data.getQueryParameter(MainActivity.CAMPAIGN_KEY)
 
         if (accessKey.isNotEmpty() && !campaignKey.isNullOrEmpty()) {
             startActivity(MainActivity.buildIntentFromDeeplink(this, accessKey, campaignKey))
