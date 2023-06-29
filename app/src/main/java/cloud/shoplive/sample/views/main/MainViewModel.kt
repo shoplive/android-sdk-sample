@@ -8,8 +8,6 @@ import cloud.shoplive.sample.CampaignInfo
 import cloud.shoplive.sample.CampaignSettings
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveUser
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class MainViewModel : ViewModel() {
 
@@ -38,15 +36,13 @@ class MainViewModel : ViewModel() {
         _sdkVersion.value = ShopLive.getVersion()
     }
 
-    suspend fun loadCampaignData(context: Context) {
-        _campaignInfo.value = withContext(Dispatchers.IO) {
+    fun loadCampaignData(context: Context) {
+        _campaignInfo.value =
             CampaignInfo(CampaignSettings.accessKey(context), CampaignSettings.campaignKey(context))
-        }
     }
 
-    suspend fun loadUserData(context: Context) {
-        _shopliveUser.value = withContext(Dispatchers.IO) {
+    fun loadUserData(context: Context) {
+        _shopliveUser.value =
             CampaignSettings.user(context)
-        }
     }
 }

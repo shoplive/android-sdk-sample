@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cloud.shoplive.sample.CampaignSettings
 import cloud.shoplive.sdk.ShopLiveUser
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class UserViewModel : ViewModel() {
 
@@ -27,21 +25,15 @@ class UserViewModel : ViewModel() {
         _jwt.value = CampaignSettings.jwt(context)
     }
 
-    suspend fun saveUserData(context: Context, user: ShopLiveUser) {
-        withContext(Dispatchers.IO) {
-            CampaignSettings.user(context, user)
-        }
+    fun saveUserData(context: Context, user: ShopLiveUser) {
+        CampaignSettings.user(context, user)
     }
 
-    suspend fun saveJwt(context: Context, jwt: String) {
-        withContext(Dispatchers.IO) {
-            CampaignSettings.jwt(context, jwt)
-        }
+    fun saveJwt(context: Context, jwt: String) {
+        CampaignSettings.jwt(context, jwt)
     }
 
-    suspend fun saveAuthType(context: Context, type: CampaignSettings.UserType) {
-        withContext(Dispatchers.IO) {
-            CampaignSettings.authType(context, type.ordinal)
-        }
+    fun saveAuthType(context: Context, type: CampaignSettings.UserType) {
+        CampaignSettings.authType(context, type.ordinal)
     }
 }
