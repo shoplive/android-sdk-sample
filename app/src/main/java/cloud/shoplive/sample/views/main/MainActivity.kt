@@ -224,7 +224,10 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getSdkVersion()
 
-        viewModel.playFromDeeplink(intent.getStringExtra(ACCESS_KEY), intent.getStringExtra(CAMPAIGN_KEY))
+        viewModel.playFromDeeplink(
+            intent.getStringExtra(ACCESS_KEY) ?: return,
+            intent.getStringExtra(CAMPAIGN_KEY) ?: return
+        )
     }
 
     override fun onResume() {

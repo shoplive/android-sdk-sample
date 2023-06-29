@@ -30,7 +30,7 @@ class MainViewModel : ViewModel() {
         get() = _deeplinkInfo
 
 
-    fun playFromDeeplink(accessKey: String?, campaignKey: String?) {
+    fun playFromDeeplink(accessKey: String, campaignKey: String) {
         _deeplinkInfo.value = CampaignInfo(accessKey, campaignKey)
     }
 
