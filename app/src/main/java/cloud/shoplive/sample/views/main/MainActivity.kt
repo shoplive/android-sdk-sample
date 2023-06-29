@@ -35,8 +35,8 @@ import cloud.shoplive.sdk.ShopLiveHandlerCallback
 import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLivePreviewPositionConfig
-import com.google.gson.JsonParseException
 import kotlinx.coroutines.launch
+import org.json.JSONException
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
@@ -512,7 +512,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity,
                     "userId=${jsonObject.get("userId")}, userName=${jsonObject.get("userName")}", Toast.LENGTH_SHORT)
                     .show()
-            } catch (e: JsonParseException) {
+            } catch (e: JSONException) {
                 e.printStackTrace()
             }
         }
