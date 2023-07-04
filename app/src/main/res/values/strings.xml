@@ -20,8 +20,8 @@
 
     <!-- title -->
     <string name="title_main">Shoplive SDK Sample</string>
-    <string name="title_campaign">Campaign setting</string>
-    <string name="title_user">User setting</string>
+    <string name="title_campaign">Campaign</string>
+    <string name="title_user">User</string>
     <string name="title_option">Advanced setting</string>
     <string name="title_login">Login</string>
 
@@ -75,6 +75,7 @@
     <string name="label_gender_female">Female</string>
     <string name="label_gender_none">Other</string>
     <string name="label_sdk_version">SDK v%1$s</string>
+    <string name="label_ak_ck">• Access Key : %1$s\n• Campaign Key : %2$s</string>
 
     <!-- settings -->
     <string name="setting_category_player">Shoplive Player setting</string>
