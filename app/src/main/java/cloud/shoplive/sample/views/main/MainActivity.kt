@@ -1,14 +1,11 @@
 package cloud.shoplive.sample.views.main
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -24,6 +21,7 @@ import cloud.shoplive.sample.databinding.ActivityMainBinding
 import cloud.shoplive.sample.shortform.HybridShortformActivity
 import cloud.shoplive.sample.shortform.NativeShortformActivity
 import cloud.shoplive.sample.views.campaign.CampaignActivity
+import cloud.shoplive.sample.views.dialog.CustomActionDialog
 import cloud.shoplive.sample.views.dialog.CustomShareDialog
 import cloud.shoplive.sample.views.login.LoginActivity
 import cloud.shoplive.sample.views.settings.SettingsActivity
@@ -421,41 +419,11 @@ class MainActivity : AppCompatActivity() {
             CustomShareDialog(context, shareUrl).show()
         }
 
-        @SuppressLint("InflateParams")
         override fun handleCustomAction(context: Context, id: String, type: String, payload: String,
                                         callback: ShopLiveHandlerCallback
         ) {
-            (getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater).run {
-                val view = this.inflate(R.layout.custom_action_dialog, null).also {
-                    it.findViewById<TextView>(R.id.tvId).text = getString(R.string.sample_custom_action_id, id)
-                    it.findViewById<TextView>(R.id.tvType).text = getString(R.string.sample_custom_action_type, type)
-                    it.findViewById<TextView>(R.id.tvPayload).text = getString(R.string.sample_custom_action_payload, payload)
-                }
-
-                AlertDialog.Builder(context).apply {
-                    setTitle(getString(R.string.sample_custom_action))
-                    setView(view)
-                    setPositiveButton(getString(R.string.success)) { _, _ ->
-                        callback.customActionResult(
-                            true,
-                            getString(R.string.alert_custom_action_success),
-                            ShopLive.CouponPopupStatus.HIDE,
-                            ShopLive.CouponPopupResultAlertType.TOAST
-                        )
-                    }
-                    setNegativeButton(getString(R.string.fail)) { _, _ ->
-                        callback.customActionResult(
-                            false,
-                            getString(R.string.alert_custom_action_fail),
-                            ShopLive.CouponPopupStatus.SHOW,
-                            ShopLive.CouponPopupResultAlertType.ALERT
-                        )
-                    }
-                    setCancelable(false)
-                }.run {
-                    this.create().show()
-                }
-            }
+            CustomActionDialog(context, id, type, payload, callback)
+                .show()
         }
 
         /**
