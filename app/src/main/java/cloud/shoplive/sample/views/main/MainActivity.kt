@@ -15,7 +15,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.lifecycleScope
 import cloud.shoplive.sample.CampaignSettings
 import cloud.shoplive.sample.Options
 import cloud.shoplive.sample.R
@@ -25,6 +24,7 @@ import cloud.shoplive.sample.databinding.ActivityMainBinding
 import cloud.shoplive.sample.shortform.HybridShortformActivity
 import cloud.shoplive.sample.shortform.NativeShortformActivity
 import cloud.shoplive.sample.views.campaign.CampaignActivity
+import cloud.shoplive.sample.views.dialog.CustomShareDialog
 import cloud.shoplive.sample.views.login.LoginActivity
 import cloud.shoplive.sample.views.settings.SettingsActivity
 import cloud.shoplive.sample.views.user.UserActivity
@@ -35,7 +35,6 @@ import cloud.shoplive.sdk.ShopLiveHandlerCallback
 import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLivePreviewPositionConfig
-import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -418,31 +417,8 @@ class MainActivity : AppCompatActivity() {
             //Toast.makeText(context, "ck=$campaignKey", Toast.LENGTH_SHORT).show()
         }*/
 
-        @SuppressLint("InflateParams")
         override fun handleShare(context: Context, shareUrl: String) {
-            (getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater).run {
-                val view = this.inflate(R.layout.custom_share_dialog, null).also {
-                    val tvMessage = it.findViewById<TextView>(R.id.tvMessage)
-                    tvMessage.text = shareUrl
-
-                    (it.findViewById(R.id.btCopy) as View).setOnClickListener {
-                        Toast.makeText(context, "${getString(R.string.sample_copy_link)}!", Toast.LENGTH_SHORT).show()
-                    }
-                    (it.findViewById(R.id.btKakao) as View).setOnClickListener {
-                        Toast.makeText(context, "${getString(R.string.sample_share_kakao)}!", Toast.LENGTH_SHORT).show()
-                    }
-                    (it.findViewById(R.id.btLine) as View).setOnClickListener {
-                        Toast.makeText(context, "${getString(R.string.sample_share_line)}!", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                AlertDialog.Builder(context).apply {
-                    setTitle(getString(R.string.sample_share))
-                    setView(view)
-                }.run {
-                    this.create().show()
-                }
-            }
+            CustomShareDialog(context, shareUrl).show()
         }
 
         @SuppressLint("InflateParams")
