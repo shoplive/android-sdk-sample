@@ -39,9 +39,7 @@ class CampaignActivity : AppCompatActivity() {
             binding.etCampaignKey.setText(it.campaignKey)
         }
 
-        lifecycleScope.launch {
-            viewModel.loadCampaign(this@CampaignActivity)
-        }
+        viewModel.loadCampaign(this@CampaignActivity)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -56,16 +54,14 @@ class CampaignActivity : AppCompatActivity() {
             }
 
             R.id.action_save -> {
-                lifecycleScope.launch {
-                    viewModel.saveCampaign(
-                        this@CampaignActivity,
-                        CampaignInfo(
-                            binding.etAccessKey.text.toString(),
-                            binding.etCampaignKey.text.toString()
-                        )
+                viewModel.saveCampaign(
+                    this@CampaignActivity,
+                    CampaignInfo(
+                        binding.etAccessKey.text.toString(),
+                        binding.etCampaignKey.text.toString()
                     )
-                    finish()
-                }
+                )
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)

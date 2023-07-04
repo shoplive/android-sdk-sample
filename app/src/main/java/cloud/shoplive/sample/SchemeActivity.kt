@@ -10,8 +10,8 @@ class SchemeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val data = intent.data
-        val accessKey = data?.getQueryParameter(MainActivity.ACCESS_KEY) ?: return
-        val campaignKey = data.getQueryParameter(MainActivity.CAMPAIGN_KEY)
+        val accessKey = data?.getQueryParameter("accessKey") ?: return
+        val campaignKey = data.getQueryParameter("campaignKey")
 
         if (accessKey.isNotEmpty() && !campaignKey.isNullOrEmpty()) {
             startActivity(MainActivity.buildIntentFromDeeplink(this, accessKey, campaignKey))

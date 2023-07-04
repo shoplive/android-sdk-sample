@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.ActivityLoginBinding
-import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -44,9 +42,7 @@ class LoginActivity : AppCompatActivity() {
         binding.etPw.setText("shoplive")
 
         binding.btLogin.setOnClickListener {
-            lifecycleScope.launch {
-                viewModel.saveUser(this@LoginActivity, binding.etId.text.toString())
-            }
+            viewModel.saveUser(this@LoginActivity, binding.etId.text.toString())
         }
     }
 

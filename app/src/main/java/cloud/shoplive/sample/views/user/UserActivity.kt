@@ -119,55 +119,53 @@ class UserActivity : AppCompatActivity() {
                 finish()
             }
             R.id.action_save -> {
-                lifecycleScope.launch {
-                    (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).run {
-                        hideSoftInputFromWindow(binding.etUserId.windowToken, 0)
-                    }
-
-                    ShopLiveUser().apply {
-                        userId = binding.etUserId.text.toString()
-                        userName = binding.etUserName.text.toString()
-
-                        kotlin.runCatching {
-                            binding.etAge.text.toString().toInt()
-                        }.getOrNull().run {
-                            age = this
-                        }
-
-                        kotlin.runCatching {
-                            when(binding.rgGender.checkedRadioButtonId) {
-                                R.id.rbMale -> {
-                                    ShopLiveUserGender.Male
-                                }
-                                R.id.rbFemale -> {
-                                    ShopLiveUserGender.Female
-                                }
-                                else -> {
-                                    ShopLiveUserGender.Neutral
-                                }
-                            }
-                        }.getOrNull().run {
-                            gender = this
-                        }
-
-                        kotlin.runCatching {
-                            binding.etUserScore.text.toString().toInt()
-                        }.getOrNull().run {
-                            userScore = this
-                        }
-                    }.run {
-                        viewModel.saveUserData(this@UserActivity, this)
-                    }
-
-                    viewModel.saveJwt(this@UserActivity, binding.etToken.text.toString())
-
-                    viewModel.saveAuthType(this@UserActivity, when(binding.rgAuth.checkedRadioButtonId) {
-                        R.id.rbUser -> CampaignSettings.UserType.USER
-                        R.id.rbToken -> CampaignSettings.UserType.JWT
-                        else -> CampaignSettings.UserType.GUEST
-                    })
-                    finish()
+                (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).run {
+                    hideSoftInputFromWindow(binding.etUserId.windowToken, 0)
                 }
+
+                ShopLiveUser().apply {
+                    userId = binding.etUserId.text.toString()
+                    userName = binding.etUserName.text.toString()
+
+                    kotlin.runCatching {
+                        binding.etAge.text.toString().toInt()
+                    }.getOrNull().run {
+                        age = this
+                    }
+
+                    kotlin.runCatching {
+                        when(binding.rgGender.checkedRadioButtonId) {
+                            R.id.rbMale -> {
+                                ShopLiveUserGender.Male
+                            }
+                            R.id.rbFemale -> {
+                                ShopLiveUserGender.Female
+                            }
+                            else -> {
+                                ShopLiveUserGender.Neutral
+                            }
+                        }
+                    }.getOrNull().run {
+                        gender = this
+                    }
+
+                    kotlin.runCatching {
+                        binding.etUserScore.text.toString().toInt()
+                    }.getOrNull().run {
+                        userScore = this
+                    }
+                }.run {
+                    viewModel.saveUserData(this@UserActivity, this)
+                }
+
+                viewModel.saveJwt(this@UserActivity, binding.etToken.text.toString())
+
+                viewModel.saveAuthType(this@UserActivity, when(binding.rgAuth.checkedRadioButtonId) {
+                    R.id.rbUser -> CampaignSettings.UserType.USER
+                    R.id.rbToken -> CampaignSettings.UserType.JWT
+                    else -> CampaignSettings.UserType.GUEST
+                })
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)
