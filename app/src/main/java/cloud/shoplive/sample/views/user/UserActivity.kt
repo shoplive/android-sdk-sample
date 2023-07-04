@@ -43,18 +43,8 @@ class UserActivity : AppCompatActivity() {
         viewModel.user.observe(this) {
             binding.etUserId.setText(it.userId)
             binding.etUserName.setText(it.userName)
-
-            kotlin.runCatching {
-                it.age.toString()
-            }.getOrNull().run {
-               binding.etAge.setText(this)
-            }
-
-            kotlin.runCatching {
-               it.userScore.toString()
-            }.getOrNull().run {
-               binding.etUserScore.setText(this)
-            }
+            binding.etAge.setText(it.age.toString())
+            binding.etUserScore.setText(it.userScore.toString())
 
             kotlin.runCatching {
                it.gender
@@ -126,13 +116,7 @@ class UserActivity : AppCompatActivity() {
                 ShopLiveUser().apply {
                     userId = binding.etUserId.text.toString()
                     userName = binding.etUserName.text.toString()
-
-                    kotlin.runCatching {
-                        binding.etAge.text.toString().toInt()
-                    }.getOrNull().run {
-                        age = this
-                    }
-
+                    age = binding.etAge.text.toString().toIntOrNull()
                     kotlin.runCatching {
                         when(binding.rgGender.checkedRadioButtonId) {
                             R.id.rbMale -> {
@@ -148,12 +132,7 @@ class UserActivity : AppCompatActivity() {
                     }.getOrNull().run {
                         gender = this
                     }
-
-                    kotlin.runCatching {
-                        binding.etUserScore.text.toString().toInt()
-                    }.getOrNull().run {
-                        userScore = this
-                    }
+                    userScore = binding.etUserScore.text.toString().toIntOrNull()
                 }.run {
                     viewModel.saveUserData(this@UserActivity, this)
                 }
