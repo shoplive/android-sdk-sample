@@ -123,7 +123,7 @@ class NativeShortformActivity : AppCompatActivity() {
             }
         })
 
-        ShopLiveShortform.observeProductUrl(this@NativeShortformActivity) {url ->
+        ShopLiveShortform.observeProductUrl(this@NativeShortformActivity) { identifier, url ->
             startActivity(ShortformProductActivity.buildIntent(this, url))
         }
     }
