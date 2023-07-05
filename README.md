@@ -28,7 +28,7 @@ If you have any comments, questions or feature requests, let us know in the [ema
 The minimum requirements for the Player SDK for Android are:
 
 - `Android 4.4 (API level 19) or higher`
-- `targetSdkVersion 30 or higher`
+- `targetSdkVersion 31 or higher`
 
 ## Getting started
 
@@ -61,7 +61,7 @@ Then, add the dependency to the project's top-level `build.gradle` file:
 ```gradle
 dependencies {
     ...
-    def shoplive_sdk_version = "1.4.1"
+    def shoplive_sdk_version = "1.4.3"
     implementation "cloud.shoplive:shoplive-sdk-all:$shoplive_sdk_version"
     ...
 }
