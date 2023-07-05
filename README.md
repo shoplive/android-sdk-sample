@@ -61,7 +61,7 @@ Then, add the dependency to the project's top-level `build.gradle` file:
 ```gradle
 dependencies {
     ...
-    def shoplive_sdk_version = "1.4.1"
+    def shoplive_sdk_version = "1.4.3"
     implementation "cloud.shoplive:shoplive-sdk-all:$shoplive_sdk_version"
     ...
 }
