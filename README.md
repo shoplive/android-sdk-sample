@@ -28,7 +28,7 @@ If you have any comments, questions or feature requests, let us know in the [ema
 The minimum requirements for the Player SDK for Android are:
 
 - `Android 4.4 (API level 19) or higher`
-- `targetSdkVersion 30 or higher`
+- `targetSdkVersion 31 or higher`
 
 ## Getting started
 
