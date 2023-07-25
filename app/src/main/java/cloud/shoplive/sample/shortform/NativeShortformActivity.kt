@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import cloud.shoplive.editor.ShopLiveVideoEditor
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.ActivityNativeShortformBinding
 import cloud.shoplive.sdk.common.ShopLiveCommonError
@@ -63,8 +62,6 @@ class NativeShortformActivity : AppCompatActivity() {
             tab.text = text
         }
     }
-
-    private val videoEditor: ShopLiveVideoEditor = ShopLiveVideoEditor(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -101,10 +101,8 @@ class ShortformSampleAdapter(
         private val snapObserver = Observer<Boolean> { isChecked ->
             if (isChecked) {
                 shortsHorizontalTypeView.enableSnap()
-                shortsHorizontalTypeView.setPlayableType(ShopLiveShortform.PlayableType.FIRST)
             } else {
                 shortsHorizontalTypeView.disableSnap()
-                shortsHorizontalTypeView.setPlayableType(ShopLiveShortform.PlayableType.ALL)
             }
         }
         private val onlyWifiObserver = Observer<Boolean> { isChecked ->
@@ -114,14 +112,7 @@ class ShortformSampleAdapter(
         init {
             shortsHorizontalTypeView.enableShuffle()
             shortsHorizontalTypeView.setVisibleViewCount(false)
-            if (snapLiveData.value == true) {
-                shortsHorizontalTypeView.enableSnap()
-                shortsHorizontalTypeView.setPlayableType(ShopLiveShortform.PlayableType.FIRST)
-            } else {
-                shortsHorizontalTypeView.disableSnap()
-                shortsHorizontalTypeView.setPlayableType(ShopLiveShortform.PlayableType.ALL)
-            }
-
+            shortsHorizontalTypeView.setPlayableType(ShopLiveShortform.PlayableType.FIRST)
             shortsHorizontalTypeView.setViewType(ShopLiveShortform.CardViewType.CARD_TYPE1)
             shortsHorizontalTypeView.setPlayOnlyWifi(onlyWifiLiveData.value == true)
             shortsHorizontalTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
@@ -136,10 +127,8 @@ class ShortformSampleAdapter(
         }
 
         override fun onBind(data: ShortformSampleData) {
-            shortsHorizontalTypeView.setHashTags(data.hashTags, data.tagSearchOperator)
-            shortsHorizontalTypeView.setBrand(data.brand)
-            shortsHorizontalTypeView.submit()
-            titleView.text = data.getTitle()
+            titleView.text = data.title
+            shortsHorizontalTypeView.submit(data.collectionData, data.response)
         }
 
         override fun onViewAttachedToWindow() {

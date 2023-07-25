@@ -8,6 +8,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.FragmentShortformCardTypeBinding
@@ -17,8 +18,12 @@ import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformBaseTypeHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformCardTypeView
+import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformSubmitListener
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 
 class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
     ShopLiveShortformSubmitListener {
@@ -277,14 +282,46 @@ class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListe
     }
 
     override fun submit() {
-        adapter.submitList(
-            listOf(
-                ShortformSampleData(),
-                ShortformSampleData(hashTags = listOf("shoplive")),
-                ShortformSampleData(hashTags = listOf("test")),
-                ShortformSampleData(brand = listOf("shoplive")),
+        lifecycleScope.launch {
+            adapter.submitList(
+                listOf(
+                    async {
+                        ShortformSampleData.convertData(
+                            requireContext(),
+                            "title",
+                            ShopLiveShortformCollectionData()
+                        )
+                    },
+                    async {
+                        ShortformSampleData.convertData(
+                            requireContext(),
+                            "HashTags : shoplive",
+                            ShopLiveShortformCollectionData().apply {
+                                tags = listOf("shoplive")
+                            }
+                        )
+                    },
+                    async {
+                        ShortformSampleData.convertData(
+                            requireContext(),
+                            "HashTags : test",
+                            ShopLiveShortformCollectionData().apply {
+                                tags = listOf("test")
+                            }
+                        )
+                    },
+                    async {
+                        ShortformSampleData.convertData(
+                            requireContext(),
+                            "Brands : shoplive",
+                            ShopLiveShortformCollectionData().apply {
+                                brands = listOf("shoplive")
+                            }
+                        )
+                    }
+                ).awaitAll()
             )
-        )
+        }
     }
 
     override fun onDestroyView() {
