@@ -87,7 +87,6 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
             when (checkedId) {
                 R.id.shortsCardTypeRadioType1 -> {
                     toggleCardTypeView(ShopLiveShortform.CardViewType.CARD_TYPE1)
-                    scrollToTop(false)
                     if (binding.shortsCardTypeSnap.isChecked) {
                         currentCardTypeView?.enableSnap()
                     } else {
@@ -98,7 +97,6 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
 
                 R.id.shortsCardTypeRadioType2 -> {
                     toggleCardTypeView(ShopLiveShortform.CardViewType.CARD_TYPE2)
-                    scrollToTop(false)
                     if (binding.shortsCardTypeSnap.isChecked) {
                         currentCardTypeView?.enableSnap()
                     } else {
@@ -112,10 +110,7 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
 
     override fun submit() {
         currentCardTypeView?.submit()
-    }
-
-    private fun scrollToTop(isSmooth: Boolean) {
-        currentCardTypeView?.scrollToTop(isSmooth)
+        currentCardTypeView?.scrollToTop()
     }
 
     override fun enablePlayVideos() {
@@ -226,6 +221,7 @@ class ShortformVerticalFragment : Fragment(), ShopLiveShortformPlayEnableListene
 
     override fun submit() {
         _binding?.shortsVerticalTypeView?.submit()
+        binding.shortsVerticalTypeView.scrollToTop()
     }
 
     override fun enablePlayVideos() {

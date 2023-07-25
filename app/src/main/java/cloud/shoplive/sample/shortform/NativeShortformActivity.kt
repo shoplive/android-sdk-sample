@@ -78,8 +78,6 @@ class NativeShortformActivity : AppCompatActivity() {
                 val position = tab?.position ?: return
                 (tabAdapter.currentList.getOrNull(position) as? ShopLiveShortformPlayEnableListener)
                     ?.enablePlayVideos()
-                (tabAdapter.currentList.getOrNull(position) as? ShopLiveShortformSubmitListener)
-                    ?.submit()
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
