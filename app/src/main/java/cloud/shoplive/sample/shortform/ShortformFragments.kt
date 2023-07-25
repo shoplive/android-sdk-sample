@@ -288,7 +288,7 @@ class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListe
                     async {
                         ShortformSampleData.convertData(
                             requireContext(),
-                            "title",
+                            "ALL",
                             ShopLiveShortformCollectionData()
                         )
                     },
