@@ -264,12 +264,12 @@ class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListe
     private val snapLiveData = MutableLiveData(false)
     private val onlyWifiLiveData = MutableLiveData(false)
 
+    private val layoutManager by lazy { LinearLayoutManager(requireContext()) }
     private val adapter = ShortformSampleAdapter(enablePlayLiveData, snapLiveData, onlyWifiLiveData)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.shortsHorizontalTypeRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext())
+        binding.shortsHorizontalTypeRecyclerView.layoutManager = layoutManager
         binding.shortsHorizontalTypeRecyclerView.adapter = adapter
 
         binding.shortsHorizontalTypeSnap.setOnCheckedChangeListener { _, isChecked ->
@@ -320,7 +320,9 @@ class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListe
                         )
                     }
                 ).awaitAll()
-            )
+            ) {
+                layoutManager.scrollToPositionWithOffset(0, 0)
+            }
         }
     }
 
