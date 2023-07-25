@@ -41,6 +41,7 @@ class UserActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewModel.user.observe(this) {
+            it ?: return@observe
             binding.etUserId.setText(it.userId)
             binding.etUserName.setText(it.userName)
             binding.etAge.setText(it.age.toString())

@@ -7,21 +7,23 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.FragmentShortformCardTypeBinding
+import cloud.shoplive.sample.databinding.FragmentShortformHorizontalTypeBinding
+import cloud.shoplive.sample.databinding.FragmentShortformVerticalTypeBinding
 import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformBaseTypeHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformCardTypeView
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
-import cloud.shoplive.sdk.shorts.ShopLiveShortformScrollableListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformSubmitListener
 
-class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
-    ShopLiveShortformSubmitListener,
-    ShopLiveShortformScrollableListener {
+class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
+    ShopLiveShortformSubmitListener {
     companion object {
-        fun newInstance() = ShortformCardFragment()
+        fun newInstance() = ShortformMainFragment()
     }
 
     private var _binding: FragmentShortformCardTypeBinding? = null
@@ -38,9 +40,9 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.shortsCardType1View.spanCount = 1
+        binding.shortsCardType1View.setSpanCount(1)
         binding.shortsCardType1View.setViewType(ShopLiveShortform.CardViewType.CARD_TYPE1)
-        binding.shortsCardType2View.spanCount = 1
+        binding.shortsCardType2View.setSpanCount(1)
         binding.shortsCardType2View.setViewType(ShopLiveShortform.CardViewType.CARD_TYPE2)
         if (binding.shortsCardTypeSnap.isChecked) {
             currentCardTypeView?.enableSnap()
@@ -51,6 +53,10 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
             } else {
                 currentCardTypeView?.disableSnap()
             }
+        }
+        binding.shortsCardTypeWifiOnly.setOnCheckedChangeListener { _, isChecked ->
+            binding.shortsCardType1View.setPlayOnlyWifi(isChecked)
+            binding.shortsCardType2View.setPlayOnlyWifi(isChecked)
         }
         binding.shortsCardType1View.handler = object : ShopLiveShortformBaseTypeHandler() {
             override fun onError(error: ShopLiveCommonError) {
@@ -84,6 +90,7 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
                     }
                     submit()
                 }
+
                 R.id.shortsCardTypeRadioType2 -> {
                     toggleCardTypeView(ShopLiveShortform.CardViewType.CARD_TYPE2)
                     scrollToTop(false)
@@ -102,12 +109,8 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         currentCardTypeView?.submit()
     }
 
-    override fun scrollToTop(isSmooth: Boolean) {
+    private fun scrollToTop(isSmooth: Boolean) {
         currentCardTypeView?.scrollToTop(isSmooth)
-    }
-
-    override fun scrollToTop() {
-
     }
 
     override fun enablePlayVideos() {
@@ -145,6 +148,7 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
                     )
                 )
             }
+
             ShopLiveShortform.CardViewType.CARD_TYPE2 -> {
                 _binding?.shortsCardType1View?.visibility = View.INVISIBLE
                 _binding?.shortsCardType2View?.visibility = View.VISIBLE
@@ -168,4 +172,133 @@ class ShortformCardFragment : Fragment(), ShopLiveShortformPlayEnableListener,
     }
 }
 
+class ShortformVerticalFragment : Fragment(), ShopLiveShortformPlayEnableListener,
+    ShopLiveShortformSubmitListener {
+    companion object {
+        fun newInstance() = ShortformVerticalFragment()
+    }
 
+    private var _binding: FragmentShortformVerticalTypeBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentShortformVerticalTypeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.shortsVerticalTypeView.setSpanCount(2)
+        if (binding.shortsVerticalTypeSnap.isChecked) {
+            binding.shortsVerticalTypeView.enableSnap()
+        }
+        binding.shortsVerticalTypeView.setViewType(ShopLiveShortform.CardViewType.CARD_TYPE2)
+        binding.shortsVerticalTypeSnap.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                binding.shortsVerticalTypeView.enableSnap()
+            } else {
+                binding.shortsVerticalTypeView.disableSnap()
+            }
+        }
+        binding.shortsVerticalTypeWifiOnly.setOnCheckedChangeListener { _, isChecked ->
+            binding.shortsVerticalTypeView.setPlayOnlyWifi(isChecked)
+        }
+        binding.shortsVerticalTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
+            override fun onError(error: ShopLiveCommonError) {
+                Toast.makeText(
+                    requireContext(),
+                    error.message ?: error.toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        submit()
+    }
+
+    override fun submit() {
+        _binding?.shortsVerticalTypeView?.submit()
+    }
+
+    override fun enablePlayVideos() {
+        _binding?.shortsVerticalTypeView?.enablePlayVideos()
+    }
+
+    override fun disablePlayVideos() {
+        _binding?.shortsVerticalTypeView?.disablePlayVideos()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
+
+class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListener,
+    ShopLiveShortformSubmitListener {
+    companion object {
+        fun newInstance() = ShortformHorizontalFragment()
+    }
+
+    private var _binding: FragmentShortformHorizontalTypeBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentShortformHorizontalTypeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    private val enablePlayLiveData: MutableLiveData<Boolean?> = MutableLiveData(null)
+    private val snapLiveData = MutableLiveData(false)
+    private val onlyWifiLiveData = MutableLiveData(false)
+
+    private val adapter = ShortformSampleAdapter(enablePlayLiveData, snapLiveData, onlyWifiLiveData)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.shortsHorizontalTypeRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext())
+        binding.shortsHorizontalTypeRecyclerView.adapter = adapter
+
+        binding.shortsHorizontalTypeSnap.setOnCheckedChangeListener { _, isChecked ->
+            snapLiveData.value = isChecked
+        }
+        binding.shortsHorizontalTypeWifiOnly.setOnCheckedChangeListener { _, isChecked ->
+            onlyWifiLiveData.value = isChecked
+        }
+        submit()
+    }
+
+    override fun submit() {
+        adapter.submitList(
+            listOf(
+                ShortformSampleData(),
+                ShortformSampleData(hashTags = listOf("shoplive")),
+                ShortformSampleData(hashTags = listOf("test")),
+                ShortformSampleData(brand = listOf("shoplive")),
+            )
+        )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun enablePlayVideos() {
+        enablePlayLiveData.value = true
+        enablePlayLiveData.value = null
+    }
+
+    override fun disablePlayVideos() {
+        enablePlayLiveData.value = false
+        enablePlayLiveData.value = null
+    }
+}

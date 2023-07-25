@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
         android:id="@+id/shortsVerticalTypeSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,9 +37,25 @@
         android:textSize="13dp"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/shortsVerticalTypeSubtitle"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/shortsVerticalTypeWifiOnly"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/shortsVerticalTypeSubtitle"
+        app:layout_constraintTop_toTopOf="@id/shortsVerticalTypeSubtitle" />
+
+    <CheckBox
+        android:id="@+id/shortsVerticalTypeWifiOnly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:checked="false"
+        android:text="@string/shortform_only_wifi"
+        android:textColor="#000"
+        android:textSize="13dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@id/shortsVerticalTypeSubtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/shortsVerticalTypeSnap"
         app:layout_constraintTop_toTopOf="@id/shortsVerticalTypeSubtitle" />
 
     <cloud.shoplive.sdk.shorts.ShopLiveShortformVerticalTypeView

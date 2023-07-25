@@ -32,7 +32,9 @@ import cloud.shoplive.sdk.ShopLiveHandler
 import cloud.shoplive.sdk.ShopLiveHandlerCallback
 import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.common.ShopLiveCommon
+import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLivePreviewPositionConfig
+import cloud.shoplive.sdk.network.utils.ShopLiveJWT
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -87,13 +89,13 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        viewModel.shopliveUser.observe(this) {user ->
-            val userText = when(CampaignSettings.authType(this)) {
+        viewModel.shopliveUser.observe(this) { user ->
+            val userText = when (CampaignSettings.authType(this)) {
                 CampaignSettings.UserType.USER.ordinal -> {
                     getString(R.string.label_use_user2) + "\n" + if (user == null) {
                         getString(R.string.label_no_user)
                     } else {
-                        val gender = when(user.gender) {
+                        val gender = when (user.gender) {
                             ShopLiveUserGender.Male -> getString(R.string.label_gender_male)
                             ShopLiveUserGender.Female -> getString(R.string.label_gender_female)
                             else -> getString(R.string.label_gender_none)
@@ -106,9 +108,12 @@ class MainActivity : AppCompatActivity() {
                                 "• Gender : $gender"
                     }
                 }
+
                 CampaignSettings.UserType.JWT.ordinal -> {
-                    getString(R.string.label_use_token2) + "\n" + (CampaignSettings.jwt(this) ?: getString(R.string.label_no_token))
+                    getString(R.string.label_use_token2) + "\n" + (CampaignSettings.jwt(this)
+                        ?: getString(R.string.label_no_token))
                 }
+
                 else -> {
                     getString(R.string.label_use_guest2)
                 }
@@ -116,7 +121,7 @@ class MainActivity : AppCompatActivity() {
             binding.tvUser.text = userText
         }
 
-        viewModel.sdkVersion.observe(this) {version ->
+        viewModel.sdkVersion.observe(this) { version ->
             binding.tvSdkVersion.text = getString(R.string.label_sdk_version, version)
         }
 
@@ -208,11 +213,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btHybridShortform.setOnClickListener {
-            startActivity(HybridShortformActivity.buildIntent(this, "https://shopliveshorts.cafe24.com/index.html"))
+            startActivity(
+                HybridShortformActivity.buildIntent(
+                    this,
+                    "https://shopliveshorts.cafe24.com/index.html"
+                )
+            )
         }
 
         binding.btNativeShortform.setOnClickListener {
-            val accessKey: String = CampaignSettings.accessKey(this) ?: return@setOnClickListener
+            val accessKey: String = CampaignSettings.accessKey(this) ?: kotlin.run {
+                startActivity(CampaignActivity.buildIntent(this))
+                return@setOnClickListener
+            }
             ShopLiveCommon.setAccessKey(accessKey)
             startActivity(NativeShortformActivity.buildIntent(this))
         }
@@ -236,15 +249,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUserOrJwt() {
-        when(CampaignSettings.authType(this)) {
+        when (CampaignSettings.authType(this)) {
             CampaignSettings.UserType.USER.ordinal -> {
-                ShopLive.setUser(CampaignSettings.user(this) ?: return)
+                val accessKey: String = CampaignSettings.accessKey(this) ?: kotlin.run {
+                    startActivity(CampaignActivity.buildIntent(this))
+                    return
+                }
+                val user = CampaignSettings.user(this) ?: return
+                ShopLive.setUser(user)
+                ShopLiveCommon.setUserJWT(
+                    ShopLiveJWT.make(
+                        accessKey,
+                        ShopLiveCommonUser(user.userId!!).apply {
+                            name = user.userName
+                            age = user.age
+                            gender = user.gender?.value
+                            userScore = user.userScore
+                        })
+                )
             }
+
             CampaignSettings.UserType.JWT.ordinal -> {
-                ShopLive.setAuthToken(CampaignSettings.jwt(this) ?: return)
+                val jwt = CampaignSettings.jwt(this) ?: return
+                ShopLive.setAuthToken(jwt)
+                ShopLiveCommon.setUserJWT(jwt)
             }
+
             CampaignSettings.UserType.GUEST.ordinal -> {
                 ShopLive.setUser(null)
+                ShopLiveCommon.clearAuth()
             }
         }
     }
@@ -260,6 +293,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // custom font option
+        // only shoplive player
         ShopLive.setChatViewTypeface(
             if (Options.useCustomFontChatInput()) kotlin.run {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -269,15 +303,13 @@ class MainActivity : AppCompatActivity() {
                 }
             } else {
                 null
-            },
-            if (Options.useCustomFontChatSendButton()) kotlin.run {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    resources.getFont(R.font.nanumgothicbold)
-                } else {
-                    ResourcesCompat.getFont(this, R.font.nanumgothicbold)
-                }
+            })
+        // shoplive player + short-form
+        ShopLiveCommon.setTextTypeface(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                resources.getFont(R.font.nanumgothic)
             } else {
-                null
+                ResourcesCompat.getFont(this, R.font.nanumgothic)
             }
         )
 
@@ -306,7 +338,10 @@ class MainActivity : AppCompatActivity() {
 
         ShopLive.setStatusBarTransparent(Options.isStatusBarTransparent())
 
-        ShopLive.setUiMessage(ShopLive.UiMessageType.NOT_SUPPORT_PIP, R.string.alert_not_support_pip)
+        ShopLive.setUiMessage(
+            ShopLive.UiMessageType.NOT_SUPPORT_PIP,
+            R.string.alert_not_support_pip
+        )
 
         ShopLive.setSoundFocusHandling(if (Options.isMuteWhenLossAudioFocus()) {
             object : OnAudioFocusListener {
@@ -345,7 +380,7 @@ class MainActivity : AppCompatActivity() {
             context: Context,
             url: String
         ) {
-            when(Options.getNextActionOnHandleNavigation()) {
+            when (Options.getNextActionOnHandleNavigation()) {
                 ShopLive.ActionType.PIP,
                 ShopLive.ActionType.CLOSE -> {
                     Intent(this@MainActivity, WebViewActivity::class.java).apply {
@@ -355,6 +390,7 @@ class MainActivity : AppCompatActivity() {
                         startActivity(this)
                     }
                 }
+
                 ShopLive.ActionType.KEEP -> {
                     WebViewDialogFragment().apply {
                         arguments = Bundle().apply {
@@ -419,8 +455,9 @@ class MainActivity : AppCompatActivity() {
             CustomShareDialog(context, shareUrl).show()
         }
 
-        override fun handleCustomAction(context: Context, id: String, type: String, payload: String,
-                                        callback: ShopLiveHandlerCallback
+        override fun handleCustomAction(
+            context: Context, id: String, type: String, payload: String,
+            callback: ShopLiveHandlerCallback
         ) {
             CustomActionDialog(context, id, type, payload, callback)
                 .show()
@@ -430,17 +467,22 @@ class MainActivity : AppCompatActivity() {
          * @param isPipMode - pipMode:true, fullMode:false
          * @param state - 'CREATED' or 'CLOSING' or 'DESTROYED'
          * */
-        override fun onChangedPlayerStatus(isPipMode: Boolean, playerLifecycle: ShopLive.PlayerLifecycle) {
+        override fun onChangedPlayerStatus(
+            isPipMode: Boolean,
+            playerLifecycle: ShopLive.PlayerLifecycle
+        ) {
             super.onChangedPlayerStatus(isPipMode, playerLifecycle)
             Log.d(TAG, "isPipMode=$isPipMode, playerLifecycle=${playerLifecycle.getText()}")
 
-            when(playerLifecycle) {
+            when (playerLifecycle) {
                 ShopLive.PlayerLifecycle.CREATED -> {
                     // created
                 }
+
                 ShopLive.PlayerLifecycle.CLOSING -> {
                     // closing
                 }
+
                 ShopLive.PlayerLifecycle.DESTROYED -> {
                     // destroyed
                 }
@@ -451,8 +493,11 @@ class MainActivity : AppCompatActivity() {
             super.onSetUserName(jsonObject)
             Log.d(TAG, "onSetUserName = $jsonObject")
             try {
-                Toast.makeText(this@MainActivity,
-                    "userId=${jsonObject.get("userId")}, userName=${jsonObject.get("userName")}", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    this@MainActivity,
+                    "userId=${jsonObject.get("userId")}, userName=${jsonObject.get("userName")}",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             } catch (e: JSONException) {
                 e.printStackTrace()
@@ -462,7 +507,7 @@ class MainActivity : AppCompatActivity() {
         override fun onReceivedCommand(context: Context, command: String, data: JSONObject) {
             Log.d(TAG, "onReceivedCommand = command=$command, data=${data.toString()}")
 
-            when(command) {
+            when (command) {
                 "LOGIN_REQUIRED" -> {
                     AlertDialog.Builder(context).apply {
                         setMessage(getString(R.string.alert_need_login))
@@ -476,12 +521,15 @@ class MainActivity : AppCompatActivity() {
                         this.create().show()
                     }
                 }
+
                 "CLICK_PRODUCT_CART" -> {
 
                 }
+
                 "CLICK_PRODUCT_DETAIL" -> {
 
                 }
+
                 "ON_SUCCESS_CAMPAIGN_JOIN" -> {
 
                 }
