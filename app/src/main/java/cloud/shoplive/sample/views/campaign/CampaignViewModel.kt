@@ -24,7 +24,7 @@ class CampaignViewModel : ViewModel() {
     fun saveCampaign(context: Context, campaignInfo: CampaignInfo?) {
         campaignInfo ?: return
 
-        if (campaignInfo.accessKey?.isNotEmpty() == true && campaignInfo.campaignKey?.isNotEmpty() == true) {
+        if (campaignInfo.accessKey?.isNotEmpty() == true || campaignInfo.campaignKey?.isNotEmpty() == true) {
             CampaignSettings.setAccessKey(context, campaignInfo.accessKey)
             CampaignSettings.setCampaignKey(context, campaignInfo.campaignKey)
         }

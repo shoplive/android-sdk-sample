@@ -79,18 +79,18 @@ dependencies {
     // alternately-if using Java8, use following instead of compiler
     implementation "android.arch.lifecycle:common-java8:1.1.1"
 
-    def shoplive_sdk_version = "1.4.3"
+    def shoplive_sdk_version = "1.4.4"
     def your_exoplayer_version = "2.18.1"
-    def shoplive_exoplayer_version = your_exoplayer_version + "." + "4"
+    def shoplive_exoplayer_version = your_exoplayer_version + "." + "5"
 
     // For library - combined packaging
-    implementation "cloud.shoplive:shoplive-sdk-all:$shoplive_sdk_version" // live + short-form
+//    implementation "cloud.shoplive:shoplive-sdk-all:$shoplive_sdk_version" // live + short-form
 
     // For submodules
-//    implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version" // must required
-//    implementation "cloud.shoplive:shoplive-exoplayer:$shoplive_exoplayer_version" // must required
-//    implementation "cloud.shoplive:shoplive-sdk-core:$shoplive_sdk_version" // for live player
-//    implementation "cloud.shoplive:shoplive-network:$shoplive_sdk_version" // for short-form player
-//    implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version" // for short-form player
+    implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version" // must required
+    implementation "cloud.shoplive:shoplive-exoplayer:$shoplive_exoplayer_version" // must required
+    implementation "cloud.shoplive:shoplive-sdk-core:$shoplive_sdk_version" // for live player
+    implementation "cloud.shoplive:shoplive-network:$shoplive_sdk_version" // for short-form player
+    implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version" // for short-form player
 
 }

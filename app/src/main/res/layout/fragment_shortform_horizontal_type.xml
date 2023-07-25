@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
         android:id="@+id/shortsHorizontalTypeSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:textSize="16dp"
         android:textStyle="bold"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@id/shortsHorizontalType1TextView"
+        app:layout_constraintBottom_toTopOf="@id/shortsHorizontalTypeRecyclerView"
         app:layout_constraintEnd_toStartOf="@id/shortsHorizontalTypeSnap"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -36,37 +36,33 @@
         android:textSize="13dp"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/shortsHorizontalTypeSubtitle"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/shortsHorizontalTypeWifiOnly"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/shortsHorizontalTypeSubtitle"
         app:layout_constraintTop_toTopOf="@id/shortsHorizontalTypeSubtitle" />
 
-    <TextView
-        android:id="@+id/shortsHorizontalType1TextView"
+    <CheckBox
+        android:id="@+id/shortsHorizontalTypeWifiOnly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/shoplive"
+        android:layout_marginEnd="8dp"
+        android:checked="false"
+        android:text="@string/shortform_only_wifi"
         android:textColor="#000"
-        android:textSize="16dp"
-        android:textStyle="bold"
+        android:textSize="13dp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@id/shortsHorizontalType1View"
+        app:layout_constraintBottom_toBottomOf="@id/shortsHorizontalTypeSubtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shortsHorizontalTypeSubtitle"
-        app:layout_constraintVertical_bias="0"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintStart_toEndOf="@id/shortsHorizontalTypeSnap"
+        app:layout_constraintTop_toTopOf="@id/shortsHorizontalTypeSubtitle" />
 
-    <cloud.shoplive.sdk.shorts.ShopLiveShortformHorizontalTypeView
-        android:id="@+id/shortsHorizontalType1View"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/shortsHorizontalTypeRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shortsHorizontalType1TextView" />
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/shortsHorizontalTypeSubtitle"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

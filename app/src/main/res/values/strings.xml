@@ -175,11 +175,15 @@
     <string name="shortform_tab_card">Card</string>
     <string name="shortform_tab_vertical">Col</string>
     <string name="shortform_tab_horizontal">Row</string>
+    <string name="shortform_tab_web">Web</string>
     <string name="shortform_snap">SNAP</string>
+    <string name="shortform_only_wifi">ONLY WIFI</string>
     <string name="shortform_tab_main_subtitle">Highlight content</string>
     <string name="shortform_tab_vertical_subtitle">Highlight exposure</string>
     <string name="shortform_tab_horizontal_subtitle">Free space, Banner</string>
     <string name="shortform_view_type1">type1</string>
     <string name="shortform_view_type2">type2</string>
+    <string name="shortform_view_type3">type3</string>
+
 
 </resources>

@@ -9,8 +9,8 @@ import cloud.shoplive.sdk.ShopLiveUser
 
 class UserViewModel : ViewModel() {
 
-    private val _user: MutableLiveData<ShopLiveUser> = MutableLiveData()
-    val user: LiveData<ShopLiveUser>
+    private val _user: MutableLiveData<ShopLiveUser?> = MutableLiveData()
+    val user: LiveData<ShopLiveUser?>
         get() = _user
 
     private val _jwt: MutableLiveData<String> = MutableLiveData()
