@@ -172,7 +172,7 @@
     <string name="sample_share_line">Share the link on Line</string>
 
     <!-- shortform -->
-    <string name="shortform_tab_main">Main</string>
+    <string name="shortform_tab_card">Card</string>
     <string name="shortform_tab_vertical">Col</string>
     <string name="shortform_tab_horizontal">Row</string>
     <string name="shortform_tab_web">Web</string>

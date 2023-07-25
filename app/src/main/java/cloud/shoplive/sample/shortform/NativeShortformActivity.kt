@@ -55,7 +55,7 @@ class NativeShortformActivity : AppCompatActivity() {
     private val mediator by lazy {
         TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
             val text = when (position) {
-                PAGE_SHORTS_MAIN -> getString(R.string.shortform_tab_main)
+                PAGE_SHORTS_MAIN -> getString(R.string.shortform_tab_card)
                 PAGE_SHORTS_VERTICAL -> getString(R.string.shortform_tab_vertical)
                 PAGE_SHORTS_HORIZONTAL -> getString(R.string.shortform_tab_horizontal)
                 else -> ""
