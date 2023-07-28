@@ -33,8 +33,8 @@ import cloud.shoplive.sdk.ShopLiveHandlerCallback
 import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLiveCommonUser
+import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
 import cloud.shoplive.sdk.common.ShopLivePreviewPositionConfig
-import cloud.shoplive.sdk.network.utils.ShopLiveJWT
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -258,15 +258,18 @@ class MainActivity : AppCompatActivity() {
                 val user = CampaignSettings.user(this) ?: return
                 ShopLive.setUser(user)
                 ShopLiveCommon.setUserJWT(
-                    ShopLiveJWT.make(
-                        accessKey,
-                        ShopLiveCommonUser(user.userId!!).apply {
-                            name = user.userName
-                            age = user.age
-                            gender = user.gender?.value
-                            userScore = user.userScore
-                        })
-                )
+                    accessKey,
+                    ShopLiveCommonUser(user.userId ?: return).apply {
+                        name = user.userName
+                        age = user.age
+                        gender = when (user.gender) {
+                            ShopLiveUserGender.Female -> ShopLiveCommonUserGender.FEMALE
+                            ShopLiveUserGender.Male -> ShopLiveCommonUserGender.MALE
+                            ShopLiveUserGender.Neutral -> ShopLiveCommonUserGender.NEUTRAL
+                            else -> null
+                        }
+                        userScore = user.userScore
+                    })
             }
 
             CampaignSettings.UserType.JWT.ordinal -> {
