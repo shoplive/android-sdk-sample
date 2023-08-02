@@ -16,6 +16,7 @@ import cloud.shoplive.sdk.network.ShopLiveNetwork
 import cloud.shoplive.sdk.network.response.ShopLiveShortformData
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformFullTypeHandler
+import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
 
 class HybridShortformActivity : AppCompatActivity() {
 
@@ -81,8 +82,8 @@ class HybridShortformActivity : AppCompatActivity() {
                 ).show()
             }
 
-            override fun onShare(activity: Activity, data: ShopLiveShortformData?, url: String?) {
-                // sharing
+            override fun onShare(activity: Activity, data: ShopLiveShortformShareData) {
+                // Do sharing
             }
         })
     }
