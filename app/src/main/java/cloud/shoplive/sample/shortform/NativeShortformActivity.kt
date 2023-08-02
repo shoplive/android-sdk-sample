@@ -17,6 +17,7 @@ import cloud.shoplive.sdk.shorts.ShopLiveShortformNativeHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformProductListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformRelatedData
+import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformSubmitListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformUrlListener
 import com.google.android.material.tabs.TabLayout
@@ -102,8 +103,8 @@ class NativeShortformActivity : AppCompatActivity() {
                 ).show()
             }
 
-            override fun onShare(activity: Activity, data: ShopLiveShortformData?, url: String?) {
-                // Use share
+            override fun onShare(activity: Activity, data: ShopLiveShortformShareData) {
+                // Do sharing
             }
         })
 
