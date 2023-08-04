@@ -5,111 +5,25 @@
     android:layout_height="match_parent">
 
     <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
-        android:id="@+id/shortsCardTypeSubtitle"
-        android:layout_width="wrap_content"
+        android:id="@+id/shortsCardTitle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:ellipsize="end"
-        android:maxLines="1"
+        android:layout_margin="16dp"
         android:text="@string/shortform_tab_main_subtitle"
         android:textColor="#000"
-        android:textSize="16dp"
+        android:textSize="15dp"
         android:textStyle="bold"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@id/shortsCardTypeRadioGroup"
-        app:layout_constraintEnd_toStartOf="@id/shortsCardTypeSnap"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <CheckBox
-        android:id="@+id/shortsCardTypeSnap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:checked="true"
-        android:text="@string/shortform_snap"
-        android:textColor="#000"
-        android:textSize="13dp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@id/shortsCardTypeSubtitle"
-        app:layout_constraintEnd_toStartOf="@id/shortsCardTypeWifiOnly"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/shortsCardTypeSubtitle"
-        app:layout_constraintTop_toTopOf="@id/shortsCardTypeSubtitle" />
-
-    <CheckBox
-        android:id="@+id/shortsCardTypeWifiOnly"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:checked="false"
-        android:text="@string/shortform_only_wifi"
-        android:textColor="#000"
-        android:textSize="13dp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@id/shortsCardTypeSubtitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/shortsCardTypeSnap"
-        app:layout_constraintTop_toTopOf="@id/shortsCardTypeSubtitle" />
+        app:layout_constraintBottom_toTopOf="@id/shortsCardTypeView"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <RadioGroup
-        android:id="@+id/shortsCardTypeRadioGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/shortsCardTypeViewParent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shortsCardTypeSubtitle">
-
-        <RadioButton
-            android:id="@+id/shortsCardTypeRadioType1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="@string/shortform_view_type1" />
-
-        <RadioButton
-            android:id="@+id/shortsCardTypeRadioType2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:checked="true"
-            android:text="@string/shortform_view_type2" />
-
-    </RadioGroup>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/shortsCardTypeViewParent"
+    <cloud.shoplive.sdk.shorts.ShopLiveShortformCardTypeView
+        android:id="@+id/shortsCardTypeView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shortsCardTypeRadioGroup">
-
-        <cloud.shoplive.sdk.shorts.ShopLiveShortformCardTypeView
-            android:id="@+id/shortsCardType1View"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <cloud.shoplive.sdk.shorts.ShopLiveShortformCardTypeView
-            android:id="@+id/shortsCardType2View"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@id/shortsCardTitle" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

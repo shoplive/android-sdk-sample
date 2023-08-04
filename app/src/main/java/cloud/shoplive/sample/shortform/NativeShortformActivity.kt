@@ -5,12 +5,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import cloud.shoplive.sample.PreferencesUtilImpl
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.ActivityNativeShortformBinding
+import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLiveCommonError
+import cloud.shoplive.sdk.common.ShopLiveCommonUser
+import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
 import cloud.shoplive.sdk.common.utils.ShopLiveDataSaver
-import cloud.shoplive.sdk.network.response.ShopLiveShortformData
+import cloud.shoplive.sdk.network.ShopLiveNetwork
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformFullTypeHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformNativeHandler
@@ -63,6 +70,20 @@ class NativeShortformActivity : AppCompatActivity() {
             tab.text = text
         }
     }
+
+
+    private val preferencesUtil by lazy {
+        PreferencesUtilImpl(this@NativeShortformActivity)
+    }
+    private val viewModel: ShortformViewModel by viewModels {
+        viewModelFactory {
+            initializer {
+                ShortformViewModel(preferencesUtil)
+            }
+        }
+    }
+
+    private var dialog: ShortformOptionDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,6 +148,35 @@ class NativeShortformActivity : AppCompatActivity() {
                 }
             }
         })
+
+        binding.settingButton.setOnClickListener {
+            dialog?.dismiss()
+            dialog = ShortformOptionDialog(
+                this
+            ) { data ->
+                data.userId?.let { userId ->
+                    val accessKey = ShopLiveCommon.getAccessKey()?:return@ShortformOptionDialog
+                    ShopLiveCommon.setUserJWT(
+                        accessKey,
+                        ShopLiveCommonUser(userId).apply {
+                            name = data.name
+                            age = data.age
+                            gender = when (data.gender) {
+                                "m" -> ShopLiveCommonUserGender.MALE
+                                "f" -> ShopLiveCommonUserGender.FEMALE
+                                "n" -> ShopLiveCommonUserGender.NEUTRAL
+                                else -> null
+                            }
+                            userScore = data.userScore
+                        })
+                }
+                viewModel.setShortformOption(data)
+                viewModel.submitLiveData.value = true
+                dialog?.dismiss()
+            }.apply {
+                this.show()
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

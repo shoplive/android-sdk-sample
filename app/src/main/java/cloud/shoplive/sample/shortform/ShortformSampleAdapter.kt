@@ -1,5 +1,6 @@
 package cloud.shoplive.sample.shortform
 
+import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,19 +12,23 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import cloud.shoplive.sample.R
+import cloud.shoplive.sample.extension.toDp
 import cloud.shoplive.sdk.common.ShopLiveCommonError
+import cloud.shoplive.sdk.network.request.ShopLiveShortformTagSearchOperator
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformBaseTypeHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformHorizontalTypeView
 
 class ShortformSampleAdapter(
-    private val enablePlayLiveData: LiveData<Boolean?>,
-    private val snapLiveData: LiveData<Boolean>,
-    private val onlyWifiLiveData: LiveData<Boolean>
+    private val viewModel: ShortformViewModel,
+    private val enablePlayLiveData: LiveData<Boolean?>
 ) :
     ListAdapter<ShortformSampleData, RecyclerView.ViewHolder>(object :
         DiffUtil.ItemCallback<ShortformSampleData>() {
-        override fun areContentsTheSame(oldItem: ShortformSampleData, newItem: ShortformSampleData) =
+        override fun areContentsTheSame(
+            oldItem: ShortformSampleData,
+            newItem: ShortformSampleData
+        ) =
             true
 
         override fun areItemsTheSame(oldItem: ShortformSampleData, newItem: ShortformSampleData) =
@@ -90,31 +95,9 @@ class ShortformSampleAdapter(
         val shortsHorizontalTypeView: ShopLiveShortformHorizontalTypeView =
             itemView.findViewById(R.id.horitontalTypeView)
 
-        private val enablePlayObserver = Observer<Boolean?> { isPlay ->
-            isPlay ?: return@Observer
-            if (isPlay) {
-                shortsHorizontalTypeView.enablePlayVideos()
-            } else {
-                shortsHorizontalTypeView.disablePlayVideos()
-            }
-        }
-        private val snapObserver = Observer<Boolean> { isChecked ->
-            if (isChecked) {
-                shortsHorizontalTypeView.enableSnap()
-            } else {
-                shortsHorizontalTypeView.disableSnap()
-            }
-        }
-        private val onlyWifiObserver = Observer<Boolean> { isChecked ->
-            shortsHorizontalTypeView.setPlayOnlyWifi(isChecked)
-        }
-
         init {
-            shortsHorizontalTypeView.enableShuffle()
-            shortsHorizontalTypeView.setVisibleViewCount(false)
             shortsHorizontalTypeView.setPlayableType(ShopLiveShortform.PlayableType.FIRST)
-            shortsHorizontalTypeView.setViewType(ShopLiveShortform.CardViewType.CARD_TYPE1)
-            shortsHorizontalTypeView.setPlayOnlyWifi(onlyWifiLiveData.value == true)
+            shortsHorizontalTypeView.setViewType(viewModel.getSavedCardType())
             shortsHorizontalTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
                 override fun onError(error: ShopLiveCommonError) {
                     Toast.makeText(
@@ -129,18 +112,136 @@ class ShortformSampleAdapter(
         override fun onBind(data: ShortformSampleData) {
             titleView.text = data.title
             shortsHorizontalTypeView.submit(data.collectionData, data.response)
+            shortsHorizontalTypeView.scrollToTop(true)
+        }
+
+        private val enablePlayObserver = Observer<Boolean?> { isPlay ->
+            isPlay ?: return@Observer
+            if (isPlay) {
+                shortsHorizontalTypeView.enablePlayVideos()
+            } else {
+                shortsHorizontalTypeView.disablePlayVideos()
+            }
+        }
+
+        private val playableTypeObserver = Observer<ShopLiveShortform.PlayableType> {
+            shortsHorizontalTypeView.setPlayableType(it)
+        }
+
+        private val hashTagObserver = Observer<Pair<List<String>?, ShopLiveShortformTagSearchOperator>>{ (hashTags, operator) ->
+            shortsHorizontalTypeView.setHashTags(hashTags, operator)
+        }
+
+        private val brandObserver = Observer<List<String>?>{
+            shortsHorizontalTypeView.setBrands(it)
+        }
+
+        private val isVisibleTitleObserver = Observer<Boolean> {
+            shortsHorizontalTypeView.setVisibleTitle(it)
+        }
+
+        private val isVisibleBrandObserver = Observer<Boolean> {
+            shortsHorizontalTypeView.setVisibleBrand(it)
+        }
+
+        private val isVisibleProductCountObserver = Observer<Boolean> {
+            shortsHorizontalTypeView.setVisibleProductCount(it)
+        }
+
+        private val isVisibleViewCountObserver = Observer<Boolean> {
+            shortsHorizontalTypeView.setVisibleViewCount(it)
+        }
+
+        private val isEnableShuffleObserver = Observer<Boolean> {
+            if (it) {
+                shortsHorizontalTypeView.enableShuffle()
+            } else {
+                shortsHorizontalTypeView.disableShuffle()
+            }
+        }
+
+        private val isEnableSnapObserver = Observer<Boolean> {
+            if (it) {
+                shortsHorizontalTypeView.enableSnap()
+            } else {
+                shortsHorizontalTypeView.disableSnap()
+            }
+        }
+
+        private val isEnablePlayVideosObserver = Observer<Boolean> {
+            if (it) {
+                shortsHorizontalTypeView.enablePlayVideos()
+            } else {
+                shortsHorizontalTypeView.disablePlayVideos()
+            }
+        }
+
+        private val radiusObserver = Observer<Int?> {
+            shortsHorizontalTypeView.setRadius(it?.toDp(itemView.context) ?: 0f)
+        }
+
+        private val distanceObserver = Observer<Int?>  {
+            val distance = it ?: return@Observer
+            shortsHorizontalTypeView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    super.getItemOffsets(outRect, view, parent, state)
+                    parent.getChildAdapterPosition(view)
+                    val spanCount = shortsHorizontalTypeView.getSize()
+                    if ((parent.getChildAdapterPosition(view) % spanCount) == 0) {
+                        outRect.top = (distance / 2).toDp(view.context).toInt()
+                        outRect.bottom = (distance / 2).toDp(view.context).toInt()
+                        outRect.left = distance.toDp(view.context).toInt()
+                        outRect.right = (distance / 2).toDp(view.context).toInt()
+                    } else if ((parent.getChildAdapterPosition(view) % spanCount) == spanCount - 1) {
+                        outRect.top = (distance / 2).toDp(view.context).toInt()
+                        outRect.bottom = (distance / 2).toDp(view.context).toInt()
+                        outRect.left = (distance / 2).toDp(view.context).toInt()
+                        outRect.right = distance.toDp(view.context).toInt()
+                    } else {
+                        outRect.top = (distance / 2).toDp(view.context).toInt()
+                        outRect.bottom = (distance / 2).toDp(view.context).toInt()
+                        outRect.left = (distance / 2).toDp(view.context).toInt()
+                        outRect.right = (distance / 2).toDp(view.context).toInt()
+                    }
+                }
+            })
         }
 
         override fun onViewAttachedToWindow() {
             enablePlayLiveData.observeForever(enablePlayObserver)
-            snapLiveData.observeForever(snapObserver)
-            onlyWifiLiveData.observeForever(onlyWifiObserver)
+            viewModel.playableTypeLiveData.observeForever(playableTypeObserver)
+            viewModel.hashTagLiveData.observeForever(hashTagObserver)
+            viewModel.brandLiveData.observeForever(brandObserver)
+            viewModel.isVisibleTitleLiveData.observeForever(isVisibleTitleObserver)
+            viewModel.isVisibleBrandLiveData.observeForever(isVisibleBrandObserver)
+            viewModel.isVisibleProductCountLiveData.observeForever(isVisibleProductCountObserver)
+            viewModel.isVisibleViewCountLiveData.observeForever(isVisibleViewCountObserver)
+            viewModel.isEnableShuffleLiveData.observeForever(isEnableShuffleObserver)
+            viewModel.isEnableSnapLiveData.observeForever(isEnableSnapObserver)
+            viewModel.isEnablePlayVideosLiveData.observeForever(isEnablePlayVideosObserver)
+            viewModel.radiusLiveData.observeForever(radiusObserver)
+            viewModel.distanceLiveData.observeForever(distanceObserver)
         }
 
         override fun onViewDetachedFromWindow() {
             enablePlayLiveData.removeObserver(enablePlayObserver)
-            snapLiveData.removeObserver(snapObserver)
-            onlyWifiLiveData.removeObserver(onlyWifiObserver)
+            viewModel.playableTypeLiveData.removeObserver(playableTypeObserver)
+            viewModel.hashTagLiveData.removeObserver(hashTagObserver)
+            viewModel.brandLiveData.removeObserver(brandObserver)
+            viewModel.isVisibleTitleLiveData.removeObserver(isVisibleTitleObserver)
+            viewModel.isVisibleBrandLiveData.removeObserver(isVisibleBrandObserver)
+            viewModel.isVisibleProductCountLiveData.removeObserver(isVisibleProductCountObserver)
+            viewModel.isVisibleViewCountLiveData.removeObserver(isVisibleViewCountObserver)
+            viewModel.isEnableShuffleLiveData.removeObserver(isEnableShuffleObserver)
+            viewModel.isEnableSnapLiveData.removeObserver(isEnableSnapObserver)
+            viewModel.isEnablePlayVideosLiveData.removeObserver(isEnablePlayVideosObserver)
+            viewModel.radiusLiveData.removeObserver(radiusObserver)
+            viewModel.distanceLiveData.removeObserver(distanceObserver)
         }
     }
 

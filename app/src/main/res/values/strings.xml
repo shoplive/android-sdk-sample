@@ -184,6 +184,39 @@
     <string name="shortform_view_type1">type1</string>
     <string name="shortform_view_type2">type2</string>
     <string name="shortform_view_type3">type3</string>
+    <string name="shortform_button_setting">Setting</string>
 
+    <string name="shortform_option_access_key">AccessKey</string>
+    <string name="shortform_option_user_title">User</string>
+    <string name="shortform_option_user_id_hint">UserId (Required)</string>
+    <string name="shortform_option_user_name_hint">Name</string>
+    <string name="shortform_option_user_age_hint">Age</string>
+    <string name="shortform_option_user_gender_hint">m, f, n</string>
+    <string name="shortform_option_user_score_hint">UserScore</string>
+    <string name="shortform_option_card_type">Card Type (Applied on restart)</string>
+    <string name="shortform_option_card_type0">Type0</string>
+    <string name="shortform_option_card_type1">Type1</string>
+    <string name="shortform_option_card_type2">Type2</string>
+    <string name="shortform_option_playable_type">Playable Type (Only horizontal)</string>
+    <string name="shortform_option_playable_type_first">First</string>
+    <string name="shortform_option_playable_type_center">Center</string>
+    <string name="shortform_option_playable_type_all">All</string>
+    <string name="shortform_option_hash_tag">HashTags</string>
+    <string name="shortform_option_hash_tag_hint">Separated by \",\" ex) HashTag1,HashTag2</string>
+    <string name="shortform_option_hash_tag_or">OR</string>
+    <string name="shortform_option_hash_tag_and">AND</string>
+    <string name="shortform_option_brand">Brands</string>
+    <string name="shortform_option_brand_hint">Separated by \",\" ex) Brand1,Brand2</string>
+    <string name="shortform_option_visible_view_count">Visible view count</string>
+    <string name="shortform_option_visible_title">Visible title</string>
+    <string name="shortform_option_visible_description">Visible description</string>
+    <string name="shortform_option_visible_brand">Visible brand</string>
+    <string name="shortform_option_visible_product_count">Visible product count</string>
+    <string name="shortform_option_enable_shuffle">Enable shuffle</string>
+    <string name="shortform_option_enable_snap">Enable snap</string>
+    <string name="shortform_option_enable_play_videos">Enable play videos</string>
+    <string name="shortform_option_enable_play_only_wifi">Enable play only wifi</string>
+    <string name="shortform_option_set_radius">Set card radius</string>
+    <string name="shortform_option_set_distance">Set card distance</string>
 
 </resources>
