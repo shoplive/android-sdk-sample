@@ -5,64 +5,24 @@
     android:layout_height="match_parent">
 
     <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
-        android:id="@+id/shortsVerticalTypeSubtitle"
-        android:layout_width="wrap_content"
+        android:id="@+id/shortsVerticalTitle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:ellipsize="end"
-        android:maxLines="1"
+        android:layout_margin="16dp"
         android:text="@string/shortform_tab_vertical_subtitle"
         android:textColor="#000"
-        android:textSize="16dp"
+        android:textSize="15dp"
         android:textStyle="bold"
-        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@id/shortsVerticalTypeView"
-        app:layout_constraintEnd_toStartOf="@id/shortsVerticalTypeSnap"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <CheckBox
-        android:id="@+id/shortsVerticalTypeSnap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="@string/shortform_snap"
-        android:textColor="#000"
-        android:textSize="13dp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@id/shortsVerticalTypeSubtitle"
-        app:layout_constraintEnd_toStartOf="@id/shortsVerticalTypeWifiOnly"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/shortsVerticalTypeSubtitle"
-        app:layout_constraintTop_toTopOf="@id/shortsVerticalTypeSubtitle" />
-
-    <CheckBox
-        android:id="@+id/shortsVerticalTypeWifiOnly"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:checked="false"
-        android:text="@string/shortform_only_wifi"
-        android:textColor="#000"
-        android:textSize="13dp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="@id/shortsVerticalTypeSubtitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/shortsVerticalTypeSnap"
-        app:layout_constraintTop_toTopOf="@id/shortsVerticalTypeSubtitle" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <cloud.shoplive.sdk.shorts.ShopLiveShortformVerticalTypeView
         android:id="@+id/shortsVerticalTypeView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shortsVerticalTypeSubtitle" />
+        app:layout_constraintTop_toBottomOf="@id/shortsVerticalTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
