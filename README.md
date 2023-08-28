@@ -61,8 +61,16 @@ Then, add the dependency to the project's top-level `build.gradle` file:
 ```gradle
 dependencies {
     ...
-    def shoplive_sdk_version = "1.4.5"
-    implementation "cloud.shoplive:shoplive-sdk-all:$shoplive_sdk_version"
+    def shoplive_sdk_version = "1.4.7"
+    def your_exoplayer_version = "2.18.1"
+    def shoplive_exoplayer_version = your_exoplayer_version + "." + "5"
+
+    // For submodules
+    implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version" // must required
+    implementation "cloud.shoplive:shoplive-exoplayer:$shoplive_exoplayer_version" // must required
+    implementation "cloud.shoplive:shoplive-sdk-core:$shoplive_sdk_version" // for live player
+    implementation "cloud.shoplive:shoplive-network:$shoplive_sdk_version" // for short-form player
+    implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version" // for short-form player
     ...
 }
 ```
