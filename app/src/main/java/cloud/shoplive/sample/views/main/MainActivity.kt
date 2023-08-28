@@ -30,6 +30,7 @@ import cloud.shoplive.sdk.OnAudioFocusListener
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveHandler
 import cloud.shoplive.sdk.ShopLiveHandlerCallback
+import cloud.shoplive.sdk.ShopLivePreviewData
 import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLiveCommonUser
@@ -341,11 +342,6 @@ class MainActivity : AppCompatActivity() {
 
         ShopLive.setStatusBarTransparent(Options.isStatusBarTransparent())
 
-        ShopLive.setUiMessage(
-            ShopLive.UiMessageType.NOT_SUPPORT_PIP,
-            R.string.alert_not_support_pip
-        )
-
         ShopLive.setSoundFocusHandling(if (Options.isMuteWhenLossAudioFocus()) {
             object : OnAudioFocusListener {
                 override fun onGain() {
@@ -368,13 +364,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun startPreview() {
         ShopLive.showPreviewPopup(
-            this,
-            CampaignSettings.accessKey(this) ?: return,
-            CampaignSettings.campaignKey(this) ?: return,
-            true,
-            true,
-            Options.isUseCloseButton(),
-            ShopLivePreviewPositionConfig.BOTTOM_RIGHT
+            ShopLivePreviewData(
+                this,
+                CampaignSettings.accessKey(this) ?: return,
+                CampaignSettings.campaignKey(this) ?: return,
+            ).apply {
+                setUseCloseButton(true)
+            }
         )
     }
 
