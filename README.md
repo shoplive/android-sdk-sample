@@ -61,7 +61,7 @@ Then, add the dependency to the project's top-level `build.gradle` file:
 ```gradle
 dependencies {
     ...
-    def shoplive_sdk_version = "1.4.7"
+    def shoplive_sdk_version = "1.4.8"
     def your_exoplayer_version = "2.18.1"
     def shoplive_exoplayer_version = your_exoplayer_version + "." + "5"
 
