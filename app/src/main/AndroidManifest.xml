@@ -56,7 +56,7 @@
 
         <activity
             android:name="cloud.shoplive.sample.shortform.NativeShortformActivity"
-            android:theme="@style/Theme.ShopLiveSample" />
+            android:theme="@style/Theme.ShopLiveSample.NoActionBar" />
 
         <activity
             android:name="cloud.shoplive.sample.shortform.ShortformProductActivity"

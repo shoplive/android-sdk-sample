@@ -3,7 +3,11 @@ package cloud.shoplive.sample.shortform
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.DialogShortformOptionBinding
 import cloud.shoplive.sdk.common.ShopLiveCommon
 
@@ -28,8 +32,11 @@ data class ShortformOptionDialogData(
     val isEnableSnap: Boolean,
     val isEnablePlayVideos: Boolean,
     val isEnablePlayOnlyWifi: Boolean,
+    val isBookmarkVisible: Boolean,
+    val isShareButtonVisible: Boolean,
+    val isCommentButtonVisible: Boolean,
+    val isLikeButtonVisible: Boolean,
     val radius: Int?,
-    val distance: Int?,
 )
 
 class ShortformOptionDialog(
@@ -63,15 +70,16 @@ class ShortformOptionDialog(
         private var isEnableSnap = false
         private var isEnablePlayVideos = true
         private var isEnablePlayOnlyWifi = false
-
+        private var isBookmarkVisible = true
+        private var isShareButtonVisible = true
+        private var isCommentButtonVisible = true
+        private var isLikeButtonVisible = true
         private var radius: Int? = null
-        private var distance: Int? = null
     }
 
     private val binding: DialogShortformOptionBinding by lazy {
         DialogShortformOptionBinding.inflate(layoutInflater)
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,8 +119,11 @@ class ShortformOptionDialog(
         binding.enableSnapCheckBox.isChecked = isEnableSnap
         binding.enablePlayVideosCheckBox.isChecked = isEnablePlayVideos
         binding.enablePlayOnlyWifiCheckBox.isChecked = isEnablePlayOnlyWifi
+        binding.visibleBookmarkButtonCheckBox.isChecked = isBookmarkVisible
+        binding.visibleShareButtonCheckBox.isChecked = isShareButtonVisible
+        binding.visibleCommentButtonCheckBox.isChecked = isCommentButtonVisible
+        binding.visibleLikeButtonCheckBox.isChecked = isLikeButtonVisible
         binding.radiusEdit.setText(radius?.toString())
-        binding.distanceEdit.setText(distance?.toString())
 
         binding.confirmButton.setOnClickListener {
             val accessKey = binding.accessKeyEdit.text?.toString()
@@ -120,11 +131,21 @@ class ShortformOptionDialog(
                 binding.accessKeyEdit.requestFocus()
                 return@setOnClickListener
             }
-            userId = binding.userIdEdit.text?.toString()
-            name = binding.userNameEdit.text?.toString()
-            age = binding.userAgeEdit.text?.toString()?.toIntOrNull()
-            gender = binding.userGenderEdit.text?.toString()
-            userScore = binding.userScoreEdit.text?.toString()?.toIntOrNull()
+            userId = binding.userIdEdit.text?.toString()?.let { text ->
+                return@let text.ifBlank { null }
+            }
+            name = binding.userNameEdit.text?.toString()?.let { text ->
+                return@let text.ifBlank { null }
+            }
+            age = binding.userAgeEdit.text?.toString()?.let { text ->
+                return@let text.ifBlank { null }
+            }?.toIntOrNull()
+            gender = binding.userGenderEdit.text?.toString()?.let { text ->
+                return@let text.ifBlank { null }
+            }
+            userScore = binding.userScoreEdit.text?.toString()?.let { text ->
+                return@let text.ifBlank { null }
+            }?.toIntOrNull()
 
             cardTypePosition = if (binding.cardType0.isChecked) {
                 0
@@ -165,9 +186,12 @@ class ShortformOptionDialog(
             isEnableSnap = binding.enableSnapCheckBox.isChecked
             isEnablePlayVideos = binding.enablePlayVideosCheckBox.isChecked
             isEnablePlayOnlyWifi = binding.enablePlayOnlyWifiCheckBox.isChecked
+            isBookmarkVisible = binding.visibleBookmarkButtonCheckBox.isChecked
+            isShareButtonVisible = binding.visibleShareButtonCheckBox.isChecked
+            isCommentButtonVisible = binding.visibleCommentButtonCheckBox.isChecked
+            isLikeButtonVisible = binding.visibleLikeButtonCheckBox.isChecked
 
             radius = binding.radiusEdit.text?.toString()?.toIntOrNull()
-            distance = binding.distanceEdit.text?.toString()?.toIntOrNull()
 
             listener.invoke(
                 ShortformOptionDialogData(
@@ -191,8 +215,11 @@ class ShortformOptionDialog(
                     isEnableSnap,
                     isEnablePlayVideos,
                     isEnablePlayOnlyWifi,
+                    isBookmarkVisible,
+                    isShareButtonVisible,
+                    isCommentButtonVisible,
+                    isLikeButtonVisible,
                     radius,
-                    distance
                 )
             )
         }

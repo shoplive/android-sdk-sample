@@ -17,7 +17,6 @@ import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
 import cloud.shoplive.sdk.common.utils.ShopLiveDataSaver
-import cloud.shoplive.sdk.network.ShopLiveNetwork
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformFullTypeHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformNativeHandler
@@ -25,7 +24,6 @@ import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformProductListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformRelatedData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
-import cloud.shoplive.sdk.shorts.ShopLiveShortformSubmitListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformUrlListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -34,11 +32,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 class NativeShortformActivity : AppCompatActivity() {
 
     companion object {
-        private const val PAGE_SHORTS_MAIN = 0
-        private const val PAGE_SHORTS_VERTICAL = 1
-        private const val PAGE_SHORTS_HORIZONTAL = 2
+        const val PAGE_SHORTS_MAIN = 0
+        const val PAGE_SHORTS_VERTICAL = 1
+        const val PAGE_SHORTS_HORIZONTAL = 2
+        const val PAGE_SHORTS_FULL = 3
 
-        fun buildIntent(context: Context): Intent {
+        fun intent(context: Context): Intent {
             return Intent(context, NativeShortformActivity::class.java)
         }
     }
@@ -54,6 +53,7 @@ class NativeShortformActivity : AppCompatActivity() {
                     ShortformMainFragment.newInstance(),
                     ShortformVerticalFragment.newInstance(),
                     ShortformHorizontalFragment.newInstance(),
+                    ShortformFullFragment.newInstance(),
                 )
             )
         }
@@ -65,12 +65,12 @@ class NativeShortformActivity : AppCompatActivity() {
                 PAGE_SHORTS_MAIN -> getString(R.string.shortform_tab_card)
                 PAGE_SHORTS_VERTICAL -> getString(R.string.shortform_tab_vertical)
                 PAGE_SHORTS_HORIZONTAL -> getString(R.string.shortform_tab_horizontal)
+                PAGE_SHORTS_FULL -> getString(R.string.shortform_tab_full)
                 else -> ""
             }
             tab.text = text
         }
     }
-
 
     private val preferencesUtil by lazy {
         PreferencesUtilImpl(this@NativeShortformActivity)
@@ -110,8 +110,7 @@ class NativeShortformActivity : AppCompatActivity() {
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val position = tab?.position ?: return
-                (tabAdapter.currentList.getOrNull(position) as? ShopLiveShortformSubmitListener)
-                    ?.submit()
+                viewModel.submitLiveData.value = position
             }
         })
 
@@ -124,8 +123,13 @@ class NativeShortformActivity : AppCompatActivity() {
                 ).show()
             }
 
+            override fun onEvent(command: String, payload: String?) {
+                super.onEvent(command, payload)
+                // Do something
+            }
+
             override fun onShare(activity: Activity, data: ShopLiveShortformShareData) {
-                // Do sharing
+                showShareDialog(data.title ?: return)
             }
         })
 
@@ -133,11 +137,11 @@ class NativeShortformActivity : AppCompatActivity() {
             override fun getOnClickProductListener(): ShopLiveShortformProductListener {
                 return ShopLiveShortformProductListener { _, product ->
                     // Something landing customer
-                    ShopLiveShortform.showPreview(this@NativeShortformActivity, ShopLiveShortformRelatedData().apply {
-                        productId = product.productId
-                        sku = product.sku
-                        url = product.url
-                    })
+                    ShopLiveShortform.showPreview(
+                        this@NativeShortformActivity,
+                        ShopLiveShortformRelatedData().apply {
+                            productId = product.productId
+                        })
                 }
             }
 
@@ -152,10 +156,10 @@ class NativeShortformActivity : AppCompatActivity() {
         binding.settingButton.setOnClickListener {
             dialog?.dismiss()
             dialog = ShortformOptionDialog(
-                this
+                context = this@NativeShortformActivity,
             ) { data ->
                 data.userId?.let { userId ->
-                    val accessKey = ShopLiveCommon.getAccessKey()?:return@ShortformOptionDialog
+                    val accessKey = ShopLiveCommon.getAccessKey() ?: return@ShortformOptionDialog
                     ShopLiveCommon.setUserJWT(
                         accessKey,
                         ShopLiveCommonUser(userId).apply {
@@ -169,13 +173,21 @@ class NativeShortformActivity : AppCompatActivity() {
                             }
                             userScore = data.userScore
                         })
+                } ?: kotlin.run {
+                    ShopLiveCommon.clearAuth()
                 }
                 viewModel.setShortformOption(data)
-                viewModel.submitLiveData.value = true
+                viewModel.submitLiveData.value = binding.pager.currentItem
                 dialog?.dismiss()
+                recreate()
+                viewModel.needInitializeTabFlow.value = emptySet()
             }.apply {
                 this.show()
             }
+        }
+
+        viewModel.visibleFullTypeDataLiveData.observe(this) {
+            ShopLiveShortform.setVisibleFullTypeViews(it)
         }
     }
 
@@ -196,4 +208,15 @@ class NativeShortformActivity : AppCompatActivity() {
         }
         super.onBackPressed()
     }
+}
+
+private fun Context.showShareDialog(shareUrl: String) {
+    if (this is Activity && isFinishing) return
+
+    val sendIntent = Intent(Intent.ACTION_SEND)
+    sendIntent.putExtra(Intent.EXTRA_TEXT, shareUrl)
+    sendIntent.type = "text/plain"
+
+    val shareIntent = Intent.createChooser(sendIntent, null)
+    startActivity(shareIntent)
 }

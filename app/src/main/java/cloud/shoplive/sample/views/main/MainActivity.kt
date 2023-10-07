@@ -228,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             ShopLiveCommon.setAccessKey(accessKey)
-            startActivity(NativeShortformActivity.buildIntent(this))
+            startActivity(NativeShortformActivity.intent(this))
         }
 
         ShopLive.setHandler(shopliveHandler)

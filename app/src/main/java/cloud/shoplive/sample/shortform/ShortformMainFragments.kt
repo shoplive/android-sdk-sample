@@ -1,11 +1,9 @@
 package cloud.shoplive.sample.shortform
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,23 +12,28 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import cloud.shoplive.sample.PreferencesUtilImpl
-import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.FragmentShortformCardTypeBinding
+import cloud.shoplive.sample.databinding.FragmentShortformFullTypeBinding
 import cloud.shoplive.sample.databinding.FragmentShortformHorizontalTypeBinding
 import cloud.shoplive.sample.databinding.FragmentShortformVerticalTypeBinding
 import cloud.shoplive.sample.extension.toDp
+import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_FULL
+import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_HORIZONTAL
+import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_MAIN
+import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_VERTICAL
 import cloud.shoplive.sdk.common.ShopLiveCommonError
-import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformBaseTypeHandler
-import cloud.shoplive.sdk.shorts.ShopLiveShortformCardTypeView
 import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformSubmitListener
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
@@ -63,7 +66,6 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         super.onViewCreated(view, savedInstanceState)
         binding.shortsCardTypeView.setSpanCount(1)
         binding.shortsCardTypeView.setViewType(viewModel.getSavedCardType())
-        submit()
 
         viewModel.hashTagLiveData.observe(requireActivity()) { (hashTags, operator) ->
             binding.shortsCardTypeView.setHashTags(hashTags, operator)
@@ -107,49 +109,28 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
                 binding.shortsCardTypeView.disablePlayVideos()
             }
         }
-        viewModel.radiusLiveData.observe(requireActivity()) {
-            binding.shortsCardTypeView.setRadius(it?.toDp(requireActivity()) ?: 0f)
+        viewModel.isEnablePlayWifiLiveData.observe(requireActivity()) {
+            binding.shortsCardTypeView.setPlayOnlyWifi(it)
         }
-        viewModel.distanceLiveData.observe(requireActivity()) {
-            val distance = it ?: return@observe
-            binding.shortsCardTypeView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    super.getItemOffsets(outRect, view, parent, state)
-                    parent.getChildAdapterPosition(view)
-                    val spanCount = binding.shortsCardTypeView.spanCount
-                    if (spanCount == 1) {
-                        outRect.top = (distance / 2).toDp(view.context).toInt()
-                        outRect.bottom = (distance / 2).toDp(view.context).toInt()
-                        outRect.left = distance.toDp(view.context).toInt()
-                        outRect.right = distance.toDp(view.context).toInt()
-                    } else {
-                        if ((parent.getChildAdapterPosition(view) % spanCount) == 0) {
-                            outRect.top = (distance / 2).toDp(view.context).toInt()
-                            outRect.bottom = (distance / 2).toDp(view.context).toInt()
-                            outRect.left = distance.toDp(view.context).toInt()
-                            outRect.right = (distance / 2).toDp(view.context).toInt()
-                        } else if ((parent.getChildAdapterPosition(view) % spanCount) == spanCount - 1) {
-                            outRect.top = (distance / 2).toDp(view.context).toInt()
-                            outRect.bottom = (distance / 2).toDp(view.context).toInt()
-                            outRect.left = (distance / 2).toDp(view.context).toInt()
-                            outRect.right = distance.toDp(view.context).toInt()
-                        } else {
-                            outRect.top = (distance / 2).toDp(view.context).toInt()
-                            outRect.bottom = (distance / 2).toDp(view.context).toInt()
-                            outRect.left = (distance / 2).toDp(view.context).toInt()
-                            outRect.right = (distance / 2).toDp(view.context).toInt()
-                        }
-                    }
-                }
-            })
+        viewModel.radiusLiveData.observe(requireActivity()) {
+            binding.shortsCardTypeView.setRadius(it?.toDp(requireActivity()) ?: return@observe)
         }
         viewModel.submitLiveData.observe(requireActivity()) {
-            submit()
+            if (it == PAGE_SHORTS_MAIN) submit()
+        }
+
+        initializeCollectFlow()
+    }
+
+    private fun initializeCollectFlow() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.needInitializeTabFlow
+                .map { !it.contains(PAGE_SHORTS_MAIN) }
+                .filter { it }
+                .onEach {
+                    submit()
+                    viewModel.initializeTab(PAGE_SHORTS_MAIN)
+                }.collect()
         }
     }
 
@@ -205,7 +186,6 @@ class ShortformVerticalFragment : Fragment(), ShopLiveShortformPlayEnableListene
         super.onViewCreated(view, savedInstanceState)
         binding.shortsVerticalTypeView.setSpanCount(2)
         binding.shortsVerticalTypeView.setViewType(viewModel.getSavedCardType())
-        submit()
 
         viewModel.hashTagLiveData.observe(requireActivity()) { (hashTags, operator) ->
             binding.shortsVerticalTypeView.setHashTags(hashTags, operator)
@@ -246,43 +226,28 @@ class ShortformVerticalFragment : Fragment(), ShopLiveShortformPlayEnableListene
                 binding.shortsVerticalTypeView.disablePlayVideos()
             }
         }
-        viewModel.radiusLiveData.observe(requireActivity()) {
-            binding.shortsVerticalTypeView.setRadius(it?.toDp(requireActivity()) ?: 0f)
+        viewModel.isEnablePlayWifiLiveData.observe(requireActivity()) {
+            binding.shortsVerticalTypeView.setPlayOnlyWifi(it)
         }
-        viewModel.distanceLiveData.observe(requireActivity()) {
-            val distance = it ?: return@observe
-            binding.shortsVerticalTypeView.addItemDecoration(object :
-                RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    super.getItemOffsets(outRect, view, parent, state)
-                    parent.getChildAdapterPosition(view)
-                    val spanCount = binding.shortsVerticalTypeView.spanCount
-                    if ((parent.getChildAdapterPosition(view) % spanCount) == 0) {
-                        outRect.top = (distance / 2).toDp(view.context).toInt()
-                        outRect.bottom = (distance / 2).toDp(view.context).toInt()
-                        outRect.left = distance.toDp(view.context).toInt()
-                        outRect.right = (distance / 2).toDp(view.context).toInt()
-                    } else if ((parent.getChildAdapterPosition(view) % spanCount) == spanCount - 1) {
-                        outRect.top = (distance / 2).toDp(view.context).toInt()
-                        outRect.bottom = (distance / 2).toDp(view.context).toInt()
-                        outRect.left = (distance / 2).toDp(view.context).toInt()
-                        outRect.right = distance.toDp(view.context).toInt()
-                    } else {
-                        outRect.top = (distance / 2).toDp(view.context).toInt()
-                        outRect.bottom = (distance / 2).toDp(view.context).toInt()
-                        outRect.left = (distance * 3 / 4).toDp(view.context).toInt()
-                        outRect.right = (distance * 3 / 4).toDp(view.context).toInt()
-                    }
-                }
-            })
+        viewModel.radiusLiveData.observe(requireActivity()) {
+            binding.shortsVerticalTypeView.setRadius(it?.toDp(requireActivity()) ?: return@observe)
         }
         viewModel.submitLiveData.observe(requireActivity()) {
-            submit()
+            if (it == PAGE_SHORTS_VERTICAL) submit()
+        }
+
+        initializeCollectFlow()
+    }
+
+    private fun initializeCollectFlow() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.needInitializeTabFlow
+                .map { !it.contains(PAGE_SHORTS_VERTICAL) }
+                .filter { it }
+                .onEach {
+                    submit()
+                    viewModel.initializeTab(PAGE_SHORTS_VERTICAL)
+                }.collect()
         }
     }
 
@@ -347,10 +312,23 @@ class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListe
         binding.shortsHorizontalTypeRecyclerView.adapter = adapter
         binding.shortsHorizontalTypeRecyclerView.animation = null
 
-        submit()
-
         viewModel.submitLiveData.observe(requireActivity()) {
-            submit()
+            if (it == PAGE_SHORTS_HORIZONTAL) submit()
+        }
+
+        initializeCollectFlow()
+    }
+
+    private fun initializeCollectFlow() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.needInitializeTabFlow
+                .map { !it.contains(PAGE_SHORTS_HORIZONTAL) }
+                .filter { it }
+                .onEach {
+                    submit()
+                    viewModel.initializeTab(PAGE_SHORTS_HORIZONTAL)
+                }
+                .collect()
         }
     }
 
@@ -429,5 +407,122 @@ class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListe
     override fun disablePlayVideos() {
         enablePlayLiveData.value = false
         enablePlayLiveData.value = null
+    }
+}
+
+class ShortformFullFragment : Fragment(), ShopLiveShortformPlayEnableListener,
+    ShopLiveShortformSubmitListener {
+    companion object {
+        fun newInstance() = ShortformFullFragment()
+    }
+
+    private var _binding: FragmentShortformFullTypeBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel: ShortformViewModel by activityViewModels {
+        viewModelFactory {
+            initializer {
+                ShortformViewModel(PreferencesUtilImpl(requireContext()))
+            }
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentShortformFullTypeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.hashTagLiveData.observe(requireActivity()) { (hashTags, operator) ->
+            binding.shortsFullTypeView.setHashTags(hashTags, operator)
+        }
+        viewModel.brandLiveData.observe(requireActivity()) {
+            binding.shortsFullTypeView.setBrands(it)
+        }
+        viewModel.isVisibleTitleLiveData.observe(requireActivity()) {
+            binding.shortsFullTypeView.setVisibleTitle(it)
+        }
+        viewModel.isVisibleBrandLiveData.observe(requireActivity()) {
+            binding.shortsFullTypeView.setVisibleBrand(it)
+        }
+        viewModel.isVisibleProductCountLiveData.observe(requireActivity()) {
+            binding.shortsFullTypeView.setVisibleProductCount(it)
+        }
+        viewModel.isVisibleViewCountLiveData.observe(requireActivity()) {
+            binding.shortsFullTypeView.setVisibleViewCount(it)
+        }
+        viewModel.isEnableShuffleLiveData.observe(requireActivity()) {
+            if (it) {
+                binding.shortsFullTypeView.enableShuffle()
+            } else {
+                binding.shortsFullTypeView.disableShuffle()
+            }
+        }
+        viewModel.isEnablePlayVideosLiveData.observe(requireActivity()) {
+            if (it) {
+                binding.shortsFullTypeView.enablePlayVideos()
+            } else {
+                binding.shortsFullTypeView.disablePlayVideos()
+            }
+        }
+        viewModel.isEnablePlayWifiLiveData.observe(requireActivity()) {
+            binding.shortsFullTypeView.setPlayOnlyWifi(it)
+        }
+        viewModel.radiusLiveData.observe(requireActivity()) {
+            binding.shortsFullTypeView.setRadius(it?.toDp(requireActivity()) ?: return@observe)
+        }
+        viewModel.submitLiveData.observe(requireActivity()) {
+            if (it == PAGE_SHORTS_FULL) submit()
+        }
+        binding.shortsFullTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
+            override fun onError(error: ShopLiveCommonError) {
+                Toast.makeText(
+                    requireContext(),
+                    error.message ?: error.toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        initializeCollectFlow()
+    }
+
+    private fun initializeCollectFlow() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.needInitializeTabFlow
+                .map { !it.contains(PAGE_SHORTS_FULL) }
+                .filter { it }
+                .onEach {
+                    submit()
+                    viewModel.initializeTab(PAGE_SHORTS_FULL)
+                }.collect()
+        }
+    }
+
+    override fun submit() {
+        _binding?.shortsFullTypeView?.submit()
+        lifecycleScope.launch {
+            delay(300)
+            _binding?.shortsFullTypeView?.scrollToTop(true)
+        }
+    }
+
+    override fun enablePlayVideos() {
+        _binding?.shortsFullTypeView?.enablePlayVideos()
+    }
+
+    override fun disablePlayVideos() {
+        _binding?.shortsFullTypeView?.disablePlayVideos()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
