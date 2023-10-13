@@ -1,7 +1,11 @@
 package cloud.shoplive.sample.shortform
 
 import android.content.Context
-import cloud.shoplive.sdk.network.request.ShopLiveShortformTagSearchOperator
+import androidx.annotation.IntDef
+import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_FULL
+import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_HORIZONTAL
+import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_MAIN
+import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_VERTICAL
 import cloud.shoplive.sdk.network.response.ShopLiveShortformCollectionResponse
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionData
@@ -36,3 +40,6 @@ data class ShortformSampleData(
         }
     }
 }
+
+@IntDef(value = [PAGE_SHORTS_MAIN, PAGE_SHORTS_VERTICAL, PAGE_SHORTS_HORIZONTAL, PAGE_SHORTS_FULL])
+annotation class ShortFormPage

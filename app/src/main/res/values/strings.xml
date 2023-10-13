@@ -175,12 +175,14 @@
     <string name="shortform_tab_card">Card</string>
     <string name="shortform_tab_vertical">Col</string>
     <string name="shortform_tab_horizontal">Row</string>
+    <string name="shortform_tab_full">Full</string>
     <string name="shortform_tab_web">Web</string>
     <string name="shortform_snap">SNAP</string>
     <string name="shortform_only_wifi">ONLY WIFI</string>
     <string name="shortform_tab_main_subtitle">Highlight content</string>
     <string name="shortform_tab_vertical_subtitle">Highlight exposure</string>
     <string name="shortform_tab_horizontal_subtitle">Free space, Banner</string>
+    <string name="shortform_tab_full_subtitle">Expand</string>
     <string name="shortform_view_type1">type1</string>
     <string name="shortform_view_type2">type2</string>
     <string name="shortform_view_type3">type3</string>
@@ -216,6 +218,10 @@
     <string name="shortform_option_enable_snap">Enable snap</string>
     <string name="shortform_option_enable_play_videos">Enable play videos</string>
     <string name="shortform_option_enable_play_only_wifi">Enable play only wifi</string>
+    <string name="shortform_option_visible_bookmark_button">Visible bookmark button</string>
+    <string name="shortform_option_visible_share_button">Visible share button</string>
+    <string name="shortform_option_visible_comment_button">Visible comment button</string>
+    <string name="shortform_option_visible_like_button">Visible like button</string>
     <string name="shortform_option_set_radius">Set card radius</string>
     <string name="shortform_option_set_distance">Set card distance</string>
 

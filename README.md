@@ -1,7 +1,7 @@
 # [Shoplive](https://www.shoplive.cloud/kr) Player SDK for Android
 
-[![Platform](https://img.shields.io/badge/platform-android-orange.svg)](https://github.com/sendbird/sendbird-chat-sdk-android)
-[![Languages](https://img.shields.io/badge/language-kotlin-orange.svg)](https://github.com/sendbird/sendbird-chat-sdk-android)
+[![Platform](https://img.shields.io/badge/platform-android-orange.svg)](https://github.com/shoplive/android-sdk-sample)
+[![Languages](https://img.shields.io/badge/language-kotlin-orange.svg)](https://github.com/shoplive/android-sdk-sample)
 
 ## Table of contents
 
@@ -28,7 +28,7 @@ If you have any comments, questions or feature requests, let us know in the [ema
 The minimum requirements for the Player SDK for Android are:
 
 - `Android 4.4 (API level 19) or higher`
-- `targetSdkVersion 31 or higher`
+- `targetSdkVersion 33 or higher`
 
 ## Getting started
 
@@ -61,15 +61,15 @@ Then, add the dependency to the project's top-level `build.gradle` file:
 ```gradle
 dependencies {
     ...
-    def shoplive_sdk_version = "1.4.8"
+    def shoplive_sdk_version = "1.4.9"
     def your_exoplayer_version = "2.18.1"
-    def shoplive_exoplayer_version = your_exoplayer_version + "." + "5"
+    def shoplive_exoplayer_version = your_exoplayer_version + "." + "6"
 
     // For submodules
     implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version" // must required
     implementation "cloud.shoplive:shoplive-exoplayer:$shoplive_exoplayer_version" // must required
+    implementation "cloud.shoplive:shoplive-network:$shoplive_sdk_version" // must required
     implementation "cloud.shoplive:shoplive-sdk-core:$shoplive_sdk_version" // for live player
-    implementation "cloud.shoplive:shoplive-network:$shoplive_sdk_version" // for short-form player
     implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version" // for short-form player
     ...
 }
@@ -149,7 +149,7 @@ Play the video using the access key and campaign key.
 ```
 ShopLive.setAccessKey("{accessKey}")
 
-ShopLive.play("{campaignKey}") 
+ShopLive.play(context, "{campaignKey}") 
 ```
 
 #### B. Preview the campaign

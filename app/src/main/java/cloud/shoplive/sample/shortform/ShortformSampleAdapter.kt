@@ -28,11 +28,10 @@ class ShortformSampleAdapter(
         override fun areContentsTheSame(
             oldItem: ShortformSampleData,
             newItem: ShortformSampleData
-        ) =
-            true
+        ) = true
 
         override fun areItemsTheSame(oldItem: ShortformSampleData, newItem: ShortformSampleData) =
-            oldItem == newItem
+            false
     }) {
 
     override fun onCreateViewHolder(
@@ -112,7 +111,7 @@ class ShortformSampleAdapter(
         override fun onBind(data: ShortformSampleData) {
             titleView.text = data.title
             shortsHorizontalTypeView.submit(data.collectionData, data.response)
-            shortsHorizontalTypeView.scrollToTop(true)
+            shortsHorizontalTypeView.scrollToTop(false)
         }
 
         private val enablePlayObserver = Observer<Boolean?> { isPlay ->
@@ -128,11 +127,12 @@ class ShortformSampleAdapter(
             shortsHorizontalTypeView.setPlayableType(it)
         }
 
-        private val hashTagObserver = Observer<Pair<List<String>?, ShopLiveShortformTagSearchOperator>>{ (hashTags, operator) ->
-            shortsHorizontalTypeView.setHashTags(hashTags, operator)
-        }
+        private val hashTagObserver =
+            Observer<Pair<List<String>?, ShopLiveShortformTagSearchOperator>> { (hashTags, operator) ->
+                shortsHorizontalTypeView.setHashTags(hashTags, operator)
+            }
 
-        private val brandObserver = Observer<List<String>?>{
+        private val brandObserver = Observer<List<String>?> {
             shortsHorizontalTypeView.setBrands(it)
         }
 
@@ -176,40 +176,12 @@ class ShortformSampleAdapter(
             }
         }
 
-        private val radiusObserver = Observer<Int?> {
-            shortsHorizontalTypeView.setRadius(it?.toDp(itemView.context) ?: 0f)
+        private val isEnablePlayWifiObserver = Observer<Boolean> {
+            shortsHorizontalTypeView.setPlayOnlyWifi(it)
         }
 
-        private val distanceObserver = Observer<Int?>  {
-            val distance = it ?: return@Observer
-            shortsHorizontalTypeView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    super.getItemOffsets(outRect, view, parent, state)
-                    parent.getChildAdapterPosition(view)
-                    val spanCount = shortsHorizontalTypeView.getSize()
-                    if ((parent.getChildAdapterPosition(view) % spanCount) == 0) {
-                        outRect.top = (distance / 2).toDp(view.context).toInt()
-                        outRect.bottom = (distance / 2).toDp(view.context).toInt()
-                        outRect.left = distance.toDp(view.context).toInt()
-                        outRect.right = (distance / 2).toDp(view.context).toInt()
-                    } else if ((parent.getChildAdapterPosition(view) % spanCount) == spanCount - 1) {
-                        outRect.top = (distance / 2).toDp(view.context).toInt()
-                        outRect.bottom = (distance / 2).toDp(view.context).toInt()
-                        outRect.left = (distance / 2).toDp(view.context).toInt()
-                        outRect.right = distance.toDp(view.context).toInt()
-                    } else {
-                        outRect.top = (distance / 2).toDp(view.context).toInt()
-                        outRect.bottom = (distance / 2).toDp(view.context).toInt()
-                        outRect.left = (distance / 2).toDp(view.context).toInt()
-                        outRect.right = (distance / 2).toDp(view.context).toInt()
-                    }
-                }
-            })
+        private val radiusObserver = Observer<Int?> {
+            shortsHorizontalTypeView.setRadius(it?.toDp(itemView.context) ?: return@Observer)
         }
 
         override fun onViewAttachedToWindow() {
@@ -224,8 +196,8 @@ class ShortformSampleAdapter(
             viewModel.isEnableShuffleLiveData.observeForever(isEnableShuffleObserver)
             viewModel.isEnableSnapLiveData.observeForever(isEnableSnapObserver)
             viewModel.isEnablePlayVideosLiveData.observeForever(isEnablePlayVideosObserver)
+            viewModel.isEnablePlayWifiLiveData.observeForever(isEnablePlayWifiObserver)
             viewModel.radiusLiveData.observeForever(radiusObserver)
-            viewModel.distanceLiveData.observeForever(distanceObserver)
         }
 
         override fun onViewDetachedFromWindow() {
@@ -240,8 +212,8 @@ class ShortformSampleAdapter(
             viewModel.isEnableShuffleLiveData.removeObserver(isEnableShuffleObserver)
             viewModel.isEnableSnapLiveData.removeObserver(isEnableSnapObserver)
             viewModel.isEnablePlayVideosLiveData.removeObserver(isEnablePlayVideosObserver)
+            viewModel.isEnablePlayWifiLiveData.removeObserver(isEnablePlayWifiObserver)
             viewModel.radiusLiveData.removeObserver(radiusObserver)
-            viewModel.distanceLiveData.removeObserver(distanceObserver)
         }
     }
 

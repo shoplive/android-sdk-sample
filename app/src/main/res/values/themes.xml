@@ -15,6 +15,21 @@
         <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
     </style>
 
+    <style name="Theme.ShopLiveSample.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/color_500</item>
+        <item name="colorPrimaryVariant">@color/color_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/black</item>
+        <item name="colorSecondaryVariant">@color/black</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/black</item>
+        <!-- Customize your theme here. -->
+        <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
+    </style>
+
     <style name="AppTheme.Widget.ActionButton" parent="@style/Widget.AppCompat.ActionButton">
         <item name="textAllCaps">false</item>
     </style>
