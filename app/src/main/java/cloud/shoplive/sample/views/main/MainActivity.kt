@@ -359,14 +359,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun play() {
         ShopLive.setAccessKey(CampaignSettings.accessKey(this) ?: return)
-        ShopLive.play(CampaignSettings.campaignKey(this) ?: return)
+        ShopLive.play(this, CampaignSettings.campaignKey(this) ?: return)
     }
 
     private fun startPreview() {
         ShopLive.showPreviewPopup(
             ShopLivePreviewData(
                 this,
-                CampaignSettings.accessKey(this) ?: return,
                 CampaignSettings.campaignKey(this) ?: return,
             ).apply {
                 setUseCloseButton(true)

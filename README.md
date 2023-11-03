@@ -61,16 +61,24 @@ Then, add the dependency to the project's top-level `build.gradle` file:
 ```gradle
 dependencies {
     ...
-    def shoplive_sdk_version = "1.5.0"
+    def shoplive_sdk_version = "1.5.1"
     def your_exoplayer_version = "2.19.1"
-    def shoplive_exoplayer_version = your_exoplayer_version + "." + "7"
+    def your_media3_version = "1.1.1"
+    def shoplive_exoplayer_version = your_exoplayer_version + "." + "8"
+    def shoplive_media3_version = your_media3_version + "." + "8"
 
     // For submodules
     implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version" // must required
     implementation "cloud.shoplive:shoplive-exoplayer:$shoplive_exoplayer_version" // must required
+    // When using media3. Exoplayer will be deprecated soon.
+    // https://developer.android.com/guide/topics/media/media3/getting-started/migration-guide
+    // implementation "cloud.shoplive:shoplive-media3:$shoplive_media3_version"
     implementation "cloud.shoplive:shoplive-network:$shoplive_sdk_version" // must required
     implementation "cloud.shoplive:shoplive-sdk-core:$shoplive_sdk_version" // for live player
     implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version" // for short-form player
+
+    // For library - combined packaging
+//    implementation "cloud.shoplive:shoplive-sdk-all:$shoplive_sdk_version" // live + short-form
     ...
 }
 ```
@@ -155,5 +163,5 @@ ShopLive.play(context, "{campaignKey}")
 #### B. Preview the campaign
 
 ```
-ShopLive.showPreviewPopup(ShopLivePreviewData(this@YourActivity, "{accessKey}", "{campaignKey}"))
+ShopLive.showPreviewPopup(ShopLivePreviewData(this@YourActivity, "{campaignKey}"))
 ```
