@@ -300,26 +300,28 @@ class MainActivity : AppCompatActivity() {
             ShopLive.setLoadingProgressColor(Options.loadingProgressColor())
         }
 
-        // custom font option
-        // only shoplive player
-        ShopLive.setChatViewTypeface(
-            if (Options.useCustomFontChatInput()) kotlin.run {
+        if (Options.useCustomFontButton()) {
+            // custom font option
+            // only shoplive player
+            ShopLive.setChatViewTypeface(
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     resources.getFont(R.font.nanumgothic)
                 } else {
                     ResourcesCompat.getFont(this, R.font.nanumgothic)
                 }
-            } else {
-                null
-            })
-        // shoplive player + short-form
-        ShopLiveCommon.setTextTypeface(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                resources.getFont(R.font.nanumgothic)
-            } else {
-                ResourcesCompat.getFont(this, R.font.nanumgothic)
-            }
-        )
+            )
+            // shoplive player + short-form
+            ShopLiveCommon.setTextTypeface(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    resources.getFont(R.font.nanumgothic)
+                } else {
+                    ResourcesCompat.getFont(this, R.font.nanumgothic)
+                }
+            )
+        } else {
+            ShopLive.setChatViewTypeface(null)
+            ShopLiveCommon.setTextTypeface(null)
+        }
 
         ShopLive.setPIPRatio(Options.getPIPRatio())
 

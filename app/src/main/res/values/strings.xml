@@ -118,12 +118,9 @@
     <string name="preference_share_url_key">shareUrl</string>
     <string name="preference_share_url_title">URL or scheme</string>
     <string name="preference_share_url_summary">Enter the scheme or URL to share.</string>
-    <string name="preference_chat_input_font_key">chatInputFont</string>
-    <string name="preference_chat_input_font_title">Chat UI</string>
-    <string name="preference_chat_input_font_summary">Disabling this option, will use the system default font.</string>
-    <string name="preference_chat_send_font_key">chatSendFont</string>
-    <string name="preference_chat_send_font_title">Chat send button</string>
-    <string name="preference_chat_send_font_summary">Disabling this option, will use the system default font.</string>
+    <string name="preference_custom_font_key">customFont</string>
+    <string name="preference_custom_font_title">Custom font</string>
+    <string name="preference_custom_font_summary">Disabling this option, will use the system default font.</string>
     <string name="preference_pip_mode_on_back_pressed_key">pipModeOnBackPressed</string>
     <string name="preference_pip_mode_on_back_pressed_title">Switch PIP mode when Back button taps</string>
     <string name="preference_pip_mode_on_back_pressed_summary">When tapping the back button, PIP mode will be launched.</string>

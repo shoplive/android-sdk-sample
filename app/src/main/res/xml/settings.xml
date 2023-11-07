@@ -137,15 +137,9 @@
 
         <SwitchPreferenceCompat
             app:iconSpaceReserved="false"
-            app:key="@string/preference_chat_input_font_key"
-            app:summary="@string/preference_chat_input_font_summary"
-            app:title="@string/preference_chat_input_font_title" />
-
-        <SwitchPreferenceCompat
-            app:iconSpaceReserved="false"
-            app:key="@string/preference_chat_send_font_key"
-            app:summary="@string/preference_chat_send_font_summary"
-            app:title="@string/preference_chat_send_font_title" />
+            app:key="@string/preference_custom_font_key"
+            app:summary="@string/preference_custom_font_summary"
+            app:title="@string/preference_custom_font_title" />
     </PreferenceCategory>
 
     <PreferenceCategory

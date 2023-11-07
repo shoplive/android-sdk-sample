@@ -77,26 +77,14 @@ object Options {
         ) == true
     }
 
-    fun useCustomFontChatInput(use: Boolean) {
-        editor?.putBoolean(App.instance.getString(R.string.preference_chat_input_font_key), use)
+    fun useCustomFontButton(use: Boolean) {
+        editor?.putBoolean(App.instance.getString(R.string.preference_custom_font_key), use)
         editor?.apply()
     }
 
-    fun useCustomFontChatInput(): Boolean {
+    fun useCustomFontButton(): Boolean {
         return preferences?.getBoolean(
-            App.instance.getString(R.string.preference_chat_input_font_key),
-            false
-        ) == true
-    }
-
-    fun useCustomFontChatSendButton(use: Boolean) {
-        editor?.putBoolean(App.instance.getString(R.string.preference_chat_send_font_key), use)
-        editor?.apply()
-    }
-
-    fun useCustomFontChatSendButton(): Boolean {
-        return preferences?.getBoolean(
-            App.instance.getString(R.string.preference_chat_send_font_key),
+            App.instance.getString(R.string.preference_custom_font_key),
             false
         ) == true
     }
@@ -294,8 +282,7 @@ object Options {
                 "• ${context.getString(R.string.preference_loading_progress_title)} : ${loadingProgressColor()}\n" +
                 "• ${context.getString(R.string.preference_loading_image_animation_title)} : ${if (useLoadingImageAnimation()) "Enabled" else "Disabled"}\n\n" +
                 "${context.getString(R.string.setting_category_chat_font)}\n" +
-                "• ${context.getString(R.string.preference_chat_input_font_title)} : ${if (useCustomFontChatInput()) "Enabled" else "Disabled"}\n" +
-                "• ${context.getString(R.string.preference_chat_send_font_title)} : ${if (useCustomFontChatSendButton()) "Enabled" else "Disabled"}\n\n" +
+                "• ${context.getString(R.string.preference_custom_font_title)} : ${if (useCustomFontButton()) "Enabled" else "Disabled"}\n\n" +
                 "${context.getString(R.string.setting_category_exit)}\n" +
                 "• ${context.getString(R.string.preference_pip_mode_on_back_pressed_title)} : ${if (isEnterPipModeOnBackPressed()) "Enabled" else "Disabled"}\n" +
                 "• ${context.getString(R.string.preference_auto_close_title)} : ${if (isAutoCloseWhenAppDestroyed()) "Enabled" else "Disabled"}\n\n" +
