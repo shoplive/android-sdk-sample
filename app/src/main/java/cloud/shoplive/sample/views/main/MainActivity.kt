@@ -30,12 +30,12 @@ import cloud.shoplive.sdk.OnAudioFocusListener
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveHandler
 import cloud.shoplive.sdk.ShopLiveHandlerCallback
+import cloud.shoplive.sdk.ShopLivePlayerData
 import cloud.shoplive.sdk.ShopLivePreviewData
 import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
-import cloud.shoplive.sdk.common.ShopLivePreviewPositionConfig
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -146,9 +146,13 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // set user when pip mode
                 setUserOrJwt()
-                CampaignSettings.campaignKey(this)?.let {
-                    ShopLive.play(it, true)
-                }
+                ShopLive.play(
+                    this,
+                    ShopLivePlayerData(
+                        CampaignSettings.campaignKey(this) ?: return@setOnClickListener
+                    ).apply {
+                        keepWindowStateOnPlayExecuted = true
+                    })
             }
         }
 
@@ -192,7 +196,7 @@ class MainActivity : AppCompatActivity() {
                 CampaignSettings.campaignKey(this) ?: return@setOnClickListener
             // Preview transition animation
             ShopLive.setPreviewTransitionAnimation(this, binding.preview)
-            ShopLive.play(this, campaignKey)
+            ShopLive.play(this, ShopLivePlayerData(campaignKey))
             binding.preview.release()
         }
         binding.preview.setOnCloseListener {
@@ -206,7 +210,7 @@ class MainActivity : AppCompatActivity() {
                 CampaignSettings.campaignKey(this) ?: return@setOnPreviewClickListener
             // Preview transition animation
             ShopLive.setPreviewTransitionAnimation(this, binding.previewSwipe.preview)
-            ShopLive.play(this, campaignKey)
+            ShopLive.play(this, ShopLivePlayerData(campaignKey))
             binding.previewSwipe.release()
         }
         binding.previewSwipe.setOnCloseListener {
@@ -359,21 +363,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun play() {
         ShopLive.setAccessKey(CampaignSettings.accessKey(this) ?: return)
-        ShopLive.play(this, CampaignSettings.campaignKey(this) ?: return)
+        ShopLive.play(this, ShopLivePlayerData(CampaignSettings.campaignKey(this) ?: return))
     }
 
     private fun startPreview() {
         ShopLive.showPreviewPopup(
+            this,
             ShopLivePreviewData(
-                this,
                 CampaignSettings.campaignKey(this) ?: return,
             ).apply {
-                setUseCloseButton(true)
+                useCloseButton = true
             }
         )
     }
 
-    private val shopliveHandler = object : ShopLiveHandler {
+    private val shopliveHandler = object : ShopLiveHandler() {
         override fun handleNavigation(
             context: Context,
             url: String
@@ -470,7 +474,7 @@ class MainActivity : AppCompatActivity() {
             playerLifecycle: ShopLive.PlayerLifecycle
         ) {
             super.onChangedPlayerStatus(isPipMode, playerLifecycle)
-            Log.d(TAG, "isPipMode=$isPipMode, playerLifecycle=${playerLifecycle.getText()}")
+            Log.d(TAG, "isPipMode=$isPipMode, playerLifecycle=${playerLifecycle.name}")
 
             when (playerLifecycle) {
                 ShopLive.PlayerLifecycle.CREATED -> {

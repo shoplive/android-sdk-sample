@@ -33,7 +33,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun getSdkVersion() {
-        _sdkVersion.value = ShopLive.getVersion()
+        _sdkVersion.value = ShopLive.getSDKVersion()
     }
 
     fun loadCampaignData(context: Context) {

@@ -91,58 +91,15 @@ The Shoplive SDK requires system permissions, add the following lines to your `A
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-### Step 4: Registering Handler
+### Step 4: Registering AccessKey & Handler
 
-Register a handler to receive multiple events from the Shoplive SDK for Android. <br />
+Register a accessKey & handler to receive multiple events from the Shoplive SDK for Android. <br />
 
 ```
-ShopLive.setHandler(object : ShopLiveHandler {
+ShopLive.setAccessKey("{accessKey}")
+ShopLive.setHandler(object : ShopLiveHandler() {
     override fun handleNavigation(context: Context, url: String) {
-    }
-
-    override fun handleDownloadCoupon(
-        context: Context,
-        couponId: String,
-        callback: ShopLiveHandlerCallback) {
-
-    }
-
-    override fun onChangeCampaignStatus(
-        context: Context, 
-        campaignStatus: String) {
-    }
-
-    override fun onCampaignInfo(campaignInfo: JSONObject) {
-    }
-
-    override fun onError(context: Context, code: String, message: String) {
-    }
-
-    override fun handleShare(context: Context, shareUrl: String) {
-    }
-
-    override fun handleCustomAction(
-        context: Context, 
-        id: String, 
-        type: String, 
-        payload: String,
-        callback: ShopLiveHandlerCallback) {
-    }
-
-    override fun onChangedPlayerStatus(
-        isPipMode: Boolean, 
-        state: String) {
-        super.onChangedPlayerStatus(isPipMode, state)
-    }
-
-    override fun onSetUserName(jsonObject: JSONObject) {
-        super.onSetUserName(jsonObject)
-    }
-
-    override fun onReceivedCommand(
-        context: Context, 
-        command: String, 
-        data: JSONObject) {
+        // Do something
     }
 })
 ```
@@ -155,13 +112,11 @@ Play the video using the access key and campaign key.
 #### A. Play the campaign
 
 ```
-ShopLive.setAccessKey("{accessKey}")
-
-ShopLive.play(context, "{campaignKey}") 
+ShopLive.play(context, ShopLivePlayerData("{campaignKey}")) 
 ```
 
 #### B. Preview the campaign
 
 ```
-ShopLive.showPreviewPopup(ShopLivePreviewData(this@YourActivity, "{campaignKey}"))
+ShopLive.showPreviewPopup(this@YourActivity, ShopLivePreviewData("{campaignKey}"))
 ```

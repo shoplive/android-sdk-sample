@@ -232,29 +232,30 @@ object Options {
     }
 
     fun setNextActionOnHandleNavigation(type: ShopLive.ActionType) {
-        editor?.putInt(App.instance.getString(R.string.preference_next_action_key), type.value)
+        editor?.putInt(App.instance.getString(R.string.preference_next_action_key), type.ordinal)
         editor?.apply()
     }
 
     fun getNextActionOnHandleNavigation(): ShopLive.ActionType {
-        val type = preferences?.getInt(App.instance.getString(R.string.preference_next_action_key), 0)
-        type?.let {
-            return ShopLive.ActionType.getType(it)
+        return when (preferences?.getInt(App.instance.getString(R.string.preference_next_action_key), 0)) {
+            ShopLive.ActionType.KEEP.ordinal -> ShopLive.ActionType.KEEP
+            ShopLive.ActionType.CLOSE.ordinal -> ShopLive.ActionType.CLOSE
+            ShopLive.ActionType.PIP.ordinal -> ShopLive.ActionType.PIP
+            else -> ShopLive.ActionType.PIP
         }
-        return ShopLive.ActionType.PIP
     }
 
     fun setPIPRatio(ratio: ShopLivePIPRatio) {
-        editor?.putInt(App.instance.getString(R.string.preference_pip_ratio_key), ratio.value)
+        editor?.putInt(App.instance.getString(R.string.preference_pip_ratio_key), ratio.ordinal)
         editor?.apply()
     }
 
     fun getPIPRatio(): ShopLivePIPRatio {
         return when (preferences?.getInt(App.instance.getString(R.string.preference_pip_ratio_key), 4)) {
-            0 -> ShopLivePIPRatio.RATIO_1X1
-            1 -> ShopLivePIPRatio.RATIO_1X2
-            2 -> ShopLivePIPRatio.RATIO_2X3
-            3 -> ShopLivePIPRatio.RATIO_3X4
+            ShopLivePIPRatio.RATIO_1X1.ordinal -> ShopLivePIPRatio.RATIO_1X1
+            ShopLivePIPRatio.RATIO_1X2.ordinal -> ShopLivePIPRatio.RATIO_1X2
+            ShopLivePIPRatio.RATIO_2X3.ordinal -> ShopLivePIPRatio.RATIO_2X3
+            ShopLivePIPRatio.RATIO_3X4.ordinal -> ShopLivePIPRatio.RATIO_3X4
             else -> ShopLivePIPRatio.RATIO_9X16
         }
     }

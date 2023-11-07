@@ -47,9 +47,8 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 
         val playerNextActionPref: Preference? = findPreference(getString(R.string.preference_next_action_key))
         playerNextActionPref?.let {
-            val nextActionArray = resources.getStringArray(R.array.playerNextAction)
             val action = Options.playerNextAction()
-            playerNextActionPref.title = "${getString(R.string.preference_next_action_title)}\n(${nextActionArray[action.value]})"
+            playerNextActionPref.title = "${getString(R.string.preference_next_action_title)}\n(${action.name})"
         }
 
         val shareUrlPref: Preference? = findPreference(getString(R.string.preference_share_url_key))
