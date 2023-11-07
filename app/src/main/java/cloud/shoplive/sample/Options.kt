@@ -133,7 +133,7 @@ object Options {
     fun isKeepAspectOnTabletPortrait(): Boolean {
         return preferences?.getBoolean(
             App.instance.getString(R.string.preference_tablet_aspect_key),
-            false
+            true
         ) == true
     }
 

@@ -191,6 +191,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.preview.setLifecycleObserver(this)
+        binding.preview.useCloseButton(Options.isUseCloseButton())
         binding.preview.setOnClickListener {
             setOptions()
             val campaignKey =
@@ -205,6 +206,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.previewSwipe.setLifecycleObserver(this)
+        binding.previewSwipe.useCloseButton(Options.isUseCloseButton())
         binding.previewSwipe.setOnPreviewClickListener {
             setOptions()
             val campaignKey =
@@ -374,12 +376,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startPreview() {
+        val accessKey: String = CampaignSettings.accessKey(this) ?: return
+        ShopLiveCommon.setAccessKey(accessKey)
         ShopLive.showPreviewPopup(
             this,
             ShopLivePreviewData(
                 CampaignSettings.campaignKey(this) ?: return,
             ).apply {
-                useCloseButton = true
+                useCloseButton = Options.isUseCloseButton()
             }
         )
     }
