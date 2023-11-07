@@ -2,6 +2,7 @@ package cloud.shoplive.sample.views.main
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -297,7 +298,11 @@ class MainActivity : AppCompatActivity() {
         if (Options.useLoadingImageAnimation()) {
             ShopLive.setLoadingAnimation(R.drawable.progress_animation1)
         } else {
-            ShopLive.setLoadingProgressColor(Options.loadingProgressColor())
+            try {
+                ShopLive.setLoadingProgressColor(Color.parseColor(Options.loadingProgressColor()))
+            } catch (e: Exception) {
+                // Do nothing
+            }
         }
 
         if (Options.useCustomFontButton()) {
