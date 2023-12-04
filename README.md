@@ -46,22 +46,14 @@ To use the Shoplive SDK for Android, ask the Shoplive representative for an admi
 
 ### Step 2: Install the Shoplive SDK
 
-Installing the Shoplive SDK is simple if you're familiar with using external libraries or SDKs. First, add the following code to your **root** `build.gradle` file:
+Installing the Shoplive SDK is simple if you're familiar with using external libraries or SDKs. 
 
-```gradle
-allprojects {
-    repositories {
-        ...
-        url 'https://shoplivesdk.jfrog.io/artifactory/shoplive-sdk/'
-    }
-}
-```
-Then, add the dependency to the project's top-level `build.gradle` file:
+Add the dependency to the project's top-level `build.gradle` file:
 
 ```gradle
 dependencies {
     ...
-    def shoplive_sdk_version = "1.5.1"
+    def shoplive_sdk_version = "1.5.2"
     def your_exoplayer_version = "2.19.1"
     def your_media3_version = "1.1.1"
     def shoplive_exoplayer_version = your_exoplayer_version + "." + "8"
