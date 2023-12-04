@@ -147,13 +147,10 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // set user when pip mode
                 setUserOrJwt()
-                ShopLive.play(
-                    this,
-                    ShopLivePlayerData(
-                        CampaignSettings.campaignKey(this) ?: return@setOnClickListener
-                    ).apply {
-                        keepWindowStateOnPlayExecuted = true
-                    })
+                val campaignKey = CampaignSettings.campaignKey(this) ?: return@setOnClickListener
+                ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
+                    keepWindowStateOnPlayExecuted = true
+                })
             }
         }
 
