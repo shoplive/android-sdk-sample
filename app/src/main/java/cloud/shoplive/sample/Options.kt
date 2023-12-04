@@ -77,26 +77,14 @@ object Options {
         ) == true
     }
 
-    fun useCustomFontChatInput(use: Boolean) {
-        editor?.putBoolean(App.instance.getString(R.string.preference_chat_input_font_key), use)
+    fun useCustomFontButton(use: Boolean) {
+        editor?.putBoolean(App.instance.getString(R.string.preference_custom_font_key), use)
         editor?.apply()
     }
 
-    fun useCustomFontChatInput(): Boolean {
+    fun useCustomFontButton(): Boolean {
         return preferences?.getBoolean(
-            App.instance.getString(R.string.preference_chat_input_font_key),
-            false
-        ) == true
-    }
-
-    fun useCustomFontChatSendButton(use: Boolean) {
-        editor?.putBoolean(App.instance.getString(R.string.preference_chat_send_font_key), use)
-        editor?.apply()
-    }
-
-    fun useCustomFontChatSendButton(): Boolean {
-        return preferences?.getBoolean(
-            App.instance.getString(R.string.preference_chat_send_font_key),
+            App.instance.getString(R.string.preference_custom_font_key),
             false
         ) == true
     }
@@ -145,7 +133,7 @@ object Options {
     fun isKeepAspectOnTabletPortrait(): Boolean {
         return preferences?.getBoolean(
             App.instance.getString(R.string.preference_tablet_aspect_key),
-            false
+            true
         ) == true
     }
 
@@ -232,29 +220,30 @@ object Options {
     }
 
     fun setNextActionOnHandleNavigation(type: ShopLive.ActionType) {
-        editor?.putInt(App.instance.getString(R.string.preference_next_action_key), type.value)
+        editor?.putInt(App.instance.getString(R.string.preference_next_action_key), type.ordinal)
         editor?.apply()
     }
 
     fun getNextActionOnHandleNavigation(): ShopLive.ActionType {
-        val type = preferences?.getInt(App.instance.getString(R.string.preference_next_action_key), 0)
-        type?.let {
-            return ShopLive.ActionType.getType(it)
+        return when (preferences?.getInt(App.instance.getString(R.string.preference_next_action_key), 0)) {
+            ShopLive.ActionType.KEEP.ordinal -> ShopLive.ActionType.KEEP
+            ShopLive.ActionType.CLOSE.ordinal -> ShopLive.ActionType.CLOSE
+            ShopLive.ActionType.PIP.ordinal -> ShopLive.ActionType.PIP
+            else -> ShopLive.ActionType.PIP
         }
-        return ShopLive.ActionType.PIP
     }
 
     fun setPIPRatio(ratio: ShopLivePIPRatio) {
-        editor?.putInt(App.instance.getString(R.string.preference_pip_ratio_key), ratio.value)
+        editor?.putInt(App.instance.getString(R.string.preference_pip_ratio_key), ratio.ordinal)
         editor?.apply()
     }
 
     fun getPIPRatio(): ShopLivePIPRatio {
         return when (preferences?.getInt(App.instance.getString(R.string.preference_pip_ratio_key), 4)) {
-            0 -> ShopLivePIPRatio.RATIO_1X1
-            1 -> ShopLivePIPRatio.RATIO_1X2
-            2 -> ShopLivePIPRatio.RATIO_2X3
-            3 -> ShopLivePIPRatio.RATIO_3X4
+            ShopLivePIPRatio.RATIO_1X1.ordinal -> ShopLivePIPRatio.RATIO_1X1
+            ShopLivePIPRatio.RATIO_1X2.ordinal -> ShopLivePIPRatio.RATIO_1X2
+            ShopLivePIPRatio.RATIO_2X3.ordinal -> ShopLivePIPRatio.RATIO_2X3
+            ShopLivePIPRatio.RATIO_3X4.ordinal -> ShopLivePIPRatio.RATIO_3X4
             else -> ShopLivePIPRatio.RATIO_9X16
         }
     }
@@ -293,8 +282,7 @@ object Options {
                 "• ${context.getString(R.string.preference_loading_progress_title)} : ${loadingProgressColor()}\n" +
                 "• ${context.getString(R.string.preference_loading_image_animation_title)} : ${if (useLoadingImageAnimation()) "Enabled" else "Disabled"}\n\n" +
                 "${context.getString(R.string.setting_category_chat_font)}\n" +
-                "• ${context.getString(R.string.preference_chat_input_font_title)} : ${if (useCustomFontChatInput()) "Enabled" else "Disabled"}\n" +
-                "• ${context.getString(R.string.preference_chat_send_font_title)} : ${if (useCustomFontChatSendButton()) "Enabled" else "Disabled"}\n\n" +
+                "• ${context.getString(R.string.preference_custom_font_title)} : ${if (useCustomFontButton()) "Enabled" else "Disabled"}\n\n" +
                 "${context.getString(R.string.setting_category_exit)}\n" +
                 "• ${context.getString(R.string.preference_pip_mode_on_back_pressed_title)} : ${if (isEnterPipModeOnBackPressed()) "Enabled" else "Disabled"}\n" +
                 "• ${context.getString(R.string.preference_auto_close_title)} : ${if (isAutoCloseWhenAppDestroyed()) "Enabled" else "Disabled"}\n\n" +

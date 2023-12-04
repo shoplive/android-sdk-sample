@@ -2,6 +2,7 @@ package cloud.shoplive.sample.views.main
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -30,12 +31,12 @@ import cloud.shoplive.sdk.OnAudioFocusListener
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveHandler
 import cloud.shoplive.sdk.ShopLiveHandlerCallback
+import cloud.shoplive.sdk.ShopLivePlayerData
 import cloud.shoplive.sdk.ShopLivePreviewData
 import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
-import cloud.shoplive.sdk.common.ShopLivePreviewPositionConfig
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -146,9 +147,10 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // set user when pip mode
                 setUserOrJwt()
-                CampaignSettings.campaignKey(this)?.let {
-                    ShopLive.play(it, true)
-                }
+                val campaignKey = CampaignSettings.campaignKey(this) ?: return@setOnClickListener
+                ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
+                    keepWindowStateOnPlayExecuted = true
+                })
             }
         }
 
@@ -186,13 +188,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.preview.setLifecycleObserver(this)
+        binding.preview.useCloseButton(Options.isUseCloseButton())
         binding.preview.setOnClickListener {
             setOptions()
             val campaignKey =
                 CampaignSettings.campaignKey(this) ?: return@setOnClickListener
             // Preview transition animation
             ShopLive.setPreviewTransitionAnimation(this, binding.preview)
-            ShopLive.play(this, campaignKey)
+            ShopLive.play(this, ShopLivePlayerData(campaignKey))
             binding.preview.release()
         }
         binding.preview.setOnCloseListener {
@@ -200,13 +203,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.previewSwipe.setLifecycleObserver(this)
+        binding.previewSwipe.useCloseButton(Options.isUseCloseButton())
         binding.previewSwipe.setOnPreviewClickListener {
             setOptions()
             val campaignKey =
                 CampaignSettings.campaignKey(this) ?: return@setOnPreviewClickListener
             // Preview transition animation
             ShopLive.setPreviewTransitionAnimation(this, binding.previewSwipe.preview)
-            ShopLive.play(this, campaignKey)
+            ShopLive.play(this, ShopLivePlayerData(campaignKey))
             binding.previewSwipe.release()
         }
         binding.previewSwipe.setOnCloseListener {
@@ -293,29 +297,35 @@ class MainActivity : AppCompatActivity() {
         if (Options.useLoadingImageAnimation()) {
             ShopLive.setLoadingAnimation(R.drawable.progress_animation1)
         } else {
-            ShopLive.setLoadingProgressColor(Options.loadingProgressColor())
+            try {
+                ShopLive.setLoadingProgressColor(Color.parseColor(Options.loadingProgressColor()))
+            } catch (e: Exception) {
+                // Do nothing
+            }
         }
 
-        // custom font option
-        // only shoplive player
-        ShopLive.setChatViewTypeface(
-            if (Options.useCustomFontChatInput()) kotlin.run {
+        if (Options.useCustomFontButton()) {
+            // custom font option
+            // only shoplive player
+            ShopLive.setChatViewTypeface(
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     resources.getFont(R.font.nanumgothic)
                 } else {
                     ResourcesCompat.getFont(this, R.font.nanumgothic)
                 }
-            } else {
-                null
-            })
-        // shoplive player + short-form
-        ShopLiveCommon.setTextTypeface(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                resources.getFont(R.font.nanumgothic)
-            } else {
-                ResourcesCompat.getFont(this, R.font.nanumgothic)
-            }
-        )
+            )
+            // shoplive player + short-form
+            ShopLiveCommon.setTextTypeface(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    resources.getFont(R.font.nanumgothic)
+                } else {
+                    ResourcesCompat.getFont(this, R.font.nanumgothic)
+                }
+            )
+        } else {
+            ShopLive.setChatViewTypeface(null)
+            ShopLiveCommon.setTextTypeface(null)
+        }
 
         ShopLive.setPIPRatio(Options.getPIPRatio())
 
@@ -359,21 +369,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun play() {
         ShopLive.setAccessKey(CampaignSettings.accessKey(this) ?: return)
-        ShopLive.play(this, CampaignSettings.campaignKey(this) ?: return)
+        ShopLive.play(this, ShopLivePlayerData(CampaignSettings.campaignKey(this) ?: return))
     }
 
     private fun startPreview() {
+        val accessKey: String = CampaignSettings.accessKey(this) ?: return
+        ShopLiveCommon.setAccessKey(accessKey)
         ShopLive.showPreviewPopup(
+            this,
             ShopLivePreviewData(
-                this,
                 CampaignSettings.campaignKey(this) ?: return,
             ).apply {
-                setUseCloseButton(true)
+                useCloseButton = Options.isUseCloseButton()
             }
         )
     }
 
-    private val shopliveHandler = object : ShopLiveHandler {
+    private val shopliveHandler = object : ShopLiveHandler() {
         override fun handleNavigation(
             context: Context,
             url: String
@@ -470,7 +482,7 @@ class MainActivity : AppCompatActivity() {
             playerLifecycle: ShopLive.PlayerLifecycle
         ) {
             super.onChangedPlayerStatus(isPipMode, playerLifecycle)
-            Log.d(TAG, "isPipMode=$isPipMode, playerLifecycle=${playerLifecycle.getText()}")
+            Log.d(TAG, "isPipMode=$isPipMode, playerLifecycle=${playerLifecycle.name}")
 
             when (playerLifecycle) {
                 ShopLive.PlayerLifecycle.CREATED -> {

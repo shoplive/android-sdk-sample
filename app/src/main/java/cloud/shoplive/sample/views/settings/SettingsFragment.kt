@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -24,6 +26,7 @@ import cloud.shoplive.sample.R
 import cloud.shoplive.sample.extension.isTablet
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLivePIPRatio
+import cloud.shoplive.sdk.common.ShopLiveCommon
 
 class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -47,9 +50,8 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
 
         val playerNextActionPref: Preference? = findPreference(getString(R.string.preference_next_action_key))
         playerNextActionPref?.let {
-            val nextActionArray = resources.getStringArray(R.array.playerNextAction)
             val action = Options.playerNextAction()
-            playerNextActionPref.title = "${getString(R.string.preference_next_action_title)}\n(${nextActionArray[action.value]})"
+            playerNextActionPref.title = "${getString(R.string.preference_next_action_title)}\n(${action.name})"
         }
 
         val shareUrlPref: Preference? = findPreference(getString(R.string.preference_share_url_key))
@@ -126,6 +128,31 @@ class SettingsFragment: PreferenceFragmentCompat(), SharedPreferences.OnSharedPr
             }
             getString(R.string.preference_preview_use_close_button_key) -> {
                 Options.useCloseButton(sharedPreferences.getBoolean(key, false))
+            }
+            getString(R.string.preference_custom_font_key) -> {
+                val value = sharedPreferences.getBoolean(key, false)
+                if (value) {
+                    // custom font option
+                    // only shoplive player
+                    ShopLive.setChatViewTypeface(
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            resources.getFont(R.font.nanumgothic)
+                        } else {
+                            ResourcesCompat.getFont(requireContext(), R.font.nanumgothic)
+                        }
+                    )
+                    // shoplive player + short-form
+                    ShopLiveCommon.setTextTypeface(
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            resources.getFont(R.font.nanumgothic)
+                        } else {
+                            ResourcesCompat.getFont(requireContext(), R.font.nanumgothic)
+                        }
+                    )
+                } else {
+                    ShopLive.setChatViewTypeface(null)
+                    ShopLiveCommon.setTextTypeface(null)
+                }
             }
         }
     }
