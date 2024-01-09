@@ -58,7 +58,7 @@ class HybridShortformActivity : AppCompatActivity() {
 
         // Required
         ShopLiveShortform.connectBridgeInterface(this, binding.webView)
-        ShopLiveShortform.receiveBridgeInterface(this, binding.webView)
+        ShopLiveShortform.receiveBridgeInterface(binding.webView)
 
         intent.getStringExtra("url")?.let {
             binding.webView.loadUrl(it)

@@ -133,7 +133,7 @@ class NativeShortformActivity : AppCompatActivity() {
             }
         })
 
-        ShopLiveShortform.setNativeHandler(this, object : ShopLiveShortformNativeHandler() {
+        ShopLiveShortform.setNativeHandler(object : ShopLiveShortformNativeHandler() {
             override fun getOnClickProductListener(): ShopLiveShortformProductListener {
                 return ShopLiveShortformProductListener { _, product ->
                     // Something landing customer
