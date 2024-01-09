@@ -59,10 +59,6 @@
             android:name="cloud.shoplive.sample.shortform.NativeShortformActivity"
             android:theme="@style/Theme.ShopLiveSample.NoActionBar" />
 
-        <activity
-            android:name="cloud.shoplive.sample.shortform.ShortformProductActivity"
-            android:theme="@style/Theme.ShopLiveSample" />
-
         <!-- ex) shoplive://live?accessKey=xxxxxxxxxx&campaignKey=yyyyyyyyyyyyyy-->
         <activity
             android:name=".SchemeActivity"
