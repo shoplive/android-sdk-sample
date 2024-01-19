@@ -466,7 +466,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun handleCustomAction(
-            context: Context, id: String, type: String, payload: String,
+            context: Context, id: String, type: String, payload: JSONObject,
             callback: ShopLiveHandlerCallback
         ) {
             CustomActionDialog(context, id, type, payload, callback)

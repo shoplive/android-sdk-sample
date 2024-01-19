@@ -9,12 +9,13 @@ import android.widget.TextView
 import cloud.shoplive.sample.R
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveHandlerCallback
+import org.json.JSONObject
 
 class CustomActionDialog(
     private val context: Context,
     private val id: String,
     private val type: String,
-    private val payload: String,
+    private val payload: JSONObject,
     private val callback: ShopLiveHandlerCallback
 ) : Dialog(context) {
 
@@ -48,7 +49,8 @@ class CustomActionDialog(
 
         tvId.text = context.getString(R.string.sample_custom_action_id, id)
         tvType.text = context.getString(R.string.sample_custom_action_type, type)
-        tvPayload.text = context.getString(R.string.sample_custom_action_payload, payload)
+        tvPayload.text =
+            context.getString(R.string.sample_custom_action_payload, payload.toString())
 
         btSuccess.setOnClickListener {
             callback.customActionResult(
