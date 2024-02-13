@@ -36,6 +36,7 @@ import cloud.shoplive.sdk.ShopLivePlayerShareData
 import cloud.shoplive.sdk.ShopLivePreviewData
 import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.common.ShopLiveCommon
+import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
 import org.json.JSONException
@@ -452,8 +453,8 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "campaignInfo=$campaignInfo")
         }
 
-        override fun onError(context: Context, code: String, message: String) {
-            Log.d(TAG, "code:$code, message:$message")
+        override fun onError(context: Context, error: ShopLiveCommonError) {
+            Log.d(TAG, "code:${error.code}, message:${error.message}")
         }
 
         /*
