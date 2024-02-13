@@ -1,5 +1,6 @@
 package cloud.shoplive.sample.shortform
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -481,7 +482,7 @@ class ShortformFullFragment : Fragment(), ShopLiveShortformPlayEnableListener,
             if (it == PAGE_SHORTS_FULL) submit()
         }
         binding.shortsFullTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
-            override fun onError(error: ShopLiveCommonError) {
+            override fun onError(context: Context, error: ShopLiveCommonError) {
                 Toast.makeText(
                     requireContext(),
                     error.message ?: error.toString(),

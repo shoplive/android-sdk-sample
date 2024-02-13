@@ -1,5 +1,6 @@
 package cloud.shoplive.sample.shortform
 
+import android.content.Context
 import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
@@ -98,7 +99,7 @@ class ShortformSampleAdapter(
             shortsHorizontalTypeView.setPlayableType(ShopLiveShortform.PlayableType.FIRST)
             shortsHorizontalTypeView.setViewType(viewModel.getSavedCardType())
             shortsHorizontalTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
-                override fun onError(error: ShopLiveCommonError) {
+                override fun onError(context: Context, error: ShopLiveCommonError) {
                     Toast.makeText(
                         itemView.context,
                         error.message ?: error.toString(),

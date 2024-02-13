@@ -32,9 +32,11 @@ import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveHandler
 import cloud.shoplive.sdk.ShopLiveHandlerCallback
 import cloud.shoplive.sdk.ShopLivePlayerData
+import cloud.shoplive.sdk.ShopLivePlayerShareData
 import cloud.shoplive.sdk.ShopLivePreviewData
 import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.common.ShopLiveCommon
+import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
 import org.json.JSONException
@@ -262,7 +264,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 val user = CampaignSettings.user(this) ?: return
                 ShopLive.setUser(user)
-                ShopLiveCommon.setUserJWT(
+                ShopLiveCommon.setUser(
                     accessKey,
                     ShopLiveCommonUser(user.userId ?: return).apply {
                         name = user.userName
@@ -280,7 +282,7 @@ class MainActivity : AppCompatActivity() {
             CampaignSettings.UserType.JWT.ordinal -> {
                 val jwt = CampaignSettings.jwt(this) ?: return
                 ShopLive.setAuthToken(jwt)
-                ShopLiveCommon.setUserJWT(jwt)
+                ShopLiveCommon.setAuthToken(jwt)
             }
 
             CampaignSettings.UserType.GUEST.ordinal -> {
@@ -451,8 +453,8 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "campaignInfo=$campaignInfo")
         }
 
-        override fun onError(context: Context, code: String, message: String) {
-            Log.d(TAG, "code:$code, message:$message")
+        override fun onError(context: Context, error: ShopLiveCommonError) {
+            Log.d(TAG, "code:${error.code}, message:${error.message}")
         }
 
         /*
@@ -461,8 +463,8 @@ class MainActivity : AppCompatActivity() {
             //Toast.makeText(context, "ck=$campaignKey", Toast.LENGTH_SHORT).show()
         }*/
 
-        override fun handleShare(context: Context, shareUrl: String) {
-            CustomShareDialog(context, shareUrl).show()
+        override fun handleShare(context: Context, data: ShopLivePlayerShareData) {
+            CustomShareDialog(context, data.url ?: return).show()
         }
 
         override fun handleCustomAction(

@@ -115,7 +115,7 @@ class NativeShortformActivity : AppCompatActivity() {
         })
 
         ShopLiveShortform.setHandler(object : ShopLiveShortformFullTypeHandler() {
-            override fun onError(error: ShopLiveCommonError) {
+            override fun onError(context: Context, error: ShopLiveCommonError) {
                 Toast.makeText(
                     this@NativeShortformActivity,
                     error.message ?: error.toString(),
@@ -160,7 +160,7 @@ class NativeShortformActivity : AppCompatActivity() {
             ) { data ->
                 data.userId?.let { userId ->
                     val accessKey = ShopLiveCommon.getAccessKey() ?: return@ShortformOptionDialog
-                    ShopLiveCommon.setUserJWT(
+                    ShopLiveCommon.setUser(
                         accessKey,
                         ShopLiveCommonUser(userId).apply {
                             name = data.name

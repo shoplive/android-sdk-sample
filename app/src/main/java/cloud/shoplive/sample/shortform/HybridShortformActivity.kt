@@ -74,7 +74,7 @@ class HybridShortformActivity : AppCompatActivity() {
 
         // Optional
         ShopLiveShortform.setHandler(object : ShopLiveShortformFullTypeHandler() {
-            override fun onError(error: ShopLiveCommonError) {
+            override fun onError(context: Context, error: ShopLiveCommonError) {
                 Toast.makeText(
                     this@HybridShortformActivity,
                     error.message ?: error.toString(),
