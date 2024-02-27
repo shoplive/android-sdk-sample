@@ -9,7 +9,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="@string/shortform_tab_detail_subtitle"
+        android:text="@string/shortform_tab_full_subtitle"
         android:textColor="#000"
         android:textSize="15dp"
         android:textStyle="bold"
