@@ -15,7 +15,8 @@ import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.network.ShopLiveNetwork
 import cloud.shoplive.sdk.network.response.ShopLiveShortformData
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
-import cloud.shoplive.sdk.shorts.ShopLiveShortformFullTypeHandler
+import cloud.shoplive.sdk.shorts.ShopLiveShortformDetailHandler
+import cloud.shoplive.sdk.shorts.ShopLiveShortformReceiveHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
 
 class HybridShortformActivity : AppCompatActivity() {
@@ -73,7 +74,7 @@ class HybridShortformActivity : AppCompatActivity() {
         }
 
         // Optional
-        ShopLiveShortform.setHandler(object : ShopLiveShortformFullTypeHandler() {
+        ShopLiveShortform.setReceiveHandler(object : ShopLiveShortformReceiveHandler() {
             override fun onError(context: Context, error: ShopLiveCommonError) {
                 Toast.makeText(
                     this@HybridShortformActivity,
@@ -82,7 +83,7 @@ class HybridShortformActivity : AppCompatActivity() {
                 ).show()
             }
 
-            override fun onShare(activity: Activity, data: ShopLiveShortformShareData) {
+            override fun onShare(context: Context, data: ShopLiveShortformShareData) {
                 // Do sharing
             }
         })

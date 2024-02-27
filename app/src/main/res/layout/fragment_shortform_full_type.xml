@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <cloud.shoplive.sdk.shorts.ShopLiveShortformFullTypeView
+    <cloud.shoplive.sdk.shorts.ShopLiveShortformDetailTypeView
         android:id="@+id/shortsFullTypeView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

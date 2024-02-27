@@ -152,6 +152,7 @@ class MainActivity : AppCompatActivity() {
                 val campaignKey = CampaignSettings.campaignKey(this) ?: return@setOnClickListener
                 ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
                     keepWindowStateOnPlayExecuted = true
+                    referrer = "referrer"
                 })
             }
         }
@@ -197,7 +198,10 @@ class MainActivity : AppCompatActivity() {
                 CampaignSettings.campaignKey(this) ?: return@setOnClickListener
             // Preview transition animation
             ShopLive.setPreviewTransitionAnimation(this, binding.preview)
-            ShopLive.play(this, ShopLivePlayerData(campaignKey))
+            ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
+                keepWindowStateOnPlayExecuted = true
+                referrer = "referrer"
+            })
             binding.preview.release()
         }
         binding.preview.setOnCloseListener {
@@ -212,7 +216,10 @@ class MainActivity : AppCompatActivity() {
                 CampaignSettings.campaignKey(this) ?: return@setOnPreviewClickListener
             // Preview transition animation
             ShopLive.setPreviewTransitionAnimation(this, binding.previewSwipe.preview)
-            ShopLive.play(this, ShopLivePlayerData(campaignKey))
+            ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
+                keepWindowStateOnPlayExecuted = true
+                referrer = "referrer"
+            })
             binding.previewSwipe.release()
         }
         binding.previewSwipe.setOnCloseListener {
@@ -371,7 +378,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun play() {
         ShopLive.setAccessKey(CampaignSettings.accessKey(this) ?: return)
-        ShopLive.play(this, ShopLivePlayerData(CampaignSettings.campaignKey(this) ?: return))
+        ShopLive.play(this, ShopLivePlayerData(CampaignSettings.campaignKey(this) ?: return).apply {
+            keepWindowStateOnPlayExecuted = true
+            referrer = "referrer"
+        })
     }
 
     private fun startPreview() {
