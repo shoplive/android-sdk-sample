@@ -411,10 +411,10 @@ class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListe
     }
 }
 
-class ShortformDetailFragment : Fragment(), ShopLiveShortformPlayEnableListener,
+class ShortformFullFragment : Fragment(), ShopLiveShortformPlayEnableListener,
     ShopLiveShortformSubmitListener {
     companion object {
-        fun newInstance() = ShortformDetailFragment()
+        fun newInstance() = ShortformFullFragment()
     }
 
     private var _binding: FragmentShortformFullTypeBinding? = null

@@ -53,7 +53,7 @@ class NativeShortformActivity : AppCompatActivity() {
                     ShortformMainFragment.newInstance(),
                     ShortformVerticalFragment.newInstance(),
                     ShortformHorizontalFragment.newInstance(),
-                    ShortformDetailFragment.newInstance(),
+                    ShortformFullFragment.newInstance(),
                 )
             )
         }
