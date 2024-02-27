@@ -152,6 +152,7 @@ class MainActivity : AppCompatActivity() {
                 val campaignKey = CampaignSettings.campaignKey(this) ?: return@setOnClickListener
                 ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
                     keepWindowStateOnPlayExecuted = true
+                    referrer = "referrer"
                 })
             }
         }

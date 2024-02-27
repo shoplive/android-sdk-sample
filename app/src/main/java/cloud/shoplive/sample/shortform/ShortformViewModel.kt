@@ -12,7 +12,7 @@ import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformIdsData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformIdsMoreData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformMoreSuspendListener
-import cloud.shoplive.sdk.shorts.ShopLiveShortformVisibleFullTypeData
+import cloud.shoplive.sdk.shorts.ShopLiveShortformVisibleDetailTypeData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,7 +30,7 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
     val isEnableSnapLiveData = MutableLiveData<Boolean>()
     val isEnablePlayVideosLiveData = MutableLiveData<Boolean>()
     val isEnablePlayWifiLiveData = MutableLiveData<Boolean>()
-    val visibleFullTypeDataLiveData = MutableLiveData<ShopLiveShortformVisibleFullTypeData>()
+    val visibleDetailTypeDataLiveData = MutableLiveData<ShopLiveShortformVisibleDetailTypeData>()
     val radiusLiveData = MutableLiveData<Int?>()
     val submitLiveData = MutableLiveData<Int>()
     val needInitializeTabFlow = MutableStateFlow<Set<Int>>(setOf())
@@ -57,7 +57,7 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
         isEnableSnapLiveData.value = data.isEnableSnap
         isEnablePlayVideosLiveData.value = data.isEnablePlayVideos
         isEnablePlayWifiLiveData.value = data.isEnablePlayOnlyWifi
-        visibleFullTypeDataLiveData.value = ShopLiveShortformVisibleFullTypeData().apply {
+        visibleDetailTypeDataLiveData.value = ShopLiveShortformVisibleDetailTypeData().apply {
             isBookmarkVisible = data.isBookmarkVisible
             isShareButtonVisible = data.isShareButtonVisible
             isCommentButtonVisible = data.isCommentButtonVisible

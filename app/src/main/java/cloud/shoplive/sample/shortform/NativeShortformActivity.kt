@@ -18,10 +18,10 @@ import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
 import cloud.shoplive.sdk.common.utils.ShopLiveDataSaver
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
-import cloud.shoplive.sdk.shorts.ShopLiveShortformFullTypeHandler
-import cloud.shoplive.sdk.shorts.ShopLiveShortformNativeHandler
+import cloud.shoplive.sdk.shorts.ShopLiveShortformDetailHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformProductListener
+import cloud.shoplive.sdk.shorts.ShopLiveShortformReceiveHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformRelatedData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformUrlListener
@@ -53,7 +53,7 @@ class NativeShortformActivity : AppCompatActivity() {
                     ShortformMainFragment.newInstance(),
                     ShortformVerticalFragment.newInstance(),
                     ShortformHorizontalFragment.newInstance(),
-                    ShortformFullFragment.newInstance(),
+                    ShortformDetailFragment.newInstance(),
                 )
             )
         }
@@ -114,7 +114,7 @@ class NativeShortformActivity : AppCompatActivity() {
             }
         })
 
-        ShopLiveShortform.setHandler(object : ShopLiveShortformFullTypeHandler() {
+        ShopLiveShortform.setReceiveHandler(object : ShopLiveShortformReceiveHandler() {
             override fun onError(context: Context, error: ShopLiveCommonError) {
                 Toast.makeText(
                     this@NativeShortformActivity,
@@ -123,17 +123,17 @@ class NativeShortformActivity : AppCompatActivity() {
                 ).show()
             }
 
-            override fun onEvent(command: String, payload: String?) {
-                super.onEvent(command, payload)
+            override fun onEvent(context: Context, command: String, payload: String?) {
+                super.onEvent(context, command, payload)
                 // Do something
             }
 
-            override fun onShare(activity: Activity, data: ShopLiveShortformShareData) {
+            override fun onShare(context: Context, data: ShopLiveShortformShareData) {
                 showShareDialog(data.title ?: return)
             }
         })
 
-        ShopLiveShortform.setNativeHandler(object : ShopLiveShortformNativeHandler() {
+        ShopLiveShortform.setDetailHandler(object : ShopLiveShortformDetailHandler() {
             override fun getOnClickProductListener(): ShopLiveShortformProductListener {
                 return ShopLiveShortformProductListener { _, product ->
                     // Something landing customer
@@ -186,8 +186,8 @@ class NativeShortformActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.visibleFullTypeDataLiveData.observe(this) {
-            ShopLiveShortform.setVisibleFullTypeViews(it)
+        viewModel.visibleDetailTypeDataLiveData.observe(this) {
+            ShopLiveShortform.setVisibleDetailTypeViews(it)
         }
     }
 
