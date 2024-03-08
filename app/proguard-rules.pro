@@ -22,3 +22,5 @@
 
 -keep public class cloud.shoplive.** { *; }
 -dontwarn cloud.shoplive.**
+
+-keep class org.json.** { *; }
