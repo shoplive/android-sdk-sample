@@ -215,8 +215,8 @@ object Options {
     fun isVisibleStatusBar(): Boolean {
         return preferences?.getBoolean(
             App.instance.getString(R.string.preference_player_status_bar_transparent_key),
-            false
-        ) ?: false
+            true
+        ) ?: true
     }
 
     fun setNextActionOnHandleNavigation(type: ShopLive.ActionType) {
