@@ -67,6 +67,15 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         super.onViewCreated(view, savedInstanceState)
         binding.shortsCardTypeView.setSpanCount(1)
         binding.shortsCardTypeView.setViewType(viewModel.getSavedCardType())
+        binding.shortsCardTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
+            override fun onError(context: Context, error: ShopLiveCommonError) {
+                Toast.makeText(
+                    requireContext(),
+                    error.message ?: error.toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
         viewModel.hashTagLiveData.observe(requireActivity()) { (hashTags, operator) ->
             binding.shortsCardTypeView.setHashTags(hashTags, operator)
@@ -104,6 +113,9 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
             }
         }
         viewModel.isEnablePlayVideosLiveData.observe(requireActivity()) {
+            if (viewModel.submitLiveData.value != PAGE_SHORTS_MAIN) {
+                return@observe
+            }
             if (it) {
                 binding.shortsCardTypeView.enablePlayVideos()
             } else {
@@ -187,6 +199,15 @@ class ShortformVerticalFragment : Fragment(), ShopLiveShortformPlayEnableListene
         super.onViewCreated(view, savedInstanceState)
         binding.shortsVerticalTypeView.setSpanCount(2)
         binding.shortsVerticalTypeView.setViewType(viewModel.getSavedCardType())
+        binding.shortsVerticalTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
+            override fun onError(context: Context, error: ShopLiveCommonError) {
+                Toast.makeText(
+                    requireContext(),
+                    error.message ?: error.toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
         viewModel.hashTagLiveData.observe(requireActivity()) { (hashTags, operator) ->
             binding.shortsVerticalTypeView.setHashTags(hashTags, operator)
@@ -221,6 +242,9 @@ class ShortformVerticalFragment : Fragment(), ShopLiveShortformPlayEnableListene
             }
         }
         viewModel.isEnablePlayVideosLiveData.observe(requireActivity()) {
+            if (viewModel.submitLiveData.value != PAGE_SHORTS_VERTICAL) {
+                return@observe
+            }
             if (it) {
                 binding.shortsVerticalTypeView.enablePlayVideos()
             } else {
@@ -466,6 +490,9 @@ class ShortformFullFragment : Fragment(), ShopLiveShortformPlayEnableListener,
             }
         }
         viewModel.isEnablePlayVideosLiveData.observe(requireActivity()) {
+            if (viewModel.submitLiveData.value != PAGE_SHORTS_FULL) {
+                return@observe
+            }
             if (it) {
                 binding.shortsFullTypeView.enablePlayVideos()
             } else {
