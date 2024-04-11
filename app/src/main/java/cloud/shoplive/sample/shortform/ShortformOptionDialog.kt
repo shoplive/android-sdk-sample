@@ -3,18 +3,14 @@ package cloud.shoplive.sample.shortform
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.DialogShortformOptionBinding
 import cloud.shoplive.sdk.common.ShopLiveCommon
 
 data class ShortformOptionDialogData(
     val accessKey: String,
     val userId: String?,
-    val name: String?,
+    val userName: String?,
     val age: Int?,
     val gender: String?,
     val userScore: Int?,

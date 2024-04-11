@@ -7,8 +7,10 @@ import androidx.lifecycle.viewModelScope
 import cloud.shoplive.sample.PreferencesUtil
 import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.network.ShopLiveShortformServiceImpl
+import cloud.shoplive.sdk.network.request.ShopLiveShortformCollectionRequest
 import cloud.shoplive.sdk.network.request.ShopLiveShortformTagSearchOperator
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
+import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformIdsData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformIdsMoreData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformMoreSuspendListener
@@ -98,7 +100,9 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
                     kotlin.runCatching {
                         service.collection(
                             ShopLiveCommon.getAccessKey(),
-                            reference = this@ShortformViewModel.reference
+                            ShopLiveShortformCollectionRequest(
+                                reference = this@ShortformViewModel.reference
+                            )
                         )
                     }.getOrNull() ?: return@ShopLiveShortformMoreSuspendListener null
                 val moreList = moreResponse.shortsList?.mapNotNull { it.shortsId } ?: emptyList()
