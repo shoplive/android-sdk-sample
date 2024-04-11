@@ -149,9 +149,11 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // set user when pip mode
                 setUserOrJwt()
-                val campaignKey = CampaignSettings.campaignKey(this) ?: return@setOnClickListener
+                val campaignKey = CampaignSettings.campaignKey(this) ?: run {
+                    startActivity(CampaignActivity.buildIntent(this))
+                    return@setOnClickListener
+                }
                 ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
-                    keepWindowStateOnPlayExecuted = true
                     referrer = "referrer"
                 })
             }
@@ -199,7 +201,6 @@ class MainActivity : AppCompatActivity() {
             // Preview transition animation
             ShopLive.setPreviewTransitionAnimation(this, binding.preview)
             ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
-                keepWindowStateOnPlayExecuted = true
                 referrer = "referrer"
             })
             binding.preview.release()
@@ -217,7 +218,6 @@ class MainActivity : AppCompatActivity() {
             // Preview transition animation
             ShopLive.setPreviewTransitionAnimation(this, binding.previewSwipe.preview)
             ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
-                keepWindowStateOnPlayExecuted = true
                 referrer = "referrer"
             })
             binding.previewSwipe.release()
@@ -270,11 +270,10 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
                 val user = CampaignSettings.user(this) ?: return
-                ShopLive.setUser(user)
                 ShopLiveCommon.setUser(
                     accessKey,
                     ShopLiveCommonUser(user.userId ?: return).apply {
-                        name = user.userName
+                        userName = user.userName
                         age = user.age
                         gender = when (user.gender) {
                             ShopLiveUserGender.Female -> ShopLiveCommonUserGender.FEMALE
@@ -288,12 +287,10 @@ class MainActivity : AppCompatActivity() {
 
             CampaignSettings.UserType.JWT.ordinal -> {
                 val jwt = CampaignSettings.jwt(this) ?: return
-                ShopLive.setAuthToken(jwt)
                 ShopLiveCommon.setAuthToken(jwt)
             }
 
             CampaignSettings.UserType.GUEST.ordinal -> {
-                ShopLive.setUser(null)
                 ShopLiveCommon.clearAuth()
             }
         }
@@ -359,7 +356,7 @@ class MainActivity : AppCompatActivity() {
 
         ShopLive.setPlayerScreenCaptureEnabled(Options.isPlayerScreenCaptureEnabled())
 
-        ShopLive.setStatusBarTransparent(Options.isStatusBarTransparent())
+        ShopLive.setVisibleStatusBar(Options.isVisibleStatusBar())
 
         ShopLive.setSoundFocusHandling(if (Options.isMuteWhenLossAudioFocus()) {
             object : OnAudioFocusListener {
@@ -379,7 +376,6 @@ class MainActivity : AppCompatActivity() {
     private fun play() {
         ShopLive.setAccessKey(CampaignSettings.accessKey(this) ?: return)
         ShopLive.play(this, ShopLivePlayerData(CampaignSettings.campaignKey(this) ?: return).apply {
-            keepWindowStateOnPlayExecuted = true
             referrer = "referrer"
         })
     }

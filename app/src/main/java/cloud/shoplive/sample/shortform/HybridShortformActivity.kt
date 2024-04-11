@@ -1,6 +1,5 @@
 package cloud.shoplive.sample.shortform
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,10 +12,8 @@ import cloud.shoplive.sample.databinding.ActivityHybridShortformBinding
 import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.network.ShopLiveNetwork
-import cloud.shoplive.sdk.network.response.ShopLiveShortformData
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
-import cloud.shoplive.sdk.shorts.ShopLiveShortformDetailHandler
-import cloud.shoplive.sdk.shorts.ShopLiveShortformReceiveHandler
+import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
 
 class HybridShortformActivity : AppCompatActivity() {
@@ -59,7 +56,6 @@ class HybridShortformActivity : AppCompatActivity() {
 
         // Required
         ShopLiveShortform.connectBridgeInterface(this, binding.webView)
-        ShopLiveShortform.receiveBridgeInterface(binding.webView)
 
         intent.getStringExtra("url")?.let {
             binding.webView.loadUrl(it)
@@ -74,7 +70,7 @@ class HybridShortformActivity : AppCompatActivity() {
         }
 
         // Optional
-        ShopLiveShortform.setReceiveHandler(object : ShopLiveShortformReceiveHandler() {
+        ShopLiveShortform.setHandler(object : ShopLiveShortformHandler() {
             override fun onError(context: Context, error: ShopLiveCommonError) {
                 Toast.makeText(
                     this@HybridShortformActivity,

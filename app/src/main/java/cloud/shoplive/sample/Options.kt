@@ -212,11 +212,11 @@ object Options {
         editor?.apply()
     }
 
-    fun isStatusBarTransparent(): Boolean {
+    fun isVisibleStatusBar(): Boolean {
         return preferences?.getBoolean(
             App.instance.getString(R.string.preference_player_status_bar_transparent_key),
-            false
-        ) ?: false
+            true
+        ) ?: true
     }
 
     fun setNextActionOnHandleNavigation(type: ShopLive.ActionType) {
@@ -267,7 +267,7 @@ object Options {
         return "${context.getString(R.string.setting_category_player)}\n" +
                 "• ${context.getString(R.string.preference_pip_ratio_title)} : ${pipRatioString(getPIPRatio())}\n" +
                 "• ${context.getString(R.string.setting_next_action_on_handle_navigation2)} : ${getNextActionOnHandleNavigation().name}\n" +
-                "• ${context.getString(R.string.preference_player_status_bar_transparent_title)} : ${if (isStatusBarTransparent()) "Extend" else "Not extend"}\n\n" +
+                "• ${context.getString(R.string.preference_player_status_bar_transparent_title)} : ${if (isVisibleStatusBar()) "Extend" else "Not extend"}\n\n" +
                 "${context.getString(R.string.setting_category_sound)}\n" +
                 "• ${context.getString(R.string.preference_mute_start_title)} : ${if (isMuteWhenPlayStart()) "Muted" else "Unmuted"}\n" +
                 "• ${context.getString(R.string.preference_mute_loss_focus_title)} : ${if (isMuteWhenLossAudioFocus()) "Muted" else "Unmuted"}\n\n" +

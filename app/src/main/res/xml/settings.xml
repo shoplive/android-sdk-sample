@@ -20,7 +20,7 @@
             app:title="@string/preference_next_action_title" />
 
         <SwitchPreferenceCompat
-            app:defaultValue="false"
+            app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="@string/preference_player_status_bar_transparent_key"
             app:summary="@string/preference_player_status_bar_transparent_summary"

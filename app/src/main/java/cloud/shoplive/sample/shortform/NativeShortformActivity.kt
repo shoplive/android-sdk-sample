@@ -18,10 +18,9 @@ import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
 import cloud.shoplive.sdk.common.utils.ShopLiveDataSaver
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
-import cloud.shoplive.sdk.shorts.ShopLiveShortformDetailHandler
+import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformProductListener
-import cloud.shoplive.sdk.shorts.ShopLiveShortformReceiveHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformRelatedData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformUrlListener
@@ -114,7 +113,25 @@ class NativeShortformActivity : AppCompatActivity() {
             }
         })
 
-        ShopLiveShortform.setReceiveHandler(object : ShopLiveShortformReceiveHandler() {
+        ShopLiveShortform.setHandler(object : ShopLiveShortformHandler() {
+            override fun getOnClickProductListener(): ShopLiveShortformProductListener {
+                return ShopLiveShortformProductListener { _, product ->
+                    // Something landing customer
+                    ShopLiveShortform.showPreview(
+                        this@NativeShortformActivity,
+                        ShopLiveShortformRelatedData().apply {
+                            productId = product.productId
+                        })
+                }
+            }
+
+            override fun getOnClickBannerListener(): ShopLiveShortformUrlListener {
+                return ShopLiveShortformUrlListener { _, url ->
+                    // Something landing customer
+                    Toast.makeText(this@NativeShortformActivity, url, Toast.LENGTH_SHORT).show()
+                }
+            }
+
             override fun onError(context: Context, error: ShopLiveCommonError) {
                 Toast.makeText(
                     this@NativeShortformActivity,
@@ -133,26 +150,6 @@ class NativeShortformActivity : AppCompatActivity() {
             }
         })
 
-        ShopLiveShortform.setDetailHandler(object : ShopLiveShortformDetailHandler() {
-            override fun getOnClickProductListener(): ShopLiveShortformProductListener {
-                return ShopLiveShortformProductListener { _, product ->
-                    // Something landing customer
-                    ShopLiveShortform.showPreview(
-                        this@NativeShortformActivity,
-                        ShopLiveShortformRelatedData().apply {
-                            productId = product.productId
-                        })
-                }
-            }
-
-            override fun getOnClickBannerListener(): ShopLiveShortformUrlListener {
-                return ShopLiveShortformUrlListener { _, url ->
-                    // Something landing customer
-                    Toast.makeText(this@NativeShortformActivity, url, Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
-
         binding.settingButton.setOnClickListener {
             dialog?.dismiss()
             dialog = ShortformOptionDialog(
@@ -163,7 +160,7 @@ class NativeShortformActivity : AppCompatActivity() {
                     ShopLiveCommon.setUser(
                         accessKey,
                         ShopLiveCommonUser(userId).apply {
-                            name = data.name
+                            userName = data.userName
                             age = data.age
                             gender = when (data.gender) {
                                 "m" -> ShopLiveCommonUserGender.MALE
@@ -177,10 +174,10 @@ class NativeShortformActivity : AppCompatActivity() {
                     ShopLiveCommon.clearAuth()
                 }
                 viewModel.setShortformOption(data)
-                viewModel.submitLiveData.value = binding.pager.currentItem
-                dialog?.dismiss()
-                recreate()
                 viewModel.needInitializeTabFlow.value = emptySet()
+                binding.pager.currentItem = 0
+                recreate()
+                viewModel.submitLiveData.value = binding.pager.currentItem
             }.apply {
                 this.show()
             }
