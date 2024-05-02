@@ -17,9 +17,11 @@ import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
 import cloud.shoplive.sdk.common.utils.ShopLiveDataSaver
+import cloud.shoplive.sdk.network.ShopLiveNetwork
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
+import cloud.shoplive.sdk.shorts.ShopLiveShortformPreviewData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformProductListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformRelatedData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
@@ -61,7 +63,7 @@ class NativeShortformActivity : AppCompatActivity() {
     private val mediator by lazy {
         TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
             val text = when (position) {
-                PAGE_SHORTS_MAIN -> getString(R.string.shortform_tab_card)
+                PAGE_SHORTS_MAIN -> getString(R.string.shortform_tab_main)
                 PAGE_SHORTS_VERTICAL -> getString(R.string.shortform_tab_vertical)
                 PAGE_SHORTS_HORIZONTAL -> getString(R.string.shortform_tab_horizontal)
                 PAGE_SHORTS_FULL -> getString(R.string.shortform_tab_full)
@@ -82,7 +84,41 @@ class NativeShortformActivity : AppCompatActivity() {
         }
     }
 
-    private var dialog: ShortformOptionDialog? = null
+
+    private val optionDialog: ShortformOptionDialog by lazy {
+        ShortformOptionDialog(context = this) { data ->
+            data.userId?.let { userId ->
+                val accessKey = ShopLiveCommon.getAccessKey() ?: return@ShortformOptionDialog
+                ShopLiveCommon.setUser(
+                    accessKey,
+                    ShopLiveCommonUser(userId).apply {
+                        userName = data.userName
+                        age = data.age
+                        gender = when (data.gender) {
+                            ShopLiveCommonUserGender.MALE.text -> ShopLiveCommonUserGender.MALE
+                            ShopLiveCommonUserGender.FEMALE.text -> ShopLiveCommonUserGender.FEMALE
+                            ShopLiveCommonUserGender.NEUTRAL.text -> ShopLiveCommonUserGender.NEUTRAL
+                            else -> null
+                        }
+                        userScore = data.userScore
+                    })
+            } ?: kotlin.run {
+                ShopLiveCommon.clearAuth()
+            }
+            if (ShopLiveCommon.getAccessKey() != data.accessKey) {
+                ShopLiveCommon.setAccessKey(data.accessKey)
+                preferencesUtil.accessKey = data.accessKey
+                ShopLiveNetwork.clearShortsConfig()
+            }
+            viewModel.setShortformOption(data)
+            viewModel.needInitializeTabFlow.value = emptySet()
+            binding.pager.currentItem = 0
+            recreate()
+            viewModel.submitLiveData.value = binding.pager.currentItem
+            optionDialog.dismiss()
+        }
+    }
+    private var isMuted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,12 +151,14 @@ class NativeShortformActivity : AppCompatActivity() {
 
         ShopLiveShortform.setHandler(object : ShopLiveShortformHandler() {
             override fun getOnClickProductListener(): ShopLiveShortformProductListener {
-                return ShopLiveShortformProductListener { _, product ->
+                return ShopLiveShortformProductListener { data, product ->
                     // Something landing customer
                     ShopLiveShortform.showPreview(
                         this@NativeShortformActivity,
-                        ShopLiveShortformRelatedData().apply {
+                        ShopLiveShortformPreviewData().apply {
+                            shortsId = data?.shortsId
                             productId = product.productId
+                            isMuted = this@NativeShortformActivity.isMuted
                         })
                 }
             }
@@ -141,8 +179,15 @@ class NativeShortformActivity : AppCompatActivity() {
             }
 
             override fun onEvent(context: Context, command: String, payload: String?) {
-                super.onEvent(context, command, payload)
-                // Do something
+                when (command) {
+                    "DETAIL_CLICK_MUTE" -> {
+                        isMuted = true
+                    }
+
+                    "DETAIL_CLICK_UNMUTE" -> {
+                        isMuted = false
+                    }
+                }
             }
 
             override fun onShare(context: Context, data: ShopLiveShortformShareData) {
@@ -151,36 +196,8 @@ class NativeShortformActivity : AppCompatActivity() {
         })
 
         binding.settingButton.setOnClickListener {
-            dialog?.dismiss()
-            dialog = ShortformOptionDialog(
-                context = this@NativeShortformActivity,
-            ) { data ->
-                data.userId?.let { userId ->
-                    val accessKey = ShopLiveCommon.getAccessKey() ?: return@ShortformOptionDialog
-                    ShopLiveCommon.setUser(
-                        accessKey,
-                        ShopLiveCommonUser(userId).apply {
-                            userName = data.userName
-                            age = data.age
-                            gender = when (data.gender) {
-                                "m" -> ShopLiveCommonUserGender.MALE
-                                "f" -> ShopLiveCommonUserGender.FEMALE
-                                "n" -> ShopLiveCommonUserGender.NEUTRAL
-                                else -> null
-                            }
-                            userScore = data.userScore
-                        })
-                } ?: kotlin.run {
-                    ShopLiveCommon.clearAuth()
-                }
-                viewModel.setShortformOption(data)
-                viewModel.needInitializeTabFlow.value = emptySet()
-                binding.pager.currentItem = 0
-                recreate()
-                viewModel.submitLiveData.value = binding.pager.currentItem
-            }.apply {
-                this.show()
-            }
+            optionDialog.dismiss()
+            optionDialog.show()
         }
 
         viewModel.visibleDetailTypeDataLiveData.observe(this) {

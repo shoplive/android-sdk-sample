@@ -3,7 +3,11 @@ package cloud.shoplive.sample.shortform
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.DialogShortformOptionBinding
 import cloud.shoplive.sdk.common.ShopLiveCommon
 
@@ -16,9 +20,11 @@ data class ShortformOptionDialogData(
     val userScore: Int?,
     val cardTypePosition: Int,
     val playableTypePosition: Int,
+    val shortsCollectionId: String?,
     val hashTag: String?,
     val hashTagOperator: Int,
     val brand: String?,
+    val skus: String?,
     val isVisibleTitle: Boolean,
     val isVisibleDescription: Boolean,
     val isVisibleBrand: Boolean,
@@ -33,6 +39,7 @@ data class ShortformOptionDialogData(
     val isCommentButtonVisible: Boolean,
     val isLikeButtonVisible: Boolean,
     val radius: Int?,
+    val maxCount: Int?,
 )
 
 class ShortformOptionDialog(
@@ -53,9 +60,11 @@ class ShortformOptionDialog(
         private var cardTypePosition = 0
         private var playableTypePosition = 0
 
+        private var shortsCollectionId: String? = null
         private var hashTag: String? = null
         private var hashTagOperator = 0
-        private var brand: String? = null
+        private var brands: String? = null
+        private var skus: String? = null
 
         private var isVisibleTitle = true
         private var isVisibleDescription = true
@@ -71,6 +80,7 @@ class ShortformOptionDialog(
         private var isCommentButtonVisible = true
         private var isLikeButtonVisible = true
         private var radius: Int? = null
+        private var maxCount: Int? = null
     }
 
     private val binding: DialogShortformOptionBinding by lazy {
@@ -84,11 +94,17 @@ class ShortformOptionDialog(
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
         binding.accessKeyEdit.setText(ShopLiveCommon.getAccessKey())
+        binding.userLoggedIn.text = if (ShopLiveCommon.isLoggedIn()) {
+            context.getString(R.string.shortform_option_user_logged_in)
+        } else {
+            context.getString(R.string.shortform_option_user_guest)
+        }
         binding.userIdEdit.setText(userId)
         binding.userNameEdit.setText(name)
         binding.userAgeEdit.setText(age?.toString())
         binding.userGenderEdit.setText(gender)
         binding.userScoreEdit.setText(userScore?.toString())
+        binding.shortsCollectionIdEdit.setText(shortsCollectionId?.toString() ?: "")
         when (cardTypePosition) {
             0 -> binding.cardType0.isChecked = true
             1 -> binding.cardType1.isChecked = true
@@ -104,7 +120,8 @@ class ShortformOptionDialog(
             0 -> binding.hashTagOptionOr.isChecked = true
             1 -> binding.hashTagOptionAnd.isChecked = true
         }
-        binding.brandEdit.setText(brand)
+        binding.brandEdit.setText(brands)
+        binding.skusEdit.setText(skus)
 
         binding.visibleTitleCheckBox.isChecked = isVisibleTitle
         binding.visibleDescriptionCheckBox.isChecked = isVisibleDescription
@@ -120,6 +137,7 @@ class ShortformOptionDialog(
         binding.visibleCommentButtonCheckBox.isChecked = isCommentButtonVisible
         binding.visibleLikeButtonCheckBox.isChecked = isLikeButtonVisible
         binding.radiusEdit.setText(radius?.toString())
+        binding.previewMaxCountEdit.setText(maxCount?.toString())
 
         binding.confirmButton.setOnClickListener {
             val accessKey = binding.accessKeyEdit.text?.toString()
@@ -163,6 +181,8 @@ class ShortformOptionDialog(
                 0
             }
 
+            shortsCollectionId =
+                binding.shortsCollectionIdEdit.text?.toString()
             hashTag = binding.hashTagEdit.text?.toString()
             hashTagOperator = if (binding.hashTagOptionOr.isChecked) {
                 0
@@ -171,7 +191,8 @@ class ShortformOptionDialog(
             } else {
                 0
             }
-            brand = binding.brandEdit.text?.toString()
+            brands = binding.brandEdit.text?.toString()
+            skus = binding.skusEdit.text?.toString()
 
             isVisibleTitle = binding.visibleTitleCheckBox.isChecked
             isVisibleDescription = binding.visibleDescriptionCheckBox.isChecked
@@ -188,6 +209,7 @@ class ShortformOptionDialog(
             isLikeButtonVisible = binding.visibleLikeButtonCheckBox.isChecked
 
             radius = binding.radiusEdit.text?.toString()?.toIntOrNull()
+            maxCount = binding.previewMaxCountEdit.text?.toString()?.toIntOrNull()
 
             listener.invoke(
                 ShortformOptionDialogData(
@@ -199,9 +221,11 @@ class ShortformOptionDialog(
                     userScore,
                     cardTypePosition,
                     playableTypePosition,
+                    shortsCollectionId,
                     hashTag,
                     hashTagOperator,
-                    brand,
+                    brands,
+                    skus,
                     isVisibleTitle,
                     isVisibleDescription,
                     isVisibleBrand,
@@ -216,6 +240,7 @@ class ShortformOptionDialog(
                     isCommentButtonVisible,
                     isLikeButtonVisible,
                     radius,
+                    maxCount
                 )
             )
         }
