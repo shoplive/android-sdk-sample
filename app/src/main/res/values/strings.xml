@@ -150,6 +150,7 @@
     <string name="preference_preview_use_close_button_summary">Set whether to use the close button in Preview. (Default is not used)</string>
 
     <!-- general -->
+    <string name="confirm">Confirm</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="success">Succeed</string>
@@ -169,30 +170,29 @@
     <string name="sample_share_line">Share the link on Line</string>
 
     <!-- shortform -->
-    <string name="shortform_tab_card">Card</string>
+    <string name="shortform_tab_main">Main</string>
     <string name="shortform_tab_vertical">Col</string>
     <string name="shortform_tab_horizontal">Row</string>
     <string name="shortform_tab_full">Full</string>
-    <string name="shortform_tab_web">Web</string>
-    <string name="shortform_snap">SNAP</string>
-    <string name="shortform_only_wifi">ONLY WIFI</string>
+    <string name="shortform_button_setting">Setting</string>
     <string name="shortform_tab_main_subtitle">Highlight content</string>
     <string name="shortform_tab_vertical_subtitle">Highlight exposure</string>
     <string name="shortform_tab_horizontal_subtitle">Free space, Banner</string>
     <string name="shortform_tab_full_subtitle">Expand</string>
-    <string name="shortform_view_type1">type1</string>
-    <string name="shortform_view_type2">type2</string>
-    <string name="shortform_view_type3">type3</string>
-    <string name="shortform_button_setting">Setting</string>
-
+    <string name="shortform_editor_upload">ShortformEditor</string>
+    <string name="shortform_editor_only">EditorOnly</string>
     <string name="shortform_option_access_key">AccessKey</string>
     <string name="shortform_option_user_title">User</string>
+    <string name="shortform_option_user_logged_in">LoggedIn</string>
+    <string name="shortform_option_user_guest">Guest</string>
     <string name="shortform_option_user_id_hint">UserId (Required)</string>
     <string name="shortform_option_user_name_hint">Name</string>
     <string name="shortform_option_user_age_hint">Age</string>
     <string name="shortform_option_user_gender_hint">m, f, n</string>
     <string name="shortform_option_user_score_hint">UserScore</string>
-    <string name="shortform_option_card_type">Card Type (Applied on restart)</string>
+    <string name="shortform_option_collection_id">Collection id</string>
+    <string name="shortform_option_collection_id_hint">Input collection id</string>
+    <string name="shortform_option_card_type">Card Type</string>
     <string name="shortform_option_card_type0">Type0</string>
     <string name="shortform_option_card_type1">Type1</string>
     <string name="shortform_option_card_type2">Type2</string>
@@ -206,6 +206,8 @@
     <string name="shortform_option_hash_tag_and">AND</string>
     <string name="shortform_option_brand">Brands</string>
     <string name="shortform_option_brand_hint">Separated by \",\" ex) Brand1,Brand2</string>
+    <string name="shortform_option_skus">Skus</string>
+    <string name="shortform_option_skus_hint">Separated by \",\" ex) Sku1,Sku2</string>
     <string name="shortform_option_visible_view_count">Visible view count</string>
     <string name="shortform_option_visible_title">Visible title</string>
     <string name="shortform_option_visible_description">Visible description</string>
@@ -219,7 +221,13 @@
     <string name="shortform_option_visible_share_button">Visible share button</string>
     <string name="shortform_option_visible_comment_button">Visible comment button</string>
     <string name="shortform_option_visible_like_button">Visible like button</string>
+    <string name="shortform_option_collection">Collection</string>
+    <string name="shortform_option_detail">Detail</string>
+    <string name="shortform_option_radius">Radius</string>
     <string name="shortform_option_set_radius">Set card radius</string>
     <string name="shortform_option_set_distance">Set card distance</string>
+    <string name="shortform_option_preview">Preview</string>
+    <string name="shortform_option_preview_max_count">Max count</string>
+    <string name="shortform_option_set_preview_max_count">Set preview max count</string>
 
 </resources>

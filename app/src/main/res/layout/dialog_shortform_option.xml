@@ -36,10 +36,41 @@
                 android:maxLines="1"
                 android:textColor="#000"
                 android:textSize="13dp"
-                app:layout_constraintBottom_toTopOf="@id/userIdEdit"
+                app:layout_constraintBottom_toTopOf="@id/userTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/accessKeyTitle" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/userTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shortform_option_user_title"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toTopOf="@id/userIdEdit"
+                app:layout_constraintEnd_toStartOf="@id/userLoggedIn"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/accessKeyEdit" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/userLoggedIn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@string/shortform_option_user_guest"
+                android:textColor="#ff0000"
+                android:textSize="12dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/userTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/userTitle"
+                app:layout_constraintTop_toTopOf="@id/userTitle" />
 
             <cloud.shoplive.sdk.common.view.ShopLiveCommonEditText
                 android:id="@+id/userIdEdit"
@@ -50,7 +81,7 @@
                 android:textColor="#000"
                 android:textSize="13dp"
                 app:layout_constraintBottom_toTopOf="@id/userNameEdit"
-                app:layout_constraintTop_toBottomOf="@id/accessKeyEdit" />
+                app:layout_constraintTop_toBottomOf="@id/userTitle" />
 
             <cloud.shoplive.sdk.common.view.ShopLiveCommonEditText
                 android:id="@+id/userNameEdit"
@@ -95,8 +126,43 @@
                 android:maxLines="1"
                 android:textColor="#000"
                 android:textSize="13dp"
-                app:layout_constraintBottom_toTopOf="@id/cardTypeTitle"
+                app:layout_constraintBottom_toTopOf="@id/collectionTitle"
                 app:layout_constraintTop_toBottomOf="@id/userGenderEdit" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/collectionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/shortform_option_collection"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/shortsCollectionIdTitle"
+                app:layout_constraintTop_toBottomOf="@id/userScoreEdit" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/shortsCollectionIdTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shortform_option_collection_id"
+                android:textColor="#000"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/shortsCollectionIdEdit"
+                app:layout_constraintTop_toBottomOf="@id/collectionTitle" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonEditText
+                android:id="@+id/shortsCollectionIdEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/shortform_option_collection_id_hint"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/cardTypeTitle"
+                app:layout_constraintTop_toBottomOf="@id/shortsCollectionIdTitle" />
 
             <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
                 android:id="@+id/cardTypeTitle"
@@ -107,7 +173,7 @@
                 android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/cardTypeGroup"
-                app:layout_constraintTop_toBottomOf="@id/userScoreEdit" />
+                app:layout_constraintTop_toBottomOf="@id/shortsCollectionIdEdit" />
 
             <RadioGroup
                 android:id="@+id/cardTypeGroup"
@@ -264,8 +330,30 @@
                 android:maxLines="1"
                 android:textColor="#000"
                 android:textSize="13dp"
-                app:layout_constraintBottom_toTopOf="@id/visibleTitleCheckBox"
+                app:layout_constraintBottom_toTopOf="@id/skusTitle"
                 app:layout_constraintTop_toBottomOf="@id/brandTitle" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/skusTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shortform_option_skus"
+                android:textColor="#000"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/skusEdit"
+                app:layout_constraintTop_toBottomOf="@id/brandEdit" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonEditText
+                android:id="@+id/skusEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/shortform_option_skus_hint"
+                android:maxLines="1"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/visibleTitleCheckBox"
+                app:layout_constraintTop_toBottomOf="@id/skusTitle" />
 
             <CheckBox
                 android:id="@+id/visibleTitleCheckBox"
@@ -277,7 +365,7 @@
                 android:textColor="#000"
                 android:textSize="13dp"
                 app:layout_constraintBottom_toTopOf="@id/visibleDescriptionCheckBox"
-                app:layout_constraintTop_toBottomOf="@id/brandEdit" />
+                app:layout_constraintTop_toBottomOf="@id/skusEdit" />
 
             <CheckBox
                 android:id="@+id/visibleDescriptionCheckBox"
@@ -372,8 +460,20 @@
                 android:text="@string/shortform_option_enable_play_only_wifi"
                 android:textColor="#000"
                 android:textSize="13dp"
-                app:layout_constraintBottom_toTopOf="@id/visibleBookmarkButtonCheckBox"
+                app:layout_constraintBottom_toTopOf="@id/detailTitle"
                 app:layout_constraintTop_toBottomOf="@id/enablePlayVideosCheckBox" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/detailTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/shortform_option_detail"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/visibleBookmarkButtonCheckBox"
+                app:layout_constraintTop_toBottomOf="@id/enablePlayOnlyWifiCheckBox" />
 
             <CheckBox
                 android:id="@+id/visibleBookmarkButtonCheckBox"
@@ -385,7 +485,7 @@
                 android:textColor="#000"
                 android:textSize="13dp"
                 app:layout_constraintBottom_toTopOf="@id/visibleShareButtonCheckBox"
-                app:layout_constraintTop_toBottomOf="@id/enablePlayOnlyWifiCheckBox" />
+                app:layout_constraintTop_toBottomOf="@id/detailTitle" />
 
             <CheckBox
                 android:id="@+id/visibleShareButtonCheckBox"
@@ -420,8 +520,19 @@
                 android:text="@string/shortform_option_visible_like_button"
                 android:textColor="#000"
                 android:textSize="13dp"
-                app:layout_constraintBottom_toTopOf="@id/radiusEdit"
+                app:layout_constraintBottom_toTopOf="@id/radiusTitle"
                 app:layout_constraintTop_toBottomOf="@id/visibleCommentButtonCheckBox" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/radiusTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shortform_option_radius"
+                android:textColor="#000"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/radiusEdit"
+                app:layout_constraintTop_toBottomOf="@id/visibleLikeButtonCheckBox" />
 
             <cloud.shoplive.sdk.common.view.ShopLiveCommonEditText
                 android:id="@+id/radiusEdit"
@@ -432,8 +543,43 @@
                 android:maxLines="1"
                 android:textColor="#000"
                 android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/previewTitle"
+                app:layout_constraintTop_toBottomOf="@id/radiusTitle" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/previewTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/shortform_option_preview"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/previewMaxCountTitle"
+                app:layout_constraintTop_toBottomOf="@id/radiusEdit" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/previewMaxCountTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shortform_option_preview_max_count"
+                android:textColor="#000"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/previewMaxCountEdit"
+                app:layout_constraintTop_toBottomOf="@id/previewTitle" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonEditText
+                android:id="@+id/previewMaxCountEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/shortform_option_set_preview_max_count"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="#000"
+                android:textSize="13dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/visibleLikeButtonCheckBox" />
+                app:layout_constraintTop_toBottomOf="@id/previewMaxCountTitle" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
