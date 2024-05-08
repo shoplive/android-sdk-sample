@@ -716,6 +716,28 @@ class MainActivity : AppCompatActivity() {
                     isMuted = false
                 }
             }
+
+            if (data.name == "product_list_item" && data.feature == "click") {
+                ShopLiveEvent.sendConversionEvent(
+                    ShopLiveConversionData(
+                        "purchase",
+                        products = listOf(
+                            ShopLiveConversionProductData(
+                                productId = data.parameter?.get("goodsId") as? String,
+                                sku = data.parameter?.get("sku") as? String,
+                                url = data.parameter?.get("url") as? String,
+                                purchaseQuantity = 1,
+                                purchaseUnitPrice = data.parameter?.get("discountedPrice") as? Double,
+                            )
+                        ),
+                        orderId = "orderId",
+                        referrer = "referrer",
+                        custom = mapOf(
+                            "campaignKey" to data.campaignKey
+                        )
+                    )
+                )
+            }
         }
     }
 
