@@ -180,11 +180,11 @@ class NativeShortformActivity : AppCompatActivity() {
 
             override fun onEvent(context: Context, command: String, payload: String?) {
                 when (command) {
-                    "DETAIL_CLICK_MUTE" -> {
+                    "VIDEO_MUTED" -> {
                         isMuted = true
                     }
 
-                    "DETAIL_CLICK_UNMUTE" -> {
+                    "VIDEO_UNMUTED" -> {
                         isMuted = false
                     }
                 }
