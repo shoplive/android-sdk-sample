@@ -89,15 +89,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <cloud.shoplive.sdk.ShopLiveSwipePreview
-        android:id="@+id/previewSwipe"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/btPlay"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <cloud.shoplive.sdk.ShopLivePreview
         android:id="@+id/preview"
         android:layout_width="150dp"
@@ -110,23 +101,13 @@
     <Button
         android:id="@+id/btPlay"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginEnd="5dp"
         android:text="@string/bt_play"
         android:textAllCaps="false"
-        app:layout_constraintBottom_toTopOf="@id/btPreviewSwipe"
-        app:layout_constraintEnd_toStartOf="@id/btPopupPreview"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/btPreviewSwipe"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        android:text="@string/bt_swipe_preview"
-        android:textAllCaps="false"
+        app:layout_constraintTop_toTopOf="@id/btPopupPreview"
         app:layout_constraintBottom_toTopOf="@id/btHybridShortform"
-        app:layout_constraintEnd_toStartOf="@id/btInAppPreview"
+        app:layout_constraintEnd_toStartOf="@id/btPopupPreview"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -144,12 +125,11 @@
         android:id="@+id/btInAppPreview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
         android:text="@string/bt_in_app_preview"
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@id/btHybridShortform"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btPreviewSwipe" />
+        app:layout_constraintStart_toStartOf="@id/btPopupPreview"/>
 
     <Button
         android:id="@+id/btHybridShortform"
