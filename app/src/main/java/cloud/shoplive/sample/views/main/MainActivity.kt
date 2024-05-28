@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +14,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.lifecycleScope
 import cloud.shoplive.sample.CampaignSettings
 import cloud.shoplive.sample.Options
 import cloud.shoplive.sample.R
@@ -47,8 +45,6 @@ import cloud.shoplive.sdk.network.ShopLiveConversionData
 import cloud.shoplive.sdk.network.ShopLiveConversionProductData
 import cloud.shoplive.sdk.network.ShopLiveEvent
 import com.google.gson.Gson
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -188,20 +184,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.btPreviewSwipe.setOnClickListener {
-            if (binding.previewSwipe.visibility == View.VISIBLE) {
-                binding.previewSwipe.release()
-            } else {
-                val accessKey =
-                    CampaignSettings.accessKey(this) ?: return@setOnClickListener
-                val campaignKey =
-                    CampaignSettings.campaignKey(this) ?: return@setOnClickListener
-
-                binding.previewSwipe.start(accessKey, campaignKey)
-                binding.previewSwipe.visibility = View.VISIBLE
-            }
-        }
-
         binding.preview.setLifecycleObserver(this)
         binding.preview.useCloseButton(Options.isUseCloseButton())
         binding.preview.setOnClickListener {
@@ -217,23 +199,6 @@ class MainActivity : AppCompatActivity() {
         }
         binding.preview.setOnCloseListener {
             binding.preview.visibility = View.GONE
-        }
-
-        binding.previewSwipe.setLifecycleObserver(this)
-        binding.previewSwipe.useCloseButton(Options.isUseCloseButton())
-        binding.previewSwipe.setOnPreviewClickListener {
-            setOptions()
-            val campaignKey =
-                CampaignSettings.campaignKey(this) ?: return@setOnPreviewClickListener
-            // Preview transition animation
-            ShopLive.setPreviewTransitionAnimation(this, binding.previewSwipe.preview)
-            ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
-                referrer = "referrer"
-            })
-            binding.previewSwipe.release()
-        }
-        binding.previewSwipe.setOnCloseListener {
-            binding.previewSwipe.visibility = View.GONE
         }
 
         binding.btHybridShortform.setOnClickListener {
@@ -493,7 +458,7 @@ class MainActivity : AppCompatActivity() {
 
         /**
          * @param isPipMode - pipMode:true, fullMode:false
-         * @param state - 'CREATED' or 'CLOSING' or 'DESTROYED'
+         * @param playerLifecycle - 'CREATED' or 'CLOSING' or 'DESTROYED'
          * */
         override fun onChangedPlayerStatus(
             isPipMode: Boolean,
@@ -533,7 +498,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onReceivedCommand(context: Context, command: String, data: JSONObject) {
-            Log.d(TAG, "onReceivedCommand = command=$command, data=${data.toString()}")
+            Log.d(TAG, "onReceivedCommand = command=$command, data=$data")
 
             when (command) {
                 "LOGIN_REQUIRED" -> {
@@ -705,14 +670,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         private var isMuted = false
-        override fun log(data: ShopLiveLog.Data) {
-            super.log(data)
+        override fun onEvent(context: Context, data: ShopLiveLog.Data) {
+            super.onEvent(context, data)
             when (data.name) {
-                "vidoe_muted" -> {
+                "video_muted" -> {
                     isMuted = true
                 }
 
-                "vidoe_unmuted" -> {
+                "video_unmuted" -> {
                     isMuted = false
                 }
             }
@@ -777,7 +742,6 @@ private data class Seller(
     val description: String?,
     val name: String?,
     val profileUrl: String?,
-    val schemes: String?,
     val sellerId: Int,
     val sellerIdentifier: String,
     val storeUrl: String?
