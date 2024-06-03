@@ -323,8 +323,6 @@ class MainActivity : AppCompatActivity() {
 
         ShopLive.setShareScheme(Options.shareSchemeUrl())
 
-        ShopLive.setKeepAspectOnTabletPortrait(Options.isKeepAspectOnTabletPortrait())
-
         ShopLive.setAutoCloseWhenAppDestroyed(Options.isAutoCloseWhenAppDestroyed())
 
         ShopLive.setNextActionOnHandleNavigation(Options.getNextActionOnHandleNavigation())
