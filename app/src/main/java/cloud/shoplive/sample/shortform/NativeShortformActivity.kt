@@ -153,6 +153,11 @@ class NativeShortformActivity : AppCompatActivity() {
             override fun getOnClickProductListener(): ShopLiveShortformProductListener {
                 return ShopLiveShortformProductListener { data, product ->
                     // Something landing customer
+                    product.name?.let { name ->
+                        Toast.makeText(this@NativeShortformActivity, name, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    ShopLiveShortform.close()
                     ShopLiveShortform.showPreview(
                         this@NativeShortformActivity,
                         ShopLiveShortformPreviewData().apply {
