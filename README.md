@@ -53,9 +53,9 @@ Add the dependency to the project's top-level `build.gradle` file:
 ```gradle
 dependencies {
     ...
-    def shoplive_sdk_version = "1.5.15"
+    def shoplive_sdk_version = "1.5.15.1"
     def your_exoplayer_version = "2.19.1"
-    def your_media3_version = "1.3.1"
+    def your_media3_version = "1.4.1"
     def shoplive_exoplayer_version = your_exoplayer_version + "." + "8"
     def shoplive_media3_version = your_media3_version + "." + "8"
 
