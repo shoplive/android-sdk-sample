@@ -443,7 +443,7 @@ class MainActivity : AppCompatActivity() {
         }*/
 
         override fun handleShare(context: Context, data: ShopLivePlayerShareData) {
-            CustomShareDialog(context, data.url ?: return).show()
+            CustomShareDialog(context, data.url ?: "http://shoplive.cloud").show()
         }
 
         override fun handleCustomAction(
