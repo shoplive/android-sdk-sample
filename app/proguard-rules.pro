@@ -24,3 +24,5 @@
 -dontwarn cloud.shoplive.**
 
 -keep class org.json.** { *; }
+
+-keep class com.google.** { *; }
