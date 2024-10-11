@@ -25,4 +25,4 @@
 
 -keep class org.json.** { *; }
 
--keep class com.google.** { *; }
+-keep class com.google.gson.** { *; }
