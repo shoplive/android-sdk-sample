@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         applicationId "cloud.shoplive.sample"
+        namespace "cloud.shoplive.sample"
         minSdk 19
         targetSdk 34
         versionCode 1
@@ -54,6 +55,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 }
 
