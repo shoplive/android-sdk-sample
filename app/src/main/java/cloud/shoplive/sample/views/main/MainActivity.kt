@@ -443,7 +443,14 @@ class MainActivity : AppCompatActivity() {
         }*/
 
         override fun handleShare(context: Context, data: ShopLivePlayerShareData) {
-            CustomShareDialog(context, data.url ?: "https://www.shoplive.cloud/").show()
+            val shareUrl = data.url.let { url ->
+                if (url.isNullOrEmpty()) {
+                    "https://www.shoplive.cloud/"
+                } else {
+                    url
+                }
+            }
+            CustomShareDialog(context, shareUrl).show()
         }
 
         override fun handleCustomAction(
