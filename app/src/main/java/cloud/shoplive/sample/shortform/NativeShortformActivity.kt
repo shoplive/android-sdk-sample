@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.PickVisualMediaRequest
@@ -442,8 +443,8 @@ class NativeShortformActivity : AppCompatActivity() {
                         this@NativeShortformActivity,
                         error.toString(),
                         Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
+                    Log.e("aaaaaaaaaa", error.toString())
                 }
 
                 override fun onCancel() {
