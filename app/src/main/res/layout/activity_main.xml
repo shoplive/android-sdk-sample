@@ -101,25 +101,22 @@
     <Button
         android:id="@+id/btPlay"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="5dp"
+        android:layout_height="wrap_content"
         android:text="@string/bt_play"
         android:textAllCaps="false"
-        app:layout_constraintTop_toTopOf="@id/btPopupPreview"
-        app:layout_constraintBottom_toTopOf="@id/btHybridShortform"
-        app:layout_constraintEnd_toStartOf="@id/btPopupPreview"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/btShortformEditor"
+        app:layout_constraintEnd_toEndOf="@id/btHybridShortform"
+        app:layout_constraintStart_toStartOf="@id/btHybridShortform" />
 
     <Button
         android:id="@+id/btPopupPreview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
         android:text="@string/bt_popup_preview"
         android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@id/btInAppPreview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btPlay" />
+        app:layout_constraintEnd_toEndOf="@id/btNativeShortform"
+        app:layout_constraintStart_toStartOf="@id/btNativeShortform" />
 
     <Button
         android:id="@+id/btInAppPreview"
@@ -127,9 +124,19 @@
         android:layout_height="wrap_content"
         android:text="@string/bt_in_app_preview"
         android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@id/btNativeShortform"
+        app:layout_constraintEnd_toEndOf="@id/btNativeShortform"
+        app:layout_constraintStart_toStartOf="@id/btNativeShortform" />
+
+    <Button
+        android:id="@+id/btShortformEditor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/bt_shortform_editor"
+        android:textAllCaps="false"
         app:layout_constraintBottom_toTopOf="@id/btHybridShortform"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/btPopupPreview"/>
+        app:layout_constraintEnd_toEndOf="@id/btHybridShortform"
+        app:layout_constraintStart_toStartOf="@id/btHybridShortform" />
 
     <Button
         android:id="@+id/btHybridShortform"
