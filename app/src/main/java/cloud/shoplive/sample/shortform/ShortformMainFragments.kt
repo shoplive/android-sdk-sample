@@ -24,8 +24,8 @@ import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SH
 import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_MAIN
 import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_VERTICAL
 import cloud.shoplive.sdk.common.ShopLiveCommonError
-import cloud.shoplive.sdk.shorts.ShopLiveShortformBaseTypeHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionData
+import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformSubmitListener
 import kotlinx.coroutines.async
@@ -67,7 +67,7 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         super.onViewCreated(view, savedInstanceState)
         binding.shortsCardTypeView.setSpanCount(1)
         binding.shortsCardTypeView.setViewType(viewModel.getSavedCardType())
-        binding.shortsCardTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
+        binding.shortsCardTypeView.handler = object : ShopLiveShortformHandler() {
             override fun onError(context: Context, error: ShopLiveCommonError) {
                 Toast.makeText(
                     requireContext(),
@@ -199,7 +199,7 @@ class ShortformVerticalFragment : Fragment(), ShopLiveShortformPlayEnableListene
         super.onViewCreated(view, savedInstanceState)
         binding.shortsVerticalTypeView.setSpanCount(2)
         binding.shortsVerticalTypeView.setViewType(viewModel.getSavedCardType())
-        binding.shortsVerticalTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
+        binding.shortsVerticalTypeView.handler = object : ShopLiveShortformHandler() {
             override fun onError(context: Context, error: ShopLiveCommonError) {
                 Toast.makeText(
                     requireContext(),
@@ -508,7 +508,7 @@ class ShortformFullFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         viewModel.submitLiveData.observe(requireActivity()) {
             if (it == PAGE_SHORTS_FULL) submit()
         }
-        binding.shortsFullTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
+        binding.shortsFullTypeView.handler = object : ShopLiveShortformHandler() {
             override fun onError(context: Context, error: ShopLiveCommonError) {
                 Toast.makeText(
                     requireContext(),

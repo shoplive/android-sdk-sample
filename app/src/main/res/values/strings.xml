@@ -180,6 +180,9 @@
     <string name="shortform_tab_horizontal_subtitle">Free space, Banner</string>
     <string name="shortform_tab_full_subtitle">Expand</string>
     <string name="shortform_editor_upload">ShortformEditor</string>
+    <string name="shortform_video_editor_only">VideoEditor</string>
+    <string name="shortform_image_editor_only">ImageEditor</string>
+    <string name="shortform_cover_picker_only">CoverPicker</string>
     <string name="shortform_editor_only">EditorOnly</string>
     <string name="shortform_option_access_key">AccessKey</string>
     <string name="shortform_option_user_title">User</string>

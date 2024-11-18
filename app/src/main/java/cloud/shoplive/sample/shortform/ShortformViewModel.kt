@@ -12,6 +12,7 @@ import cloud.shoplive.sdk.network.request.ShopLiveShortformCollectionRequest
 import cloud.shoplive.sdk.network.request.ShopLiveShortformTagSearchOperator
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionData
+import cloud.shoplive.sdk.shorts.ShopLiveShortformIdData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformIdsData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformIdsMoreData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformMoreSuspendListener
@@ -136,7 +137,7 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
             this@ShortformViewModel.reference = response.reference
             this@ShortformViewModel.hasMore = response.hasMore
             ShopLiveShortform.play(context, ShopLiveShortformIdsData().apply {
-                ids = list
+                ids = list.map { shortsId -> ShopLiveShortformIdData(shortsId) }
                 currentId = list.getOrNull((Math.random() * list.size).toInt())
             }, ShopLiveShortformMoreSuspendListener {
                 val moreResponse =
@@ -150,7 +151,7 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
                 this@ShortformViewModel.reference = moreResponse.reference
                 this@ShortformViewModel.hasMore = moreResponse.hasMore
                 return@ShopLiveShortformMoreSuspendListener ShopLiveShortformIdsMoreData().apply {
-                    ids = moreList
+                    ids = list.map { shortsId -> ShopLiveShortformIdData(shortsId) }
                     hasMore = this@ShortformViewModel.hasMore
                 }
             })
