@@ -3,8 +3,12 @@ package cloud.shoplive.sample.shortform
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.viewmodel.initializer
@@ -12,22 +16,43 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import cloud.shoplive.sample.PreferencesUtilImpl
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.ActivityNativeShortformBinding
+import cloud.shoplive.sample.views.dialog.CustomListDialog
 import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
 import cloud.shoplive.sdk.common.utils.ShopLiveDataSaver
+import cloud.shoplive.sdk.editor.ShopLiveCoverPicker
+import cloud.shoplive.sdk.editor.ShopLiveCoverPickerData
+import cloud.shoplive.sdk.editor.ShopLiveCoverPickerHandler
+import cloud.shoplive.sdk.editor.ShopLiveCoverPickerUrlData
+import cloud.shoplive.sdk.editor.ShopLiveCoverPickerVisibleActionButton
+import cloud.shoplive.sdk.editor.ShopLiveEditorLocalData
+import cloud.shoplive.sdk.editor.ShopLiveEditorResultData
+import cloud.shoplive.sdk.editor.ShopLiveImageEditor
+import cloud.shoplive.sdk.editor.ShopLiveImageEditorData
+import cloud.shoplive.sdk.editor.ShopLiveImageEditorHandler
+import cloud.shoplive.sdk.editor.ShopLiveShortformEditor
+import cloud.shoplive.sdk.editor.ShopLiveShortformEditorAspectRatio
+import cloud.shoplive.sdk.editor.ShopLiveShortformEditorHandler
+import cloud.shoplive.sdk.editor.ShopLiveShortformEditorVisibleActionButton
+import cloud.shoplive.sdk.editor.ShopLiveShortformEditorVisibleContentData
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditor
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorData
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorHandler
+import cloud.shoplive.sdk.editor.ShopLiveVideoUploaderData
 import cloud.shoplive.sdk.network.ShopLiveNetwork
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPreviewData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformProductListener
-import cloud.shoplive.sdk.shorts.ShopLiveShortformRelatedData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformUrlListener
+import cloud.shoplive.sdk.shorts.ShopLiveShortformWebView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 class NativeShortformActivity : AppCompatActivity() {
@@ -37,6 +62,9 @@ class NativeShortformActivity : AppCompatActivity() {
         const val PAGE_SHORTS_VERTICAL = 1
         const val PAGE_SHORTS_HORIZONTAL = 2
         const val PAGE_SHORTS_FULL = 3
+
+        private const val KEY_PICK_VISUAL_VIDEO_REQUEST = "key_pick_visual_video_request"
+        private const val KEY_PICK_VISUAL_IMAGE_REQUEST = "key_pick_visual_image_request"
 
         fun intent(context: Context): Intent {
             return Intent(context, NativeShortformActivity::class.java)
@@ -84,6 +112,25 @@ class NativeShortformActivity : AppCompatActivity() {
         }
     }
 
+
+    private val editorDialog: CustomListDialog<String> by lazy {
+        val uploadEditorString = getString(R.string.shortform_editor_upload)
+        val videoEditorString = getString(R.string.shortform_video_editor_only)
+        val imageEditorString = getString(R.string.shortform_image_editor_only)
+        val coverPickerString = getString(R.string.shortform_cover_picker_only)
+
+        val list =
+            listOf(uploadEditorString, videoEditorString, imageEditorString, coverPickerString)
+        CustomListDialog(this, list, callback = {
+            when (it) {
+                uploadEditorString -> showShortformEditor()
+                videoEditorString -> showVideoEditor()
+                imageEditorString -> showImageEditor()
+                coverPickerString -> showCoverPicker()
+            }
+            editorDialog.dismiss()
+        })
+    }
 
     private val optionDialog: ShortformOptionDialog by lazy {
         ShortformOptionDialog(context = this) { data ->
@@ -151,15 +198,16 @@ class NativeShortformActivity : AppCompatActivity() {
 
         ShopLiveShortform.setHandler(object : ShopLiveShortformHandler() {
             override fun getOnClickProductListener(): ShopLiveShortformProductListener {
-                return ShopLiveShortformProductListener { data, product ->
+                return ShopLiveShortformProductListener { context, data, product ->
                     // Something landing customer
                     product.name?.let { name ->
                         Toast.makeText(this@NativeShortformActivity, name, Toast.LENGTH_SHORT)
                             .show()
                     }
+                    val activity = context as? Activity ?: return@ShopLiveShortformProductListener
                     ShopLiveShortform.close()
                     ShopLiveShortform.showPreview(
-                        this@NativeShortformActivity,
+                        activity,
                         ShopLiveShortformPreviewData().apply {
                             shortsId = data?.shortsId
                             productId = product.productId
@@ -169,9 +217,9 @@ class NativeShortformActivity : AppCompatActivity() {
             }
 
             override fun getOnClickBannerListener(): ShopLiveShortformUrlListener {
-                return ShopLiveShortformUrlListener { _, url ->
+                return ShopLiveShortformUrlListener { context, _, url ->
                     // Something landing customer
-                    Toast.makeText(this@NativeShortformActivity, url, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, url, Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -183,7 +231,12 @@ class NativeShortformActivity : AppCompatActivity() {
                 ).show()
             }
 
-            override fun onEvent(context: Context, command: String, payload: String?) {
+            override fun onEvent(
+                context: Context,
+                webView: ShopLiveShortformWebView?,
+                command: String,
+                payload: String?
+            ) {
                 when (command) {
                     "VIDEO_MUTED" -> {
                         isMuted = true
@@ -200,6 +253,11 @@ class NativeShortformActivity : AppCompatActivity() {
             }
         })
 
+        binding.uploadButton.setOnClickListener {
+            editorDialog.dismiss()
+            editorDialog.show()
+        }
+
         binding.settingButton.setOnClickListener {
             optionDialog.dismiss()
             optionDialog.show()
@@ -209,6 +267,194 @@ class NativeShortformActivity : AppCompatActivity() {
             ShopLiveShortform.setVisibleDetailTypeViews(it)
         }
     }
+
+    private fun showShortformEditor() {
+        ShopLiveShortformEditor(this)
+            .apply {
+                setVideoEditorData(ShopLiveVideoEditorData().apply {
+                    aspectRatio = ShopLiveShortformEditorAspectRatio(9, 16)
+                    visibleActionButton =
+                        ShopLiveShortformEditorVisibleActionButton().apply {
+                            isUsedCropButton = false
+                            isUsedPlaybackSpeedButton = false
+                            isUsedFilterButton = false
+                            isUsedVolumeButton = true
+                        }
+                    minVideoDuration = 3 * 1000
+                    maxVideoDuration = 90 * 1000
+                })
+                setVideoUploaderData(ShopLiveVideoUploaderData().apply {
+                    visibleContentData =
+                        ShopLiveShortformEditorVisibleContentData().apply {
+                            isDescriptionVisible = true
+                            isTagsVisible = true
+                        }
+                })
+                setHandler(object : ShopLiveShortformEditorHandler() {
+                    override fun onSuccess(
+                        activity: ComponentActivity,
+                        resultData: ShopLiveEditorResultData
+                    ) {
+                        super.onSuccess(activity, resultData)
+                        Toast.makeText(
+                            this@NativeShortformActivity,
+                            "onComplete",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    override fun onError(error: ShopLiveCommonError) {
+                        super.onError(error)
+                        Toast.makeText(
+                            this@NativeShortformActivity,
+                            "onError : $error",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    override fun onCancel() {
+                        super.onCancel()
+                        Toast.makeText(
+                            this@NativeShortformActivity,
+                            "onClosed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+            }.start()
+    }
+
+    private val videoEditorLock = AtomicBoolean(false)
+    private fun showVideoEditor() {
+        if (videoEditorLock.getAndSet(true)) {
+            return
+        }
+        this.activityResultRegistry
+            .register(
+                KEY_PICK_VISUAL_VIDEO_REQUEST,
+                ActivityResultContracts.PickVisualMedia()
+            ) {
+                if (it != null) {
+                    ShopLiveVideoEditor(this)
+                        .setData(ShopLiveVideoEditorData())
+                        .setHandler(object : ShopLiveVideoEditorHandler() {
+                            override fun onSuccess(
+                                videoEditorActivity: ComponentActivity,
+                                result: ShopLiveEditorResultData
+                            ) {
+                                super.onSuccess(videoEditorActivity, result)
+                                Toast.makeText(
+                                    this@NativeShortformActivity,
+                                    "onComplete : ${result.toString()}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                ShopLiveVideoEditor.close()
+                            }
+
+                            override fun onError(error: ShopLiveCommonError) {
+                                super.onError(error)
+                                Toast.makeText(
+                                    this@NativeShortformActivity,
+                                    "onError : $error",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            override fun onCancel() {
+                                super.onCancel()
+                                Toast.makeText(
+                                    this@NativeShortformActivity,
+                                    "onClosed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }).start(ShopLiveEditorLocalData(it))
+                }
+                videoEditorLock.set(false)
+            }.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+    }
+
+    private val imageEditorLock = AtomicBoolean(false)
+    private fun showImageEditor() {
+        if (imageEditorLock.getAndSet(true)) {
+            return
+        }
+        this.activityResultRegistry
+            .register(
+                KEY_PICK_VISUAL_IMAGE_REQUEST,
+                ActivityResultContracts.PickVisualMedia()
+            ) {
+                if (it != null) {
+                    ShopLiveImageEditor(this)
+                        .setData(ShopLiveImageEditorData())
+                        .setHandler(object : ShopLiveImageEditorHandler() {
+                            override fun onSuccess(result: ShopLiveEditorResultData) {
+                                super.onSuccess(result)
+                                Toast.makeText(
+                                    this@NativeShortformActivity,
+                                    "onComplete : ${result.toString()}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            override fun onError(error: ShopLiveCommonError) {
+                                super.onError(error)
+                                Toast.makeText(
+                                    this@NativeShortformActivity,
+                                    "onError : $error",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            override fun onCancel() {
+                                super.onCancel()
+                                Toast.makeText(
+                                    this@NativeShortformActivity,
+                                    "onClosed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }).start(ShopLiveEditorLocalData(it))
+                }
+                imageEditorLock.set(false)
+            }.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    private fun showCoverPicker() {
+        ShopLiveCoverPicker(this)
+            .setData(ShopLiveCoverPickerData().apply {
+                this.visibleActionButton = ShopLiveCoverPickerVisibleActionButton(true)
+            })
+            .setHandler(object : ShopLiveCoverPickerHandler() {
+                override fun onSuccess(coverPickerActivity: ComponentActivity, result: Uri) {
+                    super.onSuccess(coverPickerActivity, result)
+                    Toast.makeText(
+                        coverPickerActivity,
+                        result.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    ShopLiveCoverPicker.close()
+                }
+
+                override fun onError(error: ShopLiveCommonError) {
+                    super.onError(error)
+                    Toast.makeText(
+                        this@NativeShortformActivity,
+                        error.toString(),
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+
+                override fun onCancel() {
+                    super.onCancel()
+                    Toast.makeText(this@NativeShortformActivity, "onClosed", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
+            .start(ShopLiveCoverPickerUrlData("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+    }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)

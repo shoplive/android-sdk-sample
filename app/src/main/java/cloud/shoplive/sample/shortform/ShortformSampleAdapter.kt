@@ -17,7 +17,7 @@ import cloud.shoplive.sample.extension.toDp
 import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.network.request.ShopLiveShortformTagSearchOperator
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
-import cloud.shoplive.sdk.shorts.ShopLiveShortformBaseTypeHandler
+import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformHorizontalTypeView
 
 class ShortformSampleAdapter(
@@ -98,7 +98,7 @@ class ShortformSampleAdapter(
         init {
             shortsHorizontalTypeView.setPlayableType(ShopLiveShortform.PlayableType.FIRST)
             shortsHorizontalTypeView.setViewType(viewModel.getSavedCardType())
-            shortsHorizontalTypeView.handler = object : ShopLiveShortformBaseTypeHandler() {
+            shortsHorizontalTypeView.handler = object : ShopLiveShortformHandler() {
                 override fun onError(context: Context, error: ShopLiveCommonError) {
                     Toast.makeText(
                         itemView.context,

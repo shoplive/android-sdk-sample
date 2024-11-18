@@ -56,6 +56,31 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/uploadButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="16dp"
+            app:cardBackgroundColor="@color/black"
+            app:cardCornerRadius="20dp"
+            app:layout_anchor="@id/bottomNavigation"
+            app:layout_anchorGravity="center|top"
+            app:layout_constraintBottom_toTopOf="@id/tabLayout"
+            app:layout_constraintEnd_toEndOf="@id/tabLayout"
+            app:layout_constraintStart_toStartOf="@id/tabLayout"
+            app:layout_constraintTop_toTopOf="@id/tabLayout">
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:text="+"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
