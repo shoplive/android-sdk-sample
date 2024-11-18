@@ -4,11 +4,14 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -24,6 +27,7 @@ import cloud.shoplive.sample.shortform.HybridShortformActivity
 import cloud.shoplive.sample.shortform.NativeShortformActivity
 import cloud.shoplive.sample.views.campaign.CampaignActivity
 import cloud.shoplive.sample.views.dialog.CustomActionDialog
+import cloud.shoplive.sample.views.dialog.CustomListDialog
 import cloud.shoplive.sample.views.dialog.CustomShareDialog
 import cloud.shoplive.sample.views.login.LoginActivity
 import cloud.shoplive.sample.views.settings.SettingsActivity
@@ -41,12 +45,32 @@ import cloud.shoplive.sdk.common.ShopLiveCommon
 import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
+import cloud.shoplive.sdk.editor.ShopLiveCoverPicker
+import cloud.shoplive.sdk.editor.ShopLiveCoverPickerData
+import cloud.shoplive.sdk.editor.ShopLiveCoverPickerHandler
+import cloud.shoplive.sdk.editor.ShopLiveCoverPickerUrlData
+import cloud.shoplive.sdk.editor.ShopLiveCoverPickerVisibleActionButton
+import cloud.shoplive.sdk.editor.ShopLiveEditorLocalData
+import cloud.shoplive.sdk.editor.ShopLiveEditorResultData
+import cloud.shoplive.sdk.editor.ShopLiveImageEditor
+import cloud.shoplive.sdk.editor.ShopLiveImageEditorData
+import cloud.shoplive.sdk.editor.ShopLiveImageEditorHandler
+import cloud.shoplive.sdk.editor.ShopLiveShortformEditor
+import cloud.shoplive.sdk.editor.ShopLiveShortformEditorAspectRatio
+import cloud.shoplive.sdk.editor.ShopLiveShortformEditorHandler
+import cloud.shoplive.sdk.editor.ShopLiveShortformEditorVisibleActionButton
+import cloud.shoplive.sdk.editor.ShopLiveShortformEditorVisibleContentData
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditor
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorData
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorHandler
+import cloud.shoplive.sdk.editor.ShopLiveVideoUploaderData
 import cloud.shoplive.sdk.network.ShopLiveConversionData
 import cloud.shoplive.sdk.network.ShopLiveConversionProductData
 import cloud.shoplive.sdk.network.ShopLiveEvent
 import com.google.gson.Gson
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.concurrent.atomic.AtomicBoolean
 
 class MainActivity : AppCompatActivity() {
 
@@ -55,6 +79,9 @@ class MainActivity : AppCompatActivity() {
 
         private const val ACCESS_KEY = "accessKey"
         private const val CAMPAIGN_KEY = "campaignKey"
+
+        private const val KEY_PICK_VISUAL_VIDEO_REQUEST = "key_pick_visual_video_request"
+        private const val KEY_PICK_VISUAL_IMAGE_REQUEST = "key_pick_visual_image_request"
 
         fun buildIntentFromDeeplink(
             context: Context,
@@ -74,6 +101,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val viewModel: MainViewModel by viewModels()
+
+    private val editorDialog: CustomListDialog<String> by lazy {
+        val uploadEditorString = getString(R.string.shortform_editor_upload)
+        val videoEditorString = getString(R.string.shortform_video_editor_only)
+        val imageEditorString = getString(R.string.shortform_image_editor_only)
+        val coverPickerString = getString(R.string.shortform_cover_picker_only)
+
+        val list =
+            listOf(uploadEditorString, videoEditorString, imageEditorString, coverPickerString)
+        CustomListDialog(this, list, callback = {
+            when (it) {
+                uploadEditorString -> showShortformEditor()
+                videoEditorString -> showVideoEditor()
+                imageEditorString -> showImageEditor()
+                coverPickerString -> showCoverPicker()
+            }
+            editorDialog.dismiss()
+        })
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -217,6 +263,11 @@ class MainActivity : AppCompatActivity() {
             }
             ShopLiveCommon.setAccessKey(accessKey)
             startActivity(NativeShortformActivity.intent(this))
+        }
+
+        binding.btShortformEditor.setOnClickListener {
+            editorDialog.dismiss()
+            editorDialog.show()
         }
 
         ShopLive.setHandler(shopliveHandler)
@@ -725,6 +776,192 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+    private fun showShortformEditor() {
+        ShopLiveShortformEditor(this)
+            .apply {
+                setVideoEditorData(ShopLiveVideoEditorData().apply {
+                    aspectRatio = ShopLiveShortformEditorAspectRatio(9, 16)
+                    visibleActionButton =
+                        ShopLiveShortformEditorVisibleActionButton().apply {
+                            isUsedCropButton = false
+                            isUsedPlaybackSpeedButton = false
+                            isUsedFilterButton = false
+                            isUsedVolumeButton = true
+                        }
+                    minVideoDuration = 3 * 1000
+                    maxVideoDuration = 90 * 1000
+                })
+                setVideoUploaderData(ShopLiveVideoUploaderData().apply {
+                    visibleContentData =
+                        ShopLiveShortformEditorVisibleContentData().apply {
+                            isDescriptionVisible = true
+                            isTagsVisible = true
+                        }
+                })
+                setHandler(object : ShopLiveShortformEditorHandler() {
+                    override fun onSuccess(
+                        activity: ComponentActivity,
+                        resultData: ShopLiveEditorResultData
+                    ) {
+                        super.onSuccess(activity, resultData)
+                        Toast.makeText(
+                            this@MainActivity,
+                            "onComplete",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    override fun onError(error: ShopLiveCommonError) {
+                        super.onError(error)
+                        Toast.makeText(
+                            this@MainActivity,
+                            "onError : $error",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    override fun onCancel() {
+                        super.onCancel()
+                        Toast.makeText(
+                            this@MainActivity,
+                            "onClosed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+            }.start()
+    }
+
+    private val videoEditorLock = AtomicBoolean(false)
+    private fun showVideoEditor() {
+        if (videoEditorLock.getAndSet(true)) {
+            return
+        }
+        this.activityResultRegistry
+            .register(
+                KEY_PICK_VISUAL_VIDEO_REQUEST,
+                ActivityResultContracts.PickVisualMedia()
+            ) {
+                if (it != null) {
+                    ShopLiveVideoEditor(this)
+                        .setData(ShopLiveVideoEditorData())
+                        .setHandler(object : ShopLiveVideoEditorHandler() {
+                            override fun onSuccess(
+                                videoEditorActivity: ComponentActivity,
+                                result: ShopLiveEditorResultData
+                            ) {
+                                super.onSuccess(videoEditorActivity, result)
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "onComplete : ${result.toString()}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                ShopLiveVideoEditor.close()
+                            }
+
+                            override fun onError(error: ShopLiveCommonError) {
+                                super.onError(error)
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "onError : $error",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            override fun onCancel() {
+                                super.onCancel()
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "onClosed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }).start(ShopLiveEditorLocalData(it))
+                }
+                videoEditorLock.set(false)
+            }.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+    }
+
+    private val imageEditorLock = AtomicBoolean(false)
+    private fun showImageEditor() {
+        if (imageEditorLock.getAndSet(true)) {
+            return
+        }
+        this.activityResultRegistry
+            .register(
+                KEY_PICK_VISUAL_IMAGE_REQUEST,
+                ActivityResultContracts.PickVisualMedia()
+            ) {
+                if (it != null) {
+                    ShopLiveImageEditor(this)
+                        .setData(ShopLiveImageEditorData())
+                        .setHandler(object : ShopLiveImageEditorHandler() {
+                            override fun onSuccess(result: ShopLiveEditorResultData) {
+                                super.onSuccess(result)
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "onComplete : ${result.toString()}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            override fun onError(error: ShopLiveCommonError) {
+                                super.onError(error)
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "onError : $error",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            override fun onCancel() {
+                                super.onCancel()
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "onClosed",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }).start(ShopLiveEditorLocalData(it))
+                }
+                imageEditorLock.set(false)
+            }.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    private fun showCoverPicker() {
+        ShopLiveCoverPicker(this)
+            .setData(ShopLiveCoverPickerData().apply {
+                this.visibleActionButton = ShopLiveCoverPickerVisibleActionButton(true)
+            })
+            .setHandler(object : ShopLiveCoverPickerHandler() {
+                override fun onSuccess(coverPickerActivity: ComponentActivity, result: Uri) {
+                    super.onSuccess(coverPickerActivity, result)
+                    Toast.makeText(
+                        coverPickerActivity,
+                        result.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    ShopLiveCoverPicker.close()
+                }
+
+                override fun onError(error: ShopLiveCommonError) {
+                    super.onError(error)
+                    Toast.makeText(
+                        this@MainActivity,
+                        error.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                override fun onCancel() {
+                    super.onCancel()
+                    Toast.makeText(this@MainActivity, "onClosed", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
+            .start(ShopLiveCoverPickerUrlData("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+    }
 }
 
 private data class SellerStoreData(
