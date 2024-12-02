@@ -935,7 +935,10 @@ class MainActivity : AppCompatActivity() {
                 this.visibleActionButton = ShopLiveCoverPickerVisibleActionButton(true)
             })
             .setHandler(object : ShopLiveCoverPickerHandler() {
-                override fun onSuccess(coverPickerActivity: ComponentActivity, result: Uri) {
+                override fun onSuccess(
+                    coverPickerActivity: ComponentActivity,
+                    result: ShopLiveEditorResultData
+                ) {
                     super.onSuccess(coverPickerActivity, result)
                     Toast.makeText(
                         coverPickerActivity,

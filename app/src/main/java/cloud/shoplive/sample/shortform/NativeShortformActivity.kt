@@ -45,6 +45,7 @@ import cloud.shoplive.sdk.editor.ShopLiveVideoUploaderData
 import cloud.shoplive.sdk.network.ShopLiveNetwork
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
+import cloud.shoplive.sdk.shorts.ShopLiveShortformMessageListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPreviewData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformProductListener
@@ -234,9 +235,9 @@ class NativeShortformActivity : AppCompatActivity() {
 
             override fun onEvent(
                 context: Context,
-                webView: ShopLiveShortformWebView?,
+                messenger: ShopLiveShortformMessageListener?,
                 command: String,
-                payload: String?
+                payload: Map<String, Any?>
             ) {
                 when (command) {
                     "VIDEO_MUTED" -> {
@@ -427,7 +428,10 @@ class NativeShortformActivity : AppCompatActivity() {
                 this.visibleActionButton = ShopLiveCoverPickerVisibleActionButton(true)
             })
             .setHandler(object : ShopLiveCoverPickerHandler() {
-                override fun onSuccess(coverPickerActivity: ComponentActivity, result: Uri) {
+                override fun onSuccess(
+                    coverPickerActivity: ComponentActivity,
+                    result: ShopLiveEditorResultData
+                ) {
                     super.onSuccess(coverPickerActivity, result)
                     Toast.makeText(
                         coverPickerActivity,
