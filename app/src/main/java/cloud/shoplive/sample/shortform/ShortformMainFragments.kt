@@ -1,11 +1,9 @@
 package cloud.shoplive.sample.shortform
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
@@ -14,16 +12,15 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
 import cloud.shoplive.sample.PreferencesUtilImpl
-import cloud.shoplive.sample.databinding.FragmentShortformCardTypeBinding
-import cloud.shoplive.sample.databinding.FragmentShortformFullTypeBinding
+import cloud.shoplive.sample.databinding.FragmentShortformDetailTypeBinding
 import cloud.shoplive.sample.databinding.FragmentShortformHorizontalTypeBinding
+import cloud.shoplive.sample.databinding.FragmentShortformMainTypeBinding
 import cloud.shoplive.sample.databinding.FragmentShortformVerticalTypeBinding
 import cloud.shoplive.sample.extension.toDp
 import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_FULL
 import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_HORIZONTAL
 import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_MAIN
 import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_VERTICAL
-import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
@@ -43,7 +40,7 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         fun newInstance() = ShortformMainFragment()
     }
 
-    private var _binding: FragmentShortformCardTypeBinding? = null
+    private var _binding: FragmentShortformMainTypeBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: ShortformViewModel by activityViewModels {
@@ -59,29 +56,28 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentShortformCardTypeBinding.inflate(inflater, container, false)
+        _binding = FragmentShortformMainTypeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+    private var handler: ShopLiveShortformHandler? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.shortsCardTypeView.setSpanCount(1)
         binding.shortsCardTypeView.setViewType(viewModel.getSavedCardType())
-        binding.shortsCardTypeView.handler = object : ShopLiveShortformHandler() {
-            override fun onError(context: Context, error: ShopLiveCommonError) {
-                Toast.makeText(
-                    requireContext(),
-                    error.message ?: error.toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
+        binding.shortsCardTypeView.handler = ShortformSampleData.handler
 
+        viewModel.shortsCollectionIdLiveData.observe(requireActivity()) {
+            binding.shortsCardTypeView.setShortsCollectionId(it)
+        }
         viewModel.hashTagLiveData.observe(requireActivity()) { (hashTags, operator) ->
             binding.shortsCardTypeView.setHashTags(hashTags, operator)
         }
         viewModel.brandLiveData.observe(requireActivity()) {
             binding.shortsCardTypeView.setBrands(it)
+        }
+        viewModel.skusLiveData.observe(requireActivity()) {
+            binding.shortsCardTypeView.setSkus(it)
         }
         viewModel.isVisibleTitleLiveData.observe(requireActivity()) {
             binding.shortsCardTypeView.setVisibleTitle(it)
@@ -195,25 +191,24 @@ class ShortformVerticalFragment : Fragment(), ShopLiveShortformPlayEnableListene
         return binding.root
     }
 
+    private var handler: ShopLiveShortformHandler? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.shortsVerticalTypeView.setSpanCount(2)
         binding.shortsVerticalTypeView.setViewType(viewModel.getSavedCardType())
-        binding.shortsVerticalTypeView.handler = object : ShopLiveShortformHandler() {
-            override fun onError(context: Context, error: ShopLiveCommonError) {
-                Toast.makeText(
-                    requireContext(),
-                    error.message ?: error.toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
+        binding.shortsVerticalTypeView.handler = ShortformSampleData.handler
 
+        viewModel.shortsCollectionIdLiveData.observe(requireActivity()) {
+            binding.shortsVerticalTypeView.setShortsCollectionId(it)
+        }
         viewModel.hashTagLiveData.observe(requireActivity()) { (hashTags, operator) ->
             binding.shortsVerticalTypeView.setHashTags(hashTags, operator)
         }
         viewModel.brandLiveData.observe(requireActivity()) {
             binding.shortsVerticalTypeView.setBrands(it)
+        }
+        viewModel.skusLiveData.observe(requireActivity()) {
+            binding.shortsVerticalTypeView.setSkus(it)
         }
         viewModel.isVisibleTitleLiveData.observe(requireActivity()) {
             binding.shortsVerticalTypeView.setVisibleTitle(it)
@@ -371,6 +366,7 @@ class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListe
                                     tags = viewModel.hashTagLiveData.value?.first
                                     tagSearchOperator = viewModel.hashTagLiveData.value?.second
                                     brands = viewModel.brandLiveData.value
+                                    skus = viewModel.skusLiveData.value
                                     shuffle = viewModel.isEnableShuffleLiveData.value ?: false
                                 }
                             )
@@ -426,12 +422,10 @@ class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListe
 
     override fun enablePlayVideos() {
         enablePlayLiveData.value = true
-        enablePlayLiveData.value = null
     }
 
     override fun disablePlayVideos() {
         enablePlayLiveData.value = false
-        enablePlayLiveData.value = null
     }
 }
 
@@ -441,7 +435,7 @@ class ShortformFullFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         fun newInstance() = ShortformFullFragment()
     }
 
-    private var _binding: FragmentShortformFullTypeBinding? = null
+    private var _binding: FragmentShortformDetailTypeBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: ShortformViewModel by activityViewModels {
@@ -457,36 +451,43 @@ class ShortformFullFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentShortformFullTypeBinding.inflate(inflater, container, false)
+        _binding = FragmentShortformDetailTypeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+    private var handler: ShopLiveShortformHandler? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.shortsCollectionIdLiveData.observe(requireActivity()) {
+            binding.shortsDetailTypeView.setShortsCollectionId(it)
+        }
         viewModel.hashTagLiveData.observe(requireActivity()) { (hashTags, operator) ->
-            binding.shortsFullTypeView.setHashTags(hashTags, operator)
+            binding.shortsDetailTypeView.setHashTags(hashTags, operator)
         }
         viewModel.brandLiveData.observe(requireActivity()) {
-            binding.shortsFullTypeView.setBrands(it)
+            binding.shortsDetailTypeView.setBrands(it)
+        }
+        viewModel.skusLiveData.observe(requireActivity()) {
+            binding.shortsDetailTypeView.setSkus(it)
         }
         viewModel.isVisibleTitleLiveData.observe(requireActivity()) {
-            binding.shortsFullTypeView.setVisibleTitle(it)
+            binding.shortsDetailTypeView.setVisibleTitle(it)
         }
         viewModel.isVisibleBrandLiveData.observe(requireActivity()) {
-            binding.shortsFullTypeView.setVisibleBrand(it)
+            binding.shortsDetailTypeView.setVisibleBrand(it)
         }
         viewModel.isVisibleProductCountLiveData.observe(requireActivity()) {
-            binding.shortsFullTypeView.setVisibleProductCount(it)
+            binding.shortsDetailTypeView.setVisibleProductCount(it)
         }
         viewModel.isVisibleViewCountLiveData.observe(requireActivity()) {
-            binding.shortsFullTypeView.setVisibleViewCount(it)
+            binding.shortsDetailTypeView.setVisibleViewCount(it)
         }
         viewModel.isEnableShuffleLiveData.observe(requireActivity()) {
             if (it) {
-                binding.shortsFullTypeView.enableShuffle()
+                binding.shortsDetailTypeView.enableShuffle()
             } else {
-                binding.shortsFullTypeView.disableShuffle()
+                binding.shortsDetailTypeView.disableShuffle()
             }
         }
         viewModel.isEnablePlayVideosLiveData.observe(requireActivity()) {
@@ -494,30 +495,21 @@ class ShortformFullFragment : Fragment(), ShopLiveShortformPlayEnableListener,
                 return@observe
             }
             if (it) {
-                binding.shortsFullTypeView.enablePlayVideos()
+                binding.shortsDetailTypeView.enablePlayVideos()
             } else {
-                binding.shortsFullTypeView.disablePlayVideos()
+                binding.shortsDetailTypeView.disablePlayVideos()
             }
         }
         viewModel.isEnablePlayWifiLiveData.observe(requireActivity()) {
-            binding.shortsFullTypeView.setPlayOnlyWifi(it)
+            binding.shortsDetailTypeView.setPlayOnlyWifi(it)
         }
         viewModel.radiusLiveData.observe(requireActivity()) {
-            binding.shortsFullTypeView.setRadius(it?.toDp(requireActivity()) ?: return@observe)
+            binding.shortsDetailTypeView.setRadius(it?.toDp(requireActivity()) ?: return@observe)
         }
         viewModel.submitLiveData.observe(requireActivity()) {
             if (it == PAGE_SHORTS_FULL) submit()
         }
-        binding.shortsFullTypeView.handler = object : ShopLiveShortformHandler() {
-            override fun onError(context: Context, error: ShopLiveCommonError) {
-                Toast.makeText(
-                    requireContext(),
-                    error.message ?: error.toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
+        binding.shortsDetailTypeView.handler = ShortformSampleData.handler
         initializeCollectFlow()
     }
 
@@ -534,19 +526,19 @@ class ShortformFullFragment : Fragment(), ShopLiveShortformPlayEnableListener,
     }
 
     override fun submit() {
-        _binding?.shortsFullTypeView?.submit()
+        _binding?.shortsDetailTypeView?.submit()
         lifecycleScope.launch {
             delay(300)
-            _binding?.shortsFullTypeView?.scrollToTop(true)
+            _binding?.shortsDetailTypeView?.scrollToTop(true)
         }
     }
 
     override fun enablePlayVideos() {
-        _binding?.shortsFullTypeView?.enablePlayVideos()
+        _binding?.shortsDetailTypeView?.enablePlayVideos()
     }
 
     override fun disablePlayVideos() {
-        _binding?.shortsFullTypeView?.disablePlayVideos()
+        _binding?.shortsDetailTypeView?.disablePlayVideos()
     }
 
     override fun onDestroyView() {

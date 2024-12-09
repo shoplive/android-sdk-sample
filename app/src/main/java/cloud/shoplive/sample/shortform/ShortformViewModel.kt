@@ -1,25 +1,40 @@
 package cloud.shoplive.sample.shortform
 
+import android.app.Activity
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cloud.shoplive.sample.PreferencesUtil
+import cloud.shoplive.sample.extension.showShareDialog
 import cloud.shoplive.sdk.common.ShopLiveCommon
+import cloud.shoplive.sdk.common.ShopLiveCommonError
+import cloud.shoplive.sdk.common.extension.debugShopLiveLog
+import cloud.shoplive.sdk.network.ShopLiveNetwork
 import cloud.shoplive.sdk.network.ShopLiveShortformServiceImpl
 import cloud.shoplive.sdk.network.request.ShopLiveShortformCollectionRequest
 import cloud.shoplive.sdk.network.request.ShopLiveShortformTagSearchOperator
+import cloud.shoplive.sdk.network.response.ShopLiveShortformData
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionData
+import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformIdData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformIdsData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformIdsMoreData
+import cloud.shoplive.sdk.shorts.ShopLiveShortformMessageListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformMoreSuspendListener
+import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayerEventCommand
+import cloud.shoplive.sdk.shorts.ShopLiveShortformPreviewData
+import cloud.shoplive.sdk.shorts.ShopLiveShortformProductListener
+import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
+import cloud.shoplive.sdk.shorts.ShopLiveShortformUrlListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformVisibleDetailTypeData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
 
 class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() {
     val shortsCollectionIdLiveData: LiveData<String?>
@@ -69,15 +84,31 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
         get() = _visibleDetailTypeDataLiveData
     private val _visibleDetailTypeDataLiveData =
         MutableLiveData<ShopLiveShortformVisibleDetailTypeData>()
+    val isCenterCrop: LiveData<Boolean>
+        get() = _isCenterCrop
+    private val _isCenterCrop = MutableLiveData<Boolean>()
     val radiusLiveData: LiveData<Int?>
         get() = _radiusLiveData
     private val _radiusLiveData = MutableLiveData<Int?>()
     val maxCount: Int
         get() = _maxCount
     private var _maxCount: Int = 0
+    val isMuted: Boolean
+        get() = _isMuted
+    private var _isMuted = true
+    val isEnabledVolumeKey: Boolean
+        get() = _isEnabledVolumeKey
+    private var _isEnabledVolumeKey = false
+    val isShowEditorEvent: Boolean
+        get() = _isShowEditorEvent
+    private var _isShowEditorEvent = false
+    val isCustomShortform: Boolean
+        get() = _isCustomShortform
+    private var _isCustomShortform = false
 
     val submitLiveData = MutableLiveData<Int>()
     val needInitializeTabFlow = MutableStateFlow<Set<Int>>(setOf())
+
     fun setShortformOption(data: ShortformOptionDialogData) {
         preference.shortformCardType = data.cardTypePosition
         _playableTypeLiveData.value = when (data.playableTypePosition) {
@@ -108,8 +139,13 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
             isCommentButtonVisible = data.isCommentButtonVisible
             isLikeButtonVisible = data.isLikeButtonVisible
         }
+        _isCenterCrop.value = data.isCentCrop
         _radiusLiveData.value = data.radius
         _maxCount = data.maxCount ?: 0
+        _isMuted = data.isMuted
+        _isEnabledVolumeKey = data.isEnabledVolumeKey
+        _isShowEditorEvent = data.isShowEditorEvent
+        _isCustomShortform = data.isCustomEditor
     }
 
     fun getSavedCardType(): ShopLiveShortform.CardViewType {
@@ -127,31 +163,59 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
 
     private var reference: String? = null
     private var hasMore: Boolean = false
-    fun playShortformV2TestTask(context: Context) {
+    fun playShortformV2TestTask(activity: Activity) {
         viewModelScope.launch {
             val service = ShopLiveShortformServiceImpl()
             val response =
-                kotlin.runCatching { service.collection(ShopLiveCommon.getAccessKey()) }.getOrNull()
+                kotlin.runCatching {
+                    service.collection(
+                        ShopLiveCommon.getAccessKey(),
+                        ShopLiveShortformCollectionRequest(
+                            count = ShopLiveNetwork.shortsConfig?.sdk?.detailApiInitializeCount,
+                            finite = true,
+                        )
+                    )
+                }.getOrNull()
                     ?: return@launch
             val list = response.shortsList?.mapNotNull { it.shortsId } ?: emptyList()
             this@ShortformViewModel.reference = response.reference
             this@ShortformViewModel.hasMore = response.hasMore
-            ShopLiveShortform.play(context, ShopLiveShortformIdsData().apply {
-                ids = list.map { shortsId -> ShopLiveShortformIdData(shortsId) }
+            ShopLiveShortform.play(activity, ShopLiveShortformIdsData().apply {
+                ids = list.map {
+                    ShopLiveShortformIdData(it).apply {
+                        payload = mapOf(
+                            Pair("shortsId", it),
+                            Pair("title", "title + $it"),
+                            Pair("description", "description + $it")
+                        )
+                    }
+                }
                 currentId = list.getOrNull((Math.random() * list.size).toInt())
+                handler = ShortformSampleData.handler
             }, ShopLiveShortformMoreSuspendListener {
                 val moreResponse =
                     kotlin.runCatching {
                         service.collection(
                             ShopLiveCommon.getAccessKey(),
-                            ShopLiveShortformCollectionRequest(reference = this@ShortformViewModel.reference)
+                            ShopLiveShortformCollectionRequest(
+                                reference = this@ShortformViewModel.reference,
+                                count = ShopLiveNetwork.shortsConfig?.sdk?.detailApiPaginationCount,
+                                finite = true,
+                            )
                         )
                     }.getOrNull() ?: return@ShopLiveShortformMoreSuspendListener null
                 val moreList = moreResponse.shortsList?.mapNotNull { it.shortsId } ?: emptyList()
                 this@ShortformViewModel.reference = moreResponse.reference
                 this@ShortformViewModel.hasMore = moreResponse.hasMore
                 return@ShopLiveShortformMoreSuspendListener ShopLiveShortformIdsMoreData().apply {
-                    ids = list.map { shortsId -> ShopLiveShortformIdData(shortsId) }
+                    ids = moreList.map {
+                        ShopLiveShortformIdData(it).apply {
+                            payload = mapOf(
+                                Pair("title", "title + $it"),
+                                Pair("description", "description + $it")
+                            )
+                        }
+                    }
                     hasMore = this@ShortformViewModel.hasMore
                 }
             })
