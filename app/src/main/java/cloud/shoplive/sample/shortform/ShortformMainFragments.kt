@@ -60,7 +60,6 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         return binding.root
     }
 
-    private var handler: ShopLiveShortformHandler? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.shortsCardTypeView.setSpanCount(1)
@@ -191,7 +190,6 @@ class ShortformVerticalFragment : Fragment(), ShopLiveShortformPlayEnableListene
         return binding.root
     }
 
-    private var handler: ShopLiveShortformHandler? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.shortsVerticalTypeView.setSpanCount(2)
@@ -455,7 +453,6 @@ class ShortformFullFragment : Fragment(), ShopLiveShortformPlayEnableListener,
         return binding.root
     }
 
-    private var handler: ShopLiveShortformHandler? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
