@@ -184,7 +184,6 @@
     <string name="shortform_video_editor_only">VideoEditor</string>
     <string name="shortform_image_editor_only">ImageEditor</string>
     <string name="shortform_cover_picker_only">CoverPicker</string>
-    <string name="shortform_editor_only">EditorOnly</string>
     <string name="shortform_option_access_key">AccessKey</string>
     <string name="shortform_option_user_title">User</string>
     <string name="shortform_option_user_logged_in">LoggedIn</string>
@@ -194,6 +193,7 @@
     <string name="shortform_option_user_age_hint">Age</string>
     <string name="shortform_option_user_gender_hint">m, f, n</string>
     <string name="shortform_option_user_score_hint">UserScore</string>
+    <string name="shortform_option_user_token_hint">JWT Token</string>
     <string name="shortform_option_collection_id">Collection id</string>
     <string name="shortform_option_collection_id_hint">Input collection id</string>
     <string name="shortform_option_card_type">Card Type</string>
@@ -225,13 +225,36 @@
     <string name="shortform_option_visible_share_button">Visible share button</string>
     <string name="shortform_option_visible_comment_button">Visible comment button</string>
     <string name="shortform_option_visible_like_button">Visible like button</string>
+    <string name="shortform_option_is_editor_event_show">Show editor event</string>
+    <string name="shortform_option_is_editor_custom">Custom editor</string>
+    <string name="shortform_option_center_crop">CenterCrop videos</string>
     <string name="shortform_option_collection">Collection</string>
     <string name="shortform_option_detail">Detail</string>
     <string name="shortform_option_radius">Radius</string>
     <string name="shortform_option_set_radius">Set card radius</string>
     <string name="shortform_option_set_distance">Set card distance</string>
+    <string name="shortform_option_editor">Editor</string>
+    <string name="shortform_option_crop_width">Crop width</string>
+    <string name="shortform_option_crop_height">Crop height</string>
+    <string name="shortform_option_crop_fixed">Crop fixed</string>
+    <string name="shortform_option_min_trim_duration">Min trim duration</string>
+    <string name="shortform_option_max_trim_duration">Max trim duration</string>
+    <string name="shortform_option_is_used_crop_button">Used crop button</string>
+    <string name="shortform_option_is_used_playback_speed_button">Used playback speed Button</string>
+    <string name="shortform_option_is_used_filter_button">Used filter button</string>
+    <string name="shortform_option_is_used_volume_button">Used volume button</string>
+    <string name="shortform_option_video_quality">Output video quality</string>
+    <string name="shortform_option_video_quality_normal">Normal</string>
+    <string name="shortform_option_video_quality_high">High</string>
+    <string name="shortform_option_video_quality_max">Max</string>
+    <string name="shortform_option_video_resolution">Output resolution</string>
+    <string name="shortform_option_video_resolution_720p">720p</string>
+    <string name="shortform_option_video_resolution_960p">960p</string>
+    <string name="shortform_option_video_resolution_1080p">1080p</string>
     <string name="shortform_option_preview">Preview</string>
     <string name="shortform_option_preview_max_count">Max count</string>
     <string name="shortform_option_set_preview_max_count">Set preview max count</string>
+    <string name="shortform_option_preview_is_muted">Muted preview</string>
+    <string name="shortform_option_preview_is_enabled_volume_key">Enabled volume key</string>
 
 </resources>

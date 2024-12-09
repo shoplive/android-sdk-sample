@@ -13,13 +13,13 @@
         android:textColor="#000"
         android:textSize="15dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/shortsFullTypeView"
+        app:layout_constraintBottom_toTopOf="@id/shortsDetailTypeView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <cloud.shoplive.sdk.shorts.ShopLiveShortformDetailTypeView
-        android:id="@+id/shortsFullTypeView"
+        android:id="@+id/shortsDetailTypeView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/black"

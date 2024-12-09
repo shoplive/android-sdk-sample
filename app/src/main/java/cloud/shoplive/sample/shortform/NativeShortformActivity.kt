@@ -3,6 +3,7 @@ package cloud.shoplive.sample.shortform
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -17,13 +18,18 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import cloud.shoplive.sample.PreferencesUtilImpl
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.ActivityNativeShortformBinding
+import cloud.shoplive.sample.extension.showShareDialog
 import cloud.shoplive.sample.views.dialog.CustomListDialog
 import cloud.shoplive.sdk.common.ShopLiveCommon
+import cloud.shoplive.sdk.common.ShopLiveCommonCustomizeData
+import cloud.shoplive.sdk.common.ShopLiveCommonCustomizeDialogData
 import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.common.ShopLiveCommonUser
 import cloud.shoplive.sdk.common.ShopLiveCommonUserGender
+import cloud.shoplive.sdk.common.extension.toDp
 import cloud.shoplive.sdk.common.utils.ShopLiveDataSaver
 import cloud.shoplive.sdk.editor.ShopLiveCoverPicker
+import cloud.shoplive.sdk.editor.ShopLiveCoverPickerCustomizeData
 import cloud.shoplive.sdk.editor.ShopLiveCoverPickerData
 import cloud.shoplive.sdk.editor.ShopLiveCoverPickerHandler
 import cloud.shoplive.sdk.editor.ShopLiveCoverPickerUrlData
@@ -39,6 +45,12 @@ import cloud.shoplive.sdk.editor.ShopLiveShortformEditorHandler
 import cloud.shoplive.sdk.editor.ShopLiveShortformEditorVisibleActionButton
 import cloud.shoplive.sdk.editor.ShopLiveShortformEditorVisibleContentData
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditor
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorCustomizeCropData
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorCustomizeData
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorCustomizeFilterData
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorCustomizeMainData
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorCustomizePlaybackSpeedData
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorCustomizeVoluemeData
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditorData
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditorHandler
 import cloud.shoplive.sdk.editor.ShopLiveVideoUploaderData
@@ -67,6 +79,10 @@ class NativeShortformActivity : AppCompatActivity() {
 
         private const val KEY_PICK_VISUAL_VIDEO_REQUEST = "key_pick_visual_video_request"
         private const val KEY_PICK_VISUAL_IMAGE_REQUEST = "key_pick_visual_image_request"
+
+        private var videoEditorData = ShopLiveVideoEditorData()
+        private var imageEditorData = ShopLiveImageEditorData()
+        private var coverPickerData = ShopLiveCoverPickerData()
 
         fun intent(context: Context): Intent {
             return Intent(context, NativeShortformActivity::class.java)
@@ -271,20 +287,85 @@ class NativeShortformActivity : AppCompatActivity() {
     }
 
     private fun showShortformEditor() {
+        if (viewModel.isCustomShortform) {
+            ShopLiveCommon.setCustomize(
+                ShopLiveCommonCustomizeData(
+                    dialogData = ShopLiveCommonCustomizeDialogData(
+                        backgroundRes = R.drawable.ic_editor_custom_background
+                    )
+                )
+            )
+        } else {
+            ShopLiveCommon.setCustomize(ShopLiveCommonCustomizeData())
+        }
         ShopLiveShortformEditor(this)
             .apply {
-                setVideoEditorData(ShopLiveVideoEditorData().apply {
-                    aspectRatio = ShopLiveShortformEditorAspectRatio(9, 16)
-                    visibleActionButton =
-                        ShopLiveShortformEditorVisibleActionButton().apply {
-                            isUsedCropButton = false
-                            isUsedPlaybackSpeedButton = false
-                            isUsedFilterButton = false
-                            isUsedVolumeButton = true
-                        }
-                    minVideoDuration = 3 * 1000
-                    maxVideoDuration = 90 * 1000
-                })
+                setVideoEditorData(videoEditorData)
+                setVideoEditorCustomize(
+                    if (viewModel.isCustomShortform) {
+                        ShopLiveVideoEditorCustomizeData(
+                            mainData = ShopLiveVideoEditorCustomizeMainData(
+                                titleTextSize = 16f,
+                                backButtonRes = 0,
+                                backButtonBackgroundRes = R.drawable.ic_editor_custom_back,
+                                closeButtonRes = 0,
+                                closeButtonBackgroundRes = R.drawable.ic_editor_custom_close,
+                                confirmButtonTextColor = Color.BLACK,
+                                confirmButtonBackgroundRes = R.drawable.ic_editor_custom_button_background,
+                                videoPlayerRadius = 0f,
+                                trimColor = Color.parseColor("#245EFF"),
+                                trimHandleColor = Color.WHITE
+                            ),
+                            volumeData = ShopLiveVideoEditorCustomizeVoluemeData(
+                                sliderBackgroundRes = R.drawable.ic_editor_custom_slider_background,
+                                confirmButtonBackgroundRes = R.drawable.ic_editor_custom_button_background,
+                                playButtonBackgroundRes = R.drawable.ic_editor_custom_icon_background,
+                                pauseButtonBackgroundRes = R.drawable.ic_editor_custom_icon_background,
+                            ),
+                            cropData = ShopLiveVideoEditorCustomizeCropData(
+                                confirmButtonBackgroundRes = R.drawable.ic_editor_custom_button_background,
+                                playButtonBackgroundRes = R.drawable.ic_editor_custom_icon_background,
+                                pauseButtonBackgroundRes = R.drawable.ic_editor_custom_icon_background,
+                                cropColor = Color.parseColor("#245EFF"),
+                            ),
+                            filterData = ShopLiveVideoEditorCustomizeFilterData(
+                                sliderBackgroundRes = R.drawable.ic_editor_custom_slider_background,
+                                confirmButtonBackgroundRes = R.drawable.ic_editor_custom_button_background,
+                                playButtonBackgroundRes = R.drawable.ic_editor_custom_icon_background,
+                                pauseButtonBackgroundRes = R.drawable.ic_editor_custom_icon_background,
+                                filterRadius = 0f,
+                                filterSelectorRes = R.drawable.ic_editor_custom_filter_selector,
+                            ),
+                            playbackSpeedData = ShopLiveVideoEditorCustomizePlaybackSpeedData(
+                                sliderBackgroundRes = R.drawable.ic_editor_custom_slider_background,
+                                confirmButtonBackgroundRes = R.drawable.ic_editor_custom_button_background,
+                                playButtonBackgroundRes = R.drawable.ic_editor_custom_icon_background,
+                                pauseButtonBackgroundRes = R.drawable.ic_editor_custom_icon_background,
+                            )
+                        )
+                    } else {
+                        ShopLiveVideoEditorCustomizeData()
+                    }
+                )
+                setCoverPickerData(coverPickerData)
+                setCoverPickerCustomize(
+                    if (viewModel.isCustomShortform) {
+                        ShopLiveCoverPickerCustomizeData(
+                            titleTextSize = 16f,
+                            backButtonRes = 0,
+                            backButtonBackgroundRes = R.drawable.ic_editor_custom_back,
+                            confirmButtonTextColor = Color.BLACK,
+                            confirmButtonBackgroundRes = R.drawable.ic_editor_custom_button_background,
+                            cropColor = Color.parseColor("#245EFF"),
+                            sliderThumbColor = Color.parseColor("#245EFF"),
+                            sliderThumbRadius = 4.toDp(this@NativeShortformActivity),
+                            cameraRollButtonBackgroundRes = R.drawable.ic_editor_custom_button_background,
+                            videoPlayerRadius = 0f
+                        )
+                    } else {
+                        ShopLiveCoverPickerCustomizeData()
+                    }
+                )
                 setVideoUploaderData(ShopLiveVideoUploaderData().apply {
                     visibleContentData =
                         ShopLiveShortformEditorVisibleContentData().apply {
@@ -303,6 +384,27 @@ class NativeShortformActivity : AppCompatActivity() {
                             "onComplete",
                             Toast.LENGTH_SHORT
                         ).show()
+                    }
+
+                    override fun onEvent(
+                        context: Context,
+                        command: String,
+                        payload: Map<String, Any?>
+                    ) {
+                        super.onEvent(context, command, payload)
+                        if (viewModel.isShowEditorEvent) {
+                            Toast.makeText(
+                                this@NativeShortformActivity,
+                                listOfNotNull(
+                                    "onEvent : $command", if (payload.isNotEmpty()) {
+                                        "payload : $payload"
+                                    } else {
+                                        null
+                                    }
+                                ).joinToString(" "),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
 
                     override fun onError(error: ShopLiveCommonError) {
@@ -478,15 +580,4 @@ class NativeShortformActivity : AppCompatActivity() {
         }
         super.onBackPressed()
     }
-}
-
-private fun Context.showShareDialog(shareUrl: String) {
-    if (this is Activity && isFinishing) return
-
-    val sendIntent = Intent(Intent.ACTION_SEND)
-    sendIntent.putExtra(Intent.EXTRA_TEXT, shareUrl)
-    sendIntent.type = "text/plain"
-
-    val shareIntent = Intent.createChooser(sendIntent, null)
-    startActivity(shareIntent)
 }

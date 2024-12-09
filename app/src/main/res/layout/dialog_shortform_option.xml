@@ -515,13 +515,23 @@
                 android:id="@+id/visibleLikeButtonCheckBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:checked="true"
                 android:text="@string/shortform_option_visible_like_button"
                 android:textColor="#000"
                 android:textSize="13dp"
-                app:layout_constraintBottom_toTopOf="@id/radiusTitle"
+                app:layout_constraintBottom_toTopOf="@id/centerCropButtonCheckBox"
                 app:layout_constraintTop_toBottomOf="@id/visibleCommentButtonCheckBox" />
+
+            <CheckBox
+                android:id="@+id/centerCropButtonCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/shortform_option_center_crop"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/radiusTitle"
+                app:layout_constraintTop_toBottomOf="@id/visibleLikeButtonCheckBox" />
 
             <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
                 android:id="@+id/radiusTitle"
@@ -532,7 +542,7 @@
                 android:textSize="15dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/radiusEdit"
-                app:layout_constraintTop_toBottomOf="@id/visibleLikeButtonCheckBox" />
+                app:layout_constraintTop_toBottomOf="@id/centerCropButtonCheckBox" />
 
             <cloud.shoplive.sdk.common.view.ShopLiveCommonEditText
                 android:id="@+id/radiusEdit"
@@ -543,8 +553,281 @@
                 android:maxLines="1"
                 android:textColor="#000"
                 android:textSize="13dp"
-                app:layout_constraintBottom_toTopOf="@id/previewTitle"
+                app:layout_constraintBottom_toTopOf="@id/editorTitle"
                 app:layout_constraintTop_toBottomOf="@id/radiusTitle" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/editorTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/shortform_option_preview"
+                android:textColor="#000"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/cropWidthTitle"
+                app:layout_constraintTop_toBottomOf="@id/radiusEdit" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/cropWidthTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shortform_option_crop_width"
+                android:textColor="#000"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/cropWidthEdit"
+                app:layout_constraintTop_toBottomOf="@id/editorTitle" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonEditText
+                android:id="@+id/cropWidthEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/cropHeightTitle"
+                app:layout_constraintTop_toBottomOf="@id/cropWidthTitle" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/cropHeightTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shortform_option_crop_height"
+                android:textColor="#000"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/cropHeightEdit"
+                app:layout_constraintTop_toBottomOf="@id/cropWidthEdit" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonEditText
+                android:id="@+id/cropHeightEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/cropFixed"
+                app:layout_constraintTop_toBottomOf="@id/cropHeightTitle" />
+
+            <CheckBox
+                android:id="@+id/cropFixed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/shortform_option_crop_fixed"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/minDurationTitle"
+                app:layout_constraintTop_toBottomOf="@id/cropHeightEdit" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/minDurationTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shortform_option_min_trim_duration"
+                android:textColor="#000"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/minDurationEdit"
+                app:layout_constraintTop_toBottomOf="@id/cropFixed" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonEditText
+                android:id="@+id/minDurationEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/maxDurationTitle"
+                app:layout_constraintTop_toBottomOf="@id/minDurationTitle" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/maxDurationTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shortform_option_max_trim_duration"
+                android:textColor="#000"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/maxDurationEdit"
+                app:layout_constraintTop_toBottomOf="@id/minDurationEdit" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonEditText
+                android:id="@+id/maxDurationEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/isPlaybackSpeedButton"
+                app:layout_constraintTop_toBottomOf="@id/maxDurationTitle" />
+
+            <CheckBox
+                android:id="@+id/isPlaybackSpeedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/shortform_option_is_used_playback_speed_button"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/isVolumeButton"
+                app:layout_constraintTop_toBottomOf="@id/maxDurationEdit" />
+
+            <CheckBox
+                android:id="@+id/isVolumeButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/shortform_option_is_used_volume_button"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/isCropButton"
+                app:layout_constraintTop_toBottomOf="@id/isPlaybackSpeedButton" />
+
+            <CheckBox
+                android:id="@+id/isCropButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/shortform_option_is_used_crop_button"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/isFilterButton"
+                app:layout_constraintTop_toBottomOf="@id/isVolumeButton" />
+
+            <CheckBox
+                android:id="@+id/isFilterButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/shortform_option_is_used_filter_button"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/outputVideoQualityTitle"
+                app:layout_constraintTop_toBottomOf="@id/isCropButton" />
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/outputVideoQualityTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shortform_option_video_quality"
+                android:textColor="#000"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/outputVideoQualityGroup"
+                app:layout_constraintTop_toBottomOf="@id/isFilterButton" />
+
+            <RadioGroup
+                android:id="@+id/outputVideoQualityGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/outputVideoResolutionTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/outputVideoQualityTitle">
+
+                <RadioButton
+                    android:id="@+id/outputVideoQualityNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/shortform_option_video_quality_normal"
+                    android:textColor="#000"
+                    android:textSize="13dp" />
+
+                <RadioButton
+                    android:id="@+id/outputVideoQualityHigh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shortform_option_video_quality_high"
+                    android:textColor="#000"
+                    android:textSize="13dp" />
+
+                <RadioButton
+                    android:id="@+id/outputVideoQualityMax"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shortform_option_video_quality_max"
+                    android:textColor="#000"
+                    android:textSize="13dp" />
+
+            </RadioGroup>
+
+            <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
+                android:id="@+id/outputVideoResolutionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/shortform_option_video_resolution"
+                android:textColor="#000"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/outputVideoResolutionGroup"
+                app:layout_constraintTop_toBottomOf="@id/outputVideoQualityGroup" />
+
+            <RadioGroup
+                android:id="@+id/outputVideoResolutionGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/isEditorEventShowButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/outputVideoResolutionTitle">
+
+                <RadioButton
+                    android:id="@+id/outputVideoResolution720p"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/shortform_option_video_resolution_720p"
+                    android:textColor="#000"
+                    android:textSize="13dp" />
+
+                <RadioButton
+                    android:id="@+id/outputVideoResolution960p"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shortform_option_video_resolution_960p"
+                    android:textColor="#000"
+                    android:textSize="13dp" />
+
+                <RadioButton
+                    android:id="@+id/outputVideoResolution1080p"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/shortform_option_video_resolution_1080p"
+                    android:textColor="#000"
+                    android:textSize="13dp" />
+
+            </RadioGroup>
+
+            <CheckBox
+                android:id="@+id/isEditorEventShowButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/shortform_option_is_editor_event_show"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/isCustomEditorButton"
+                app:layout_constraintTop_toBottomOf="@id/outputVideoResolutionGroup" />
+
+            <CheckBox
+                android:id="@+id/isCustomEditorButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/shortform_option_is_editor_custom"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/previewTitle"
+                app:layout_constraintTop_toBottomOf="@id/isEditorEventShowButton" />
 
             <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
                 android:id="@+id/previewTitle"
@@ -556,7 +839,7 @@
                 android:textSize="20dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/previewMaxCountTitle"
-                app:layout_constraintTop_toBottomOf="@id/radiusEdit" />
+                app:layout_constraintTop_toBottomOf="@id/isCustomEditorButton" />
 
             <cloud.shoplive.sdk.common.view.ShopLiveCommonTextView
                 android:id="@+id/previewMaxCountTitle"
@@ -578,8 +861,30 @@
                 android:maxLines="1"
                 android:textColor="#000"
                 android:textSize="13dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/previewMuted"
                 app:layout_constraintTop_toBottomOf="@id/previewMaxCountTitle" />
+
+            <CheckBox
+                android:id="@+id/previewMuted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/shortform_option_preview_is_muted"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toTopOf="@id/previewEnabledVolumeKey"
+                app:layout_constraintTop_toBottomOf="@id/previewMaxCountEdit" />
+
+            <CheckBox
+                android:id="@+id/previewEnabledVolumeKey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/shortform_option_preview_is_enabled_volume_key"
+                android:textColor="#000"
+                android:textSize="13dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/previewMuted" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -593,7 +898,7 @@
         android:gravity="center"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
-        android:text="@string/confirm"
+        android:text="@string/shoplive_player_dialog_confirm"
         android:textColor="#fff"
         android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="parent"

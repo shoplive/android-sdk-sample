@@ -98,15 +98,7 @@ class ShortformSampleAdapter(
         init {
             shortsHorizontalTypeView.setPlayableType(ShopLiveShortform.PlayableType.FIRST)
             shortsHorizontalTypeView.setViewType(viewModel.getSavedCardType())
-            shortsHorizontalTypeView.handler = object : ShopLiveShortformHandler() {
-                override fun onError(context: Context, error: ShopLiveCommonError) {
-                    Toast.makeText(
-                        itemView.context,
-                        error.message ?: error.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
+            shortsHorizontalTypeView.handler = ShortformSampleData.handler
         }
 
         override fun onBind(data: ShortformSampleData) {

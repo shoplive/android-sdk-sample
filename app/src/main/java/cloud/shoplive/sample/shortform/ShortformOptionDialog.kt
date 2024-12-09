@@ -1,15 +1,15 @@
 package cloud.shoplive.sample.shortform
 
+
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.DialogShortformOptionBinding
 import cloud.shoplive.sdk.common.ShopLiveCommon
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorResolution
+import cloud.shoplive.sdk.editor.ShopLiveVideoEditorVideoQuality
 
 data class ShortformOptionDialogData(
     val accessKey: String,
@@ -38,8 +38,24 @@ data class ShortformOptionDialogData(
     val isShareButtonVisible: Boolean,
     val isCommentButtonVisible: Boolean,
     val isLikeButtonVisible: Boolean,
+    val isCentCrop: Boolean,
     val radius: Int?,
     val maxCount: Int?,
+    val isMuted: Boolean,
+    val isEnabledVolumeKey: Boolean,
+    val cropWidth: Int,
+    val cropHeight: Int,
+    val cropFixed: Boolean,
+    val minTrimDuration: Long,
+    val maxTrimDuration: Long,
+    val isUsedPlaybackSpeedButton: Boolean,
+    val isUsedVolumeButton: Boolean,
+    val isUsedCropButton: Boolean,
+    val isUsedFilterButton: Boolean,
+    val outputVideoQuality: ShopLiveVideoEditorVideoQuality,
+    val outputVideoResolution: ShopLiveVideoEditorResolution,
+    val isShowEditorEvent: Boolean,
+    val isCustomEditor: Boolean
 )
 
 class ShortformOptionDialog(
@@ -51,36 +67,53 @@ class ShortformOptionDialog(
     }
 
     companion object {
-        private var userId: String? = null
-        private var name: String? = null
-        private var age: Int? = null
-        private var gender: String? = null
-        private var userScore: Int? = null
+        internal var userId: String? = null
+        internal var name: String? = null
+        internal var age: Int? = null
+        internal var gender: String? = null
+        internal var userScore: Int? = null
 
-        private var cardTypePosition = 0
-        private var playableTypePosition = 0
+        internal var cardTypePosition = 0
+        internal var playableTypePosition = 0
 
-        private var shortsCollectionId: String? = null
-        private var hashTag: String? = null
-        private var hashTagOperator = 0
-        private var brands: String? = null
-        private var skus: String? = null
+        internal var shortsCollectionId: String? = null
+        internal var hashTag: String? = null
+        internal var hashTagOperator = 0
+        internal var brands: String? = null
+        internal var skus: String? = null
 
-        private var isVisibleTitle = true
-        private var isVisibleDescription = true
-        private var isVisibleBrand = true
-        private var isVisibleProductCount = true
-        private var isVisibleViewCount = true
-        private var isEnableShuffle = false
-        private var isEnableSnap = false
-        private var isEnablePlayVideos = true
-        private var isEnablePlayOnlyWifi = false
-        private var isBookmarkVisible = true
-        private var isShareButtonVisible = true
-        private var isCommentButtonVisible = true
-        private var isLikeButtonVisible = true
-        private var radius: Int? = null
-        private var maxCount: Int? = null
+        internal var isVisibleTitle = true
+        internal var isVisibleDescription = true
+        internal var isVisibleBrand = true
+        internal var isVisibleProductCount = true
+        internal var isVisibleViewCount = true
+        internal var isEnableShuffle = false
+        internal var isEnableSnap = false
+        internal var isEnablePlayVideos = true
+        internal var isEnablePlayOnlyWifi = false
+        internal var isBookmarkVisible = true
+        internal var isShareButtonVisible = true
+        internal var isCommentButtonVisible = true
+        internal var isLikeButtonVisible = true
+        internal var isCenterCrop = true
+        internal var radius: Int? = null
+        internal var maxCount: Int = 0
+        internal var isMuted = true
+        internal var isEnabledVolumeKey = false
+
+        internal var cropWidth: Int = 9
+        internal var cropHeight: Int = 16
+        internal var cropFixed: Boolean = false
+        internal var minTrimDuration: Long = 1 * 1000
+        internal var maxTrimDuration: Long = 60 * 1000
+        internal var isUsedPlaybackSpeedButton: Boolean = true
+        internal var isUsedVolumeButton: Boolean = true
+        internal var isUsedCropButton: Boolean = true
+        internal var isUsedFilterButton: Boolean = true
+        internal var outputVideoQuality = ShopLiveVideoEditorVideoQuality.NORMAL
+        internal var outputVideoResolution = ShopLiveVideoEditorResolution.RESOLUTION_720
+        internal var isShowEditorEvent: Boolean = false
+        internal var isCustomEditor: Boolean = false
     }
 
     private val binding: DialogShortformOptionBinding by lazy {
@@ -136,8 +169,46 @@ class ShortformOptionDialog(
         binding.visibleShareButtonCheckBox.isChecked = isShareButtonVisible
         binding.visibleCommentButtonCheckBox.isChecked = isCommentButtonVisible
         binding.visibleLikeButtonCheckBox.isChecked = isLikeButtonVisible
+        binding.centerCropButtonCheckBox.isChecked = isCenterCrop
         binding.radiusEdit.setText(radius?.toString())
         binding.previewMaxCountEdit.setText(maxCount?.toString())
+        binding.previewMuted.isChecked = isMuted
+        binding.previewEnabledVolumeKey.isChecked = isEnabledVolumeKey
+
+        binding.cropWidthEdit.setText(cropWidth.toString())
+        binding.cropHeightEdit.setText(cropHeight.toString())
+        binding.cropFixed.isChecked = cropFixed
+        binding.minDurationEdit.setText((minTrimDuration / 1000).toString())
+        binding.maxDurationEdit.setText((maxTrimDuration / 1000).toString())
+        binding.isPlaybackSpeedButton.isChecked = isUsedPlaybackSpeedButton
+        binding.isVolumeButton.isChecked = isUsedVolumeButton
+        binding.isCropButton.isChecked = isUsedCropButton
+        binding.isFilterButton.isChecked = isUsedFilterButton
+        when (outputVideoQuality) {
+            ShopLiveVideoEditorVideoQuality.NORMAL ->
+                binding.outputVideoQualityNormal.isChecked = true
+
+            ShopLiveVideoEditorVideoQuality.HIGH ->
+                binding.outputVideoQualityHigh.isChecked = true
+
+            ShopLiveVideoEditorVideoQuality.MAX ->
+                binding.outputVideoQualityMax.isChecked = true
+        }
+
+        when (outputVideoResolution) {
+            ShopLiveVideoEditorResolution.RESOLUTION_720 ->
+                binding.outputVideoResolution720p.isChecked = true
+
+            ShopLiveVideoEditorResolution.RESOLUTION_960 ->
+                binding.outputVideoResolution960p.isChecked = true
+
+            ShopLiveVideoEditorResolution.RESOLUTION_1080 ->
+                binding.outputVideoResolution1080p.isChecked = true
+
+            else -> binding.outputVideoResolution720p.isChecked = true
+        }
+        binding.isEditorEventShowButton.isChecked = isShowEditorEvent
+        binding.isCustomEditorButton.isChecked = isCustomEditor
 
         binding.confirmButton.setOnClickListener {
             val accessKey = binding.accessKeyEdit.text?.toString()
@@ -207,9 +278,43 @@ class ShortformOptionDialog(
             isShareButtonVisible = binding.visibleShareButtonCheckBox.isChecked
             isCommentButtonVisible = binding.visibleCommentButtonCheckBox.isChecked
             isLikeButtonVisible = binding.visibleLikeButtonCheckBox.isChecked
+            isCenterCrop = binding.centerCropButtonCheckBox.isChecked
 
             radius = binding.radiusEdit.text?.toString()?.toIntOrNull()
-            maxCount = binding.previewMaxCountEdit.text?.toString()?.toIntOrNull()
+            maxCount = binding.previewMaxCountEdit.text?.toString()?.toIntOrNull() ?: 0
+            isEnabledVolumeKey = binding.previewEnabledVolumeKey.isChecked
+            isMuted = binding.previewMuted.isChecked
+
+
+            cropWidth = binding.cropWidthEdit.text?.toString()?.toIntOrNull() ?: 0
+            cropHeight = binding.cropHeightEdit.text?.toString()?.toIntOrNull() ?: 0
+            cropFixed = binding.cropFixed.isChecked
+            minTrimDuration = (binding.minDurationEdit.text?.toString()?.toLongOrNull() ?: 0) * 1000
+            maxTrimDuration = (binding.maxDurationEdit.text?.toString()?.toLongOrNull() ?: 0) * 1000
+            isUsedPlaybackSpeedButton = binding.isPlaybackSpeedButton.isChecked
+            isUsedVolumeButton = binding.isVolumeButton.isChecked
+            isUsedCropButton = binding.isCropButton.isChecked
+            isUsedFilterButton = binding.isFilterButton.isChecked
+            outputVideoQuality = if (binding.outputVideoQualityNormal.isChecked) {
+                ShopLiveVideoEditorVideoQuality.NORMAL
+            } else if (binding.outputVideoQualityHigh.isChecked) {
+                ShopLiveVideoEditorVideoQuality.HIGH
+            } else if (binding.outputVideoQualityMax.isChecked) {
+                ShopLiveVideoEditorVideoQuality.MAX
+            } else {
+                ShopLiveVideoEditorVideoQuality.NORMAL
+            }
+            outputVideoResolution = if (binding.outputVideoResolution720p.isChecked) {
+                ShopLiveVideoEditorResolution.RESOLUTION_720
+            } else if (binding.outputVideoResolution960p.isChecked) {
+                ShopLiveVideoEditorResolution.RESOLUTION_960
+            } else if (binding.outputVideoResolution1080p.isChecked) {
+                ShopLiveVideoEditorResolution.RESOLUTION_1080
+            } else {
+                ShopLiveVideoEditorResolution.RESOLUTION_720
+            }
+            isShowEditorEvent = binding.isEditorEventShowButton.isChecked
+            isCustomEditor = binding.isCustomEditorButton.isChecked
 
             listener.invoke(
                 ShortformOptionDialogData(
@@ -239,8 +344,24 @@ class ShortformOptionDialog(
                     isShareButtonVisible,
                     isCommentButtonVisible,
                     isLikeButtonVisible,
+                    isCenterCrop,
                     radius,
-                    maxCount
+                    maxCount,
+                    isMuted,
+                    isEnabledVolumeKey,
+                    cropWidth,
+                    cropHeight,
+                    cropFixed,
+                    minTrimDuration,
+                    maxTrimDuration,
+                    isUsedPlaybackSpeedButton,
+                    isUsedVolumeButton,
+                    isUsedCropButton,
+                    isUsedFilterButton,
+                    outputVideoQuality,
+                    outputVideoResolution,
+                    isShowEditorEvent,
+                    isCustomEditor
                 )
             )
         }

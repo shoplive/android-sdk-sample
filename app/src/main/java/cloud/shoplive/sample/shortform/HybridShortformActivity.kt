@@ -70,19 +70,7 @@ class HybridShortformActivity : AppCompatActivity() {
         }
 
         // Optional
-        ShopLiveShortform.setHandler(object : ShopLiveShortformHandler() {
-            override fun onError(context: Context, error: ShopLiveCommonError) {
-                Toast.makeText(
-                    this@HybridShortformActivity,
-                    error.message ?: error.toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-            override fun onShare(context: Context, data: ShopLiveShortformShareData) {
-                // Do sharing
-            }
-        })
+        ShopLiveShortform.setHandler(ShortformSampleData.handler)
     }
 
     override fun onDestroy() {
