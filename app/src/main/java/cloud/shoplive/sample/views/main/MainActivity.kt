@@ -812,8 +812,8 @@ class MainActivity : AppCompatActivity() {
                         ).show()
                     }
 
-                    override fun onError(error: ShopLiveCommonError) {
-                        super.onError(error)
+                    override fun onError(context: Context, error: ShopLiveCommonError) {
+                        super.onError(context, error)
                         Toast.makeText(
                             this@MainActivity,
                             "onError : $error",
@@ -860,8 +860,8 @@ class MainActivity : AppCompatActivity() {
                                 ShopLiveVideoEditor.close()
                             }
 
-                            override fun onError(error: ShopLiveCommonError) {
-                                super.onError(error)
+                            override fun onError(context: Context, error: ShopLiveCommonError) {
+                                super.onError(context, error)
                                 Toast.makeText(
                                     this@MainActivity,
                                     "onError : $error",
@@ -948,8 +948,8 @@ class MainActivity : AppCompatActivity() {
                     ShopLiveCoverPicker.close()
                 }
 
-                override fun onError(error: ShopLiveCommonError) {
-                    super.onError(error)
+                override fun onError(context: Context, error: ShopLiveCommonError) {
+                    super.onError(context, error)
                     Toast.makeText(
                         this@MainActivity,
                         error.toString(),
