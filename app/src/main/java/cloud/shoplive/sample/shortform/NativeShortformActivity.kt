@@ -407,8 +407,8 @@ class NativeShortformActivity : AppCompatActivity() {
                         }
                     }
 
-                    override fun onError(error: ShopLiveCommonError) {
-                        super.onError(error)
+                    override fun onError(context: Context, error: ShopLiveCommonError) {
+                        super.onError(context, error)
                         Toast.makeText(
                             this@NativeShortformActivity,
                             "onError : $error",
@@ -455,8 +455,8 @@ class NativeShortformActivity : AppCompatActivity() {
                                 ShopLiveVideoEditor.close()
                             }
 
-                            override fun onError(error: ShopLiveCommonError) {
-                                super.onError(error)
+                            override fun onError(context: Context, error: ShopLiveCommonError) {
+                                super.onError(context, error)
                                 Toast.makeText(
                                     this@NativeShortformActivity,
                                     "onError : $error",
@@ -543,8 +543,8 @@ class NativeShortformActivity : AppCompatActivity() {
                     ShopLiveCoverPicker.close()
                 }
 
-                override fun onError(error: ShopLiveCommonError) {
-                    super.onError(error)
+                override fun onError(context: Context, error: ShopLiveCommonError) {
+                    super.onError(context, error)
                     Toast.makeText(
                         this@NativeShortformActivity,
                         error.toString(),
