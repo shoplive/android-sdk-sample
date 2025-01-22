@@ -550,7 +550,6 @@ class NativeShortformActivity : AppCompatActivity() {
                         error.toString(),
                         Toast.LENGTH_SHORT
                     ).show()
-                    Log.e("aaaaaaaaaa", error.toString())
                 }
 
                 override fun onCancel() {
