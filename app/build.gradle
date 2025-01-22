@@ -85,6 +85,7 @@ dependencies {
     def your_media3_version = "1.4.1"
     def shoplive_exoplayer_version = your_exoplayer_version + "." + "9"
     def shoplive_media3_version = your_media3_version + "." + "9"
+    def mockk_version = "1.13.16"
 
     // For submodules
     implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version" // must required
@@ -97,6 +98,8 @@ dependencies {
     implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version" // for short-form player
     implementation "cloud.shoplive:shoplive-filter:$shoplive_sdk_version" // for short-form editor
     implementation "cloud.shoplive:shoplive-video-editor:$shoplive_sdk_version" // for short-form editor
+
+    testImplementation "io.mockk:mockk:$mockk_version"
 
     // For library - combined packaging
 //    implementation "cloud.shoplive:shoplive-sdk-all:$shoplive_sdk_version" // live + short-form

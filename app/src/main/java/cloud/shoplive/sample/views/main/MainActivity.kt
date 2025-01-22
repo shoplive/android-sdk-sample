@@ -229,7 +229,6 @@ class MainActivity : AppCompatActivity() {
                 binding.preview.visibility = View.VISIBLE
             }
         }
-
         binding.preview.setLifecycleObserver(this)
         binding.preview.useCloseButton(Options.isUseCloseButton())
         binding.preview.setOnClickListener {

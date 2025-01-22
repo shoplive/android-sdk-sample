@@ -11,13 +11,11 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import cloud.shoplive.sample.CampaignSettings
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.databinding.ActivityUserBinding
 import cloud.shoplive.sdk.ShopLiveUser
 import cloud.shoplive.sdk.ShopLiveUserGender
-import kotlinx.coroutines.launch
 
 class UserActivity : AppCompatActivity() {
 
