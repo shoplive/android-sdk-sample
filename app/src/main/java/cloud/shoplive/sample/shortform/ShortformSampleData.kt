@@ -18,7 +18,6 @@ import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformMessageListener
-import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayerEventCommand
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPreviewData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformProductListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
@@ -109,9 +108,6 @@ data class ShortformSampleData(
             ) {
                 super.onEvent(context, messenger, command, payload)
                 command.debugShopLiveLog()
-                if (command == ShopLiveShortformPlayerEventCommand.DETAIL_SHORTFORM_MORE_ENDED.name) {
-                    Toast.makeText(context, command, Toast.LENGTH_SHORT).show()
-                }
             }
         }
     }
