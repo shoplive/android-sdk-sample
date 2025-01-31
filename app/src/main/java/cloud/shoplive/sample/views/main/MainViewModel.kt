@@ -1,15 +1,15 @@
 package cloud.shoplive.sample.views.main
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cloud.shoplive.sample.CampaignInfo
-import cloud.shoplive.sample.CampaignSettings
+import cloud.shoplive.sample.PreferencesUtil
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveUser
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
+class MainViewModel @Inject constructor(private val preferences : PreferencesUtil) : ViewModel() {
 
     private val _campaignInfo: MutableLiveData<CampaignInfo> = MutableLiveData()
     val campaignInfo: LiveData<CampaignInfo>
@@ -27,6 +27,23 @@ class MainViewModel : ViewModel() {
     val deeplinkInfo: LiveData<CampaignInfo>
         get() = _deeplinkInfo
 
+    fun getUserData() = preferences.user
+
+    fun getAuthType() = preferences.authType
+
+    fun getJWT() = preferences.jwt
+
+    fun getAccessKey() = preferences.accessKey
+
+    fun getCampaignKey() = preferences.campaignKey
+
+    fun setAccessKey(value: String) {
+        preferences.accessKey = value
+    }
+
+    fun setCampaignKey(value: String) {
+        preferences.campaignKey = value
+    }
 
     fun playFromDeeplink(accessKey: String, campaignKey: String) {
         _deeplinkInfo.value = CampaignInfo(accessKey, campaignKey)
@@ -36,13 +53,13 @@ class MainViewModel : ViewModel() {
         _sdkVersion.value = ShopLive.getSDKVersion()
     }
 
-    fun loadCampaignData(context: Context) {
+    fun loadCampaignData() {
         _campaignInfo.value =
-            CampaignInfo(CampaignSettings.accessKey(context), CampaignSettings.campaignKey(context))
+            CampaignInfo(preferences.accessKey, preferences.campaignKey)
     }
 
-    fun loadUserData(context: Context) {
+    fun loadUserData() {
         _shopliveUser.value =
-            CampaignSettings.user(context)
+            preferences.user
     }
 }

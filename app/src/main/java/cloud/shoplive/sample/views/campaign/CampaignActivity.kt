@@ -39,7 +39,7 @@ class CampaignActivity : AppCompatActivity() {
             binding.etCampaignKey.setText(it.campaignKey)
         }
 
-        viewModel.loadCampaign(this@CampaignActivity)
+        viewModel.loadCampaign()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -55,7 +55,6 @@ class CampaignActivity : AppCompatActivity() {
 
             R.id.action_save -> {
                 viewModel.saveCampaign(
-                    this@CampaignActivity,
                     CampaignInfo(
                         binding.etAccessKey.text.toString(),
                         binding.etCampaignKey.text.toString()

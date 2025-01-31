@@ -162,8 +162,13 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
         needInitializeTabFlow.update { it + setOf(tabIndex) }
     }
 
+    fun setAccessKey(value: String) {
+        preference.accessKey = value
+    }
+
     private var reference: String? = null
     private var hasMore: Boolean = false
+
     fun playShortformV2TestTask(activity: Activity) {
         viewModelScope.launch {
             val service = ShopLiveShortformServiceImpl()
