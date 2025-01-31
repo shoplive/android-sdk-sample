@@ -2,6 +2,7 @@ package cloud.shoplive.sample.shortform
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -110,7 +111,7 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
     val needInitializeTabFlow = MutableStateFlow<Set<Int>>(setOf())
 
     fun setShortformOption(data: ShortformOptionDialogData) {
-        preference.shortformCardType = data.cardTypePosition
+        preference.shortFormCardType = data.cardTypePosition
         _playableTypeLiveData.value = when (data.playableTypePosition) {
             0 -> ShopLiveShortform.PlayableType.FIRST
             1 -> ShopLiveShortform.PlayableType.CENTER
@@ -149,7 +150,7 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
     }
 
     fun getSavedCardType(): ShopLiveShortform.CardViewType {
-        return when (preference.shortformCardType) {
+        return when (preference.shortFormCardType) {
             0 -> ShopLiveShortform.CardViewType.CARD_TYPE0
             1 -> ShopLiveShortform.CardViewType.CARD_TYPE1
             2 -> ShopLiveShortform.CardViewType.CARD_TYPE2
@@ -161,11 +162,18 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
         needInitializeTabFlow.update { it + setOf(tabIndex) }
     }
 
+    fun setAccessKey(value: String) {
+        preference.accessKey = value
+    }
+
+    private var reference: String? = null
+    private var hasMore: Boolean = false
     private var morePagingReference: String? = null
     private var previousPagingReference: String? = null
     private var morePagingHasMore: Boolean = false
     private var previousPagingHasMore: Boolean = false
-    fun playShortformV2TestTask(activity: Activity) {
+
+  fun playShortformV2TestTask(activity: Activity) {
         viewModelScope.launch {
             val service = ShopLiveShortformServiceImpl()
             val response =

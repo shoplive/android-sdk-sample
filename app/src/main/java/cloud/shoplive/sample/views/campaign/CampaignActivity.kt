@@ -8,9 +8,14 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import cloud.shoplive.sample.CampaignInfo
+import cloud.shoplive.sample.PreferencesUtilImpl
 import cloud.shoplive.sample.R
+import cloud.shoplive.sample.data.SharedPreferenceStorage
 import cloud.shoplive.sample.databinding.ActivityCampaignBinding
+import cloud.shoplive.sample.shortform.ShortformViewModel
 import kotlinx.coroutines.launch
 
 class CampaignActivity : AppCompatActivity() {
@@ -25,7 +30,13 @@ class CampaignActivity : AppCompatActivity() {
         ActivityCampaignBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: CampaignViewModel by viewModels()
+    private val viewModel: CampaignViewModel by viewModels {
+        viewModelFactory {
+            initializer {
+                CampaignViewModel(PreferencesUtilImpl(SharedPreferenceStorage(this@CampaignActivity)))
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +50,7 @@ class CampaignActivity : AppCompatActivity() {
             binding.etCampaignKey.setText(it.campaignKey)
         }
 
-        viewModel.loadCampaign(this@CampaignActivity)
+        viewModel.loadCampaign()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -55,7 +66,6 @@ class CampaignActivity : AppCompatActivity() {
 
             R.id.action_save -> {
                 viewModel.saveCampaign(
-                    this@CampaignActivity,
                     CampaignInfo(
                         binding.etAccessKey.text.toString(),
                         binding.etCampaignKey.text.toString()

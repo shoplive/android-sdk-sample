@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -17,6 +16,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import cloud.shoplive.sample.PreferencesUtilImpl
 import cloud.shoplive.sample.R
+import cloud.shoplive.sample.data.SharedPreferenceStorage
 import cloud.shoplive.sample.databinding.ActivityNativeShortformBinding
 import cloud.shoplive.sample.extension.showShareDialog
 import cloud.shoplive.sample.views.dialog.CustomListDialog
@@ -40,9 +40,7 @@ import cloud.shoplive.sdk.editor.ShopLiveImageEditor
 import cloud.shoplive.sdk.editor.ShopLiveImageEditorData
 import cloud.shoplive.sdk.editor.ShopLiveImageEditorHandler
 import cloud.shoplive.sdk.editor.ShopLiveShortformEditor
-import cloud.shoplive.sdk.editor.ShopLiveShortformEditorAspectRatio
 import cloud.shoplive.sdk.editor.ShopLiveShortformEditorHandler
-import cloud.shoplive.sdk.editor.ShopLiveShortformEditorVisibleActionButton
 import cloud.shoplive.sdk.editor.ShopLiveShortformEditorVisibleContentData
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditor
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditorCustomizeCropData
@@ -63,7 +61,6 @@ import cloud.shoplive.sdk.shorts.ShopLiveShortformPreviewData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformProductListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
 import cloud.shoplive.sdk.shorts.ShopLiveShortformUrlListener
-import cloud.shoplive.sdk.shorts.ShopLiveShortformWebView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import java.util.concurrent.atomic.AtomicBoolean
@@ -119,13 +116,10 @@ class NativeShortformActivity : AppCompatActivity() {
         }
     }
 
-    private val preferencesUtil by lazy {
-        PreferencesUtilImpl(this@NativeShortformActivity)
-    }
     private val viewModel: ShortformViewModel by viewModels {
         viewModelFactory {
             initializer {
-                ShortformViewModel(preferencesUtil)
+                ShortformViewModel(PreferencesUtilImpl(SharedPreferenceStorage(this@NativeShortformActivity)))
             }
         }
     }
@@ -137,8 +131,7 @@ class NativeShortformActivity : AppCompatActivity() {
         val imageEditorString = getString(R.string.shortform_image_editor_only)
         val coverPickerString = getString(R.string.shortform_cover_picker_only)
 
-        val list =
-            listOf(uploadEditorString, videoEditorString, imageEditorString, coverPickerString)
+        val list = listOf(uploadEditorString, videoEditorString, imageEditorString, coverPickerString)
         CustomListDialog(this, list, callback = {
             when (it) {
                 uploadEditorString -> showShortformEditor()
@@ -172,7 +165,7 @@ class NativeShortformActivity : AppCompatActivity() {
             }
             if (ShopLiveCommon.getAccessKey() != data.accessKey) {
                 ShopLiveCommon.setAccessKey(data.accessKey)
-                preferencesUtil.accessKey = data.accessKey
+                viewModel.setAccessKey(data.accessKey)
                 ShopLiveNetwork.clearShortsConfig()
             }
             viewModel.setShortformOption(data)
