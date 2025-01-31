@@ -40,7 +40,7 @@ class PreferencesUtilImpl(private val keyValueStorage: KeyValueStorage) : Prefer
     override var campaignKey: String?
         get() = keyValueStorage.getString(CAMPAIGN_KEY, null)
         set(value) {
-            keyValueStorage.getString(CAMPAIGN_KEY, value)
+            keyValueStorage.putString(CAMPAIGN_KEY, value)
         }
 
     override var authType: Int
