@@ -23,12 +23,10 @@ class MainViewModelTest {
     val instantExecutorRule = InstantTaskExecutorRule()
     private val preference: PreferencesUtil = mockk<PreferencesUtil>(relaxed = true)
     private lateinit var viewModel: MainViewModel
-    private val campaignInfoObserver: Observer<CampaignInfo> = mockk(relaxed = true)
 
     @Before
     fun setUp() {
         viewModel = MainViewModel(preference)
-        viewModel.campaignInfo.observeForever(campaignInfoObserver)
     }
 
     @Test
@@ -38,7 +36,7 @@ class MainViewModelTest {
 
         viewModel.loadCampaignData()
 
-        verify { campaignInfoObserver.onChanged(CampaignInfo("testA", "testC")) }
+        assertEquals(viewModel.campaignInfo.getOrAwaitValue(), CampaignInfo("testA", "testC"))
     }
 
     @Test

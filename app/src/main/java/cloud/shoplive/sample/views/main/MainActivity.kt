@@ -16,11 +16,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import cloud.shoplive.sample.Options
+import cloud.shoplive.sample.PreferencesUtil
+import cloud.shoplive.sample.PreferencesUtilImpl
 import cloud.shoplive.sample.R
 import cloud.shoplive.sample.UserType
 import cloud.shoplive.sample.WebViewActivity
 import cloud.shoplive.sample.WebViewDialogFragment
+import cloud.shoplive.sample.data.SharedPreferenceStorage
 import cloud.shoplive.sample.databinding.ActivityMainBinding
 import cloud.shoplive.sample.shortform.HybridShortformActivity
 import cloud.shoplive.sample.shortform.NativeShortformActivity
@@ -31,6 +36,7 @@ import cloud.shoplive.sample.views.dialog.CustomShareDialog
 import cloud.shoplive.sample.views.login.LoginActivity
 import cloud.shoplive.sample.views.settings.SettingsActivity
 import cloud.shoplive.sample.views.user.UserActivity
+import cloud.shoplive.sample.views.user.UserViewModel
 import cloud.shoplive.sdk.OnAudioFocusListener
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveHandler
@@ -72,7 +78,6 @@ import org.json.JSONObject
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MainActivity : AppCompatActivity() {
-
     companion object {
         const val TAG = "MainActivity"
 
@@ -95,11 +100,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val viewModel: MainViewModel by viewModels {
+        viewModelFactory {
+            initializer {
+                MainViewModel(PreferencesUtilImpl(SharedPreferenceStorage(this@MainActivity)))
+            }
+        }
+    }
+
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-
-    private val viewModel: MainViewModel by viewModels()
 
     private val editorDialog: CustomListDialog<String> by lazy {
         val uploadEditorString = getString(R.string.shortform_editor_upload)

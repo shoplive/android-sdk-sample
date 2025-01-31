@@ -1,13 +1,11 @@
 package cloud.shoplive.sample.views.campaign
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import cloud.shoplive.sample.CampaignInfo
 import cloud.shoplive.sample.PreferencesUtil
 import cloud.shoplive.sample.PreferencesUtilImpl
 import cloud.shoplive.sample.data.KeyValueStorage
+import cloud.shoplive.sample.getOrAwaitValue
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -24,41 +22,23 @@ class CampaignViewModelTest {
 
     private lateinit var preference: PreferencesUtil
     private lateinit var viewModel: CampaignViewModel
-    private val campaignInfoObserver: Observer<CampaignInfo> = mockk(relaxed = true)
-
-    private val _campaignInfo: MutableLiveData<CampaignInfo> = MutableLiveData()
-    private val campaignInfo: LiveData<CampaignInfo>
-        get() = _campaignInfo
 
     @Before
     fun setUp() {
         preference = PreferencesUtilImpl(mockStorage)
         viewModel = CampaignViewModel(preference)
-
-        viewModel.campaignInfo.observeForever(campaignInfoObserver)
-    }
-
-    @Test
-    fun getCampaignInfo() {
-        val testCampaign = CampaignInfo("observerTestAccessKey", "observerTestCampaignKey")
-
-        campaignInfo.observeForTesting(campaignInfoObserver) {
-            _campaignInfo.value = testCampaign
-
-            verify { campaignInfoObserver.onChanged(testCampaign) }
-        }
     }
 
     @Test
     fun loadCampaign() {
-        every { preference.accessKey } returns "testAccessKey"
-        every { preference.campaignKey } returns "campaignKey"
+        val testCampaign = CampaignInfo("observerTestAccessKey", "observerTestCampaignKey")
+
+        every { preference.campaignKey } returns "observerTestCampaignKey"
+        every { preference.accessKey } returns "observerTestAccessKey"
 
         viewModel.loadCampaign()
 
-        verify { campaignInfoObserver.onChanged(CampaignInfo("testAccessKey", "campaignKey")) }
-        assertEquals("testAccessKey", viewModel.campaignInfo.value?.accessKey)
-        assertEquals("campaignKey", viewModel.campaignInfo.value?.campaignKey)
+        assertEquals(viewModel.campaignInfo.getOrAwaitValue(), testCampaign)
     }
 
     @Test
@@ -71,14 +51,5 @@ class CampaignViewModelTest {
             preference.accessKey = "testAccessKey2"
             preference.campaignKey = "campaignKey2"
         }
-    }
-}
-
-fun <T> LiveData<T>.observeForTesting(observer: Observer<T>, block: () -> Unit) {
-    try {
-        observeForever(observer)
-        block()
-    } finally {
-        removeObserver(observer)
     }
 }

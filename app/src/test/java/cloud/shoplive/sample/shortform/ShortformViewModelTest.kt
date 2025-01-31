@@ -54,11 +54,11 @@ class ShortformViewModelTest {
             accessKey = "acc",
             cardTypePosition = 0,
             playableTypePosition = 0,
-            hashTagOperator = 0,
+            hashTagOperator = 10,
             isVisibleTitle = false,
             isVisibleDescription = false,
             isVisibleBrand = false,
-            isVisibleProductCount = false,
+            isVisibleProductCount = true,
             isVisibleViewCount = false,
             isEnableShuffle = false,
             isEnableSnap = false,
@@ -66,20 +66,20 @@ class ShortformViewModelTest {
             isEnablePlayOnlyWifi = false,
             isBookmarkVisible = false,
             isShareButtonVisible = false,
-            isCommentButtonVisible = false,
+            isCommentButtonVisible = true,
             isLikeButtonVisible = false,
             isCentCrop = false,
             isMuted = false,
-            isEnabledVolumeKey = false,
+            isEnabledVolumeKey = true,
             cropWidth = 100,
             cropHeight = 200,
             cropFixed = false,
             minTrimDuration = 0L,
             maxTrimDuration = 0L,
             isUsedPlaybackSpeedButton = false,
-            isUsedVolumeButton = false,
+            isUsedVolumeButton = true,
             isUsedCropButton = false,
-            isUsedFilterButton = false,
+            isUsedFilterButton = true,
             outputVideoQuality = ShopLiveVideoEditorVideoQuality.NORMAL,
             outputVideoResolution = ShopLiveVideoEditorResolution.RESOLUTION_1080,
             isShowEditorEvent = false,
@@ -107,7 +107,7 @@ class ShortformViewModelTest {
 
         assertEquals(viewModel.playableTypeLiveData.getOrAwaitValue(), ShopLiveShortform.PlayableType.FIRST)
         assertEquals(viewModel.shortsCollectionIdLiveData.getOrAwaitValue(), testDialogData.shortsCollectionId)
-        assertEquals(viewModel.hashTagLiveData.getOrAwaitValue(), Pair(listOf(testDialogData.hashTag), ShopLiveShortformTagSearchOperator.OR))
+        assertEquals(viewModel.hashTagLiveData.getOrAwaitValue(), Pair(listOf(testDialogData.hashTag), ShopLiveShortformTagSearchOperator.AND))
         assertEquals(viewModel.brandLiveData.getOrAwaitValue(), listOf(testDialogData.brand))
         assertEquals(viewModel.skusLiveData.getOrAwaitValue(), listOf(testDialogData.skus))
         assertEquals(viewModel.isVisibleTitleLiveData.getOrAwaitValue(), testDialogData.isVisibleTitle)

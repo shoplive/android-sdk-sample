@@ -1,13 +1,14 @@
 package cloud.shoplive.sample.views.login
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import cloud.shoplive.sample.PreferencesUtil
 import cloud.shoplive.sample.PreferencesUtilImpl
 import cloud.shoplive.sample.data.KeyValueStorage
+import cloud.shoplive.sample.getOrAwaitValue
 import cloud.shoplive.sdk.ShopLiveUser
 import io.mockk.mockk
 import io.mockk.verify
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -18,15 +19,12 @@ class LoginViewModelTest {
     val instantExecutorRule = InstantTaskExecutorRule()
     private lateinit var preference: PreferencesUtil
     private lateinit var viewModel: LoginViewModel
-    private val doneInfoObserver: Observer<String> = mockk(relaxed = true)
     private val mockStorage = mockk<KeyValueStorage>(relaxed = true)
 
     @Before
     fun setUp() {
         preference = PreferencesUtilImpl(mockStorage)
         viewModel = LoginViewModel(preference)
-
-        viewModel.done.observeForever(doneInfoObserver)
     }
 
     @Test
@@ -37,11 +35,11 @@ class LoginViewModelTest {
         viewModel.saveUser(id)
 
         verify { preference.user = ShopLiveUser().apply { userId = id } }
-        verify { doneInfoObserver.onChanged("test") }
+        assertEquals(viewModel.done.getOrAwaitValue(), id)
 
         viewModel.saveUser(id_2)
 
-        verify { preference.user = ShopLiveUser().apply { userId = id } }
-        verify { doneInfoObserver.onChanged("test2") }
+        verify { preference.user = ShopLiveUser().apply { userId = id_2 } }
+        assertEquals(viewModel.done.getOrAwaitValue(), id_2)
     }
 }
