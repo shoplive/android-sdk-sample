@@ -22,7 +22,6 @@ class PreferencesUtilImpl(private val keyValueStorage: KeyValueStorage) : Prefer
         private const val JWT = "jwt"
         private const val USER_KEY = "user"
         private const val SHORT_FORM_CARD_TYPE = "short_form_card_type"
-        const val PREFERENCE_NAME = "sample_ui_preferences"
     }
 
     override var accessKey: String?

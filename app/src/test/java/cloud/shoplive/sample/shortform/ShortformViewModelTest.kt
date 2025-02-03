@@ -27,15 +27,9 @@ class ShortformViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
-    private val mockStorage = mockk<KeyValueStorage>(relaxed = true)
-
-    private var preference = mockk<PreferencesUtil>(relaxed = true)
-    private lateinit var viewModel: ShortformViewModel
-
-    @Before
-    fun setUp() {
-        preference = PreferencesUtilImpl(mockStorage)
-        viewModel = ShortformViewModel(preference)
+    private val preference = mockk<PreferencesUtil>(relaxed = true)
+    private val viewModel: ShortformViewModel by lazy {
+        ShortformViewModel(preference)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

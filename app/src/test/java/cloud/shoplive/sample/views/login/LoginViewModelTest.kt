@@ -17,16 +17,14 @@ class LoginViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
-    private lateinit var preference: PreferencesUtil
-    private lateinit var viewModel: LoginViewModel
-    private val mockStorage = mockk<KeyValueStorage>(relaxed = true)
-
-    @Before
-    fun setUp() {
-        preference = PreferencesUtilImpl(mockStorage)
-        viewModel = LoginViewModel(preference)
+    private val preference: PreferencesUtil by lazy {
+        PreferencesUtilImpl(mockStorage)
     }
-
+    private val viewModel: LoginViewModel by lazy {
+        LoginViewModel(preference)
+    }
+    private val mockStorage = mockk<KeyValueStorage>(relaxed = true)
+    
     @Test
     fun saveUser() {
         val id = "test"

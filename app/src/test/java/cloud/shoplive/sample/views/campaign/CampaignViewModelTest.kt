@@ -20,13 +20,12 @@ class CampaignViewModelTest {
     val instantExecutorRule = InstantTaskExecutorRule()
     private val mockStorage = mockk<KeyValueStorage>(relaxed = true)
 
-    private lateinit var preference: PreferencesUtil
-    private lateinit var viewModel: CampaignViewModel
+    private val preference: PreferencesUtil by lazy {
+        PreferencesUtilImpl(mockStorage)
+    }
 
-    @Before
-    fun setUp() {
-        preference = PreferencesUtilImpl(mockStorage)
-        viewModel = CampaignViewModel(preference)
+    private val viewModel: CampaignViewModel by lazy {
+        CampaignViewModel(preference)
     }
 
     @Test

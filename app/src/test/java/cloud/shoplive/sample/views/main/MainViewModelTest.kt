@@ -22,11 +22,8 @@ class MainViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
     private val preference: PreferencesUtil = mockk<PreferencesUtil>(relaxed = true)
-    private lateinit var viewModel: MainViewModel
-
-    @Before
-    fun setUp() {
-        viewModel = MainViewModel(preference)
+    private val viewModel: MainViewModel by lazy {
+        MainViewModel(preference)
     }
 
     @Test

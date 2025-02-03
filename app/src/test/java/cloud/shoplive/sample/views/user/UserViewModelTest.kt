@@ -1,6 +1,5 @@
 package cloud.shoplive.sample.views.user
 
-import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import cloud.shoplive.sample.PreferencesUtil
 import cloud.shoplive.sample.UserType
@@ -20,7 +19,9 @@ class UserViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var viewModel: UserViewModel
+    private val viewModel: UserViewModel by lazy {
+        UserViewModel(preference)
+    }
     private val preference = mockk<PreferencesUtil>(relaxed = true)
     private val testUser = ShopLiveUser(
         userId = "testId2",
@@ -28,11 +29,6 @@ class UserViewModelTest {
         age = 0,
         gender = ShopLiveUserGender.Female
     )
-
-    @Before
-    fun setUp() {
-        viewModel = UserViewModel(preference)
-    }
 
     @Test
     fun getUser() {
