@@ -1,9 +1,10 @@
 package cloud.shoplive.sample.shortform
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import cloud.shoplive.sample.PreferencesUtil
 import cloud.shoplive.sample.PreferencesUtilImpl
-import cloud.shoplive.sample.data.KeyValueStorage
+import cloud.shoplive.sample.data.SharedPreferenceStorage
 import cloud.shoplive.sample.getOrAwaitValue
 import cloud.shoplive.sdk.ShopLiveUserGender
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditorResolution
@@ -11,7 +12,6 @@ import cloud.shoplive.sdk.editor.ShopLiveVideoEditorVideoQuality
 import cloud.shoplive.sdk.network.request.ShopLiveShortformTagSearchOperator
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformVisibleDetailTypeData
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.TestCase.assertEquals
@@ -19,7 +19,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -27,7 +26,12 @@ class ShortformViewModelTest {
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
-    private val preference = mockk<PreferencesUtil>(relaxed = true)
+    private val mockContext = mockk<Context>(relaxed = true)
+
+    private val preference: PreferencesUtil by lazy {
+        PreferencesUtilImpl(SharedPreferenceStorage(mockContext))
+    }
+
     private val viewModel: ShortformViewModel by lazy {
         ShortformViewModel(preference)
     }
@@ -136,7 +140,6 @@ class ShortformViewModelTest {
 
     @Test
     fun getSavedCardType() {
-        every { preference.shortFormCardType } returns 0
         assertEquals(viewModel.getSavedCardType(), ShopLiveShortform.CardViewType.CARD_TYPE0)
     }
 }
