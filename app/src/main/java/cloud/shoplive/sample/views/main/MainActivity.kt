@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -17,11 +16,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import cloud.shoplive.sample.CampaignSettings
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import cloud.shoplive.sample.Options
+import cloud.shoplive.sample.PreferencesUtil
+import cloud.shoplive.sample.PreferencesUtilImpl
 import cloud.shoplive.sample.R
+import cloud.shoplive.sample.UserType
 import cloud.shoplive.sample.WebViewActivity
 import cloud.shoplive.sample.WebViewDialogFragment
+import cloud.shoplive.sample.data.SharedPreferenceStorage
 import cloud.shoplive.sample.databinding.ActivityMainBinding
 import cloud.shoplive.sample.shortform.HybridShortformActivity
 import cloud.shoplive.sample.shortform.NativeShortformActivity
@@ -32,6 +36,7 @@ import cloud.shoplive.sample.views.dialog.CustomShareDialog
 import cloud.shoplive.sample.views.login.LoginActivity
 import cloud.shoplive.sample.views.settings.SettingsActivity
 import cloud.shoplive.sample.views.user.UserActivity
+import cloud.shoplive.sample.views.user.UserViewModel
 import cloud.shoplive.sdk.OnAudioFocusListener
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveHandler
@@ -73,7 +78,6 @@ import org.json.JSONObject
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MainActivity : AppCompatActivity() {
-
     companion object {
         const val TAG = "MainActivity"
 
@@ -96,11 +100,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val viewModel: MainViewModel by viewModels {
+        viewModelFactory {
+            initializer {
+                MainViewModel(PreferencesUtilImpl(SharedPreferenceStorage(this@MainActivity)))
+            }
+        }
+    }
+
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-
-    private val viewModel: MainViewModel by viewModels()
 
     private val editorDialog: CustomListDialog<String> by lazy {
         val uploadEditorString = getString(R.string.shortform_editor_upload)
@@ -130,8 +140,8 @@ class MainActivity : AppCompatActivity() {
         Options.init(this)
 
         viewModel.deeplinkInfo.observe(this) {
-            CampaignSettings.setAccessKey(this, it.accessKey ?: return@observe)
-            CampaignSettings.setCampaignKey(this, it.campaignKey ?: return@observe)
+            viewModel.setAccessKey(it.accessKey ?: return@observe)
+            viewModel.setCampaignKey(it.campaignKey ?: return@observe)
             binding.tvCampaign.text = getString(R.string.label_ak_ck, it.accessKey, it.campaignKey)
             setOptions()
             play()
@@ -146,8 +156,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.shopliveUser.observe(this) { user ->
-            val userText = when (CampaignSettings.authType(this)) {
-                CampaignSettings.UserType.USER.ordinal -> {
+            val userText = when (viewModel.getAuthType()) {
+                UserType.USER.ordinal -> {
                     getString(R.string.label_use_user2) + "\n" + if (user == null) {
                         getString(R.string.label_no_user)
                     } else {
@@ -165,8 +175,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                CampaignSettings.UserType.JWT.ordinal -> {
-                    getString(R.string.label_use_token2) + "\n" + (CampaignSettings.jwt(this)
+                UserType.JWT.ordinal -> {
+                    getString(R.string.label_use_token2) + "\n" + (viewModel.getJWT()
                         ?: getString(R.string.label_no_token))
                 }
 
@@ -201,7 +211,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // set user when pip mode
                 setUserOrJwt()
-                val campaignKey = CampaignSettings.campaignKey(this) ?: run {
+                val campaignKey = viewModel.getCampaignKey() ?: run {
                     startActivity(CampaignActivity.buildIntent(this))
                     return@setOnClickListener
                 }
@@ -221,21 +231,20 @@ class MainActivity : AppCompatActivity() {
                 binding.preview.release()
             } else {
                 val accessKey =
-                    CampaignSettings.accessKey(this) ?: return@setOnClickListener
+                    viewModel.getAccessKey() ?: return@setOnClickListener
                 val campaignKey =
-                    CampaignSettings.campaignKey(this) ?: return@setOnClickListener
+                    viewModel.getCampaignKey() ?: return@setOnClickListener
 
                 binding.preview.start(accessKey, campaignKey)
                 binding.preview.visibility = View.VISIBLE
             }
         }
-
         binding.preview.setLifecycleObserver(this)
         binding.preview.useCloseButton(Options.isUseCloseButton())
         binding.preview.setOnClickListener {
             setOptions()
             val campaignKey =
-                CampaignSettings.campaignKey(this) ?: return@setOnClickListener
+                viewModel.getCampaignKey() ?: return@setOnClickListener
             // Preview transition animation
             ShopLive.setPreviewTransitionAnimation(this, binding.preview)
             ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
@@ -257,7 +266,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btNativeShortform.setOnClickListener {
-            val accessKey: String = CampaignSettings.accessKey(this) ?: kotlin.run {
+            val accessKey: String = viewModel.getAccessKey() ?: kotlin.run {
                 startActivity(CampaignActivity.buildIntent(this))
                 return@setOnClickListener
             }
@@ -283,19 +292,19 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.loadCampaignData(this@MainActivity)
-        viewModel.loadUserData(this@MainActivity)
+        viewModel.loadCampaignData()
+        viewModel.loadUserData()
         binding.tvOption.text = Options.toString(this@MainActivity)
     }
 
     private fun setUserOrJwt() {
-        when (CampaignSettings.authType(this)) {
-            CampaignSettings.UserType.USER.ordinal -> {
-                val accessKey: String = CampaignSettings.accessKey(this) ?: kotlin.run {
+        when (viewModel.getAuthType()) {
+            UserType.USER.ordinal -> {
+                val accessKey: String = viewModel.getAccessKey() ?: kotlin.run {
                     startActivity(CampaignActivity.buildIntent(this))
                     return
                 }
-                val user = CampaignSettings.user(this) ?: return
+                val user = viewModel.getUserData() ?: return
                 ShopLiveCommon.setUser(
                     accessKey,
                     ShopLiveCommonUser(user.userId ?: return).apply {
@@ -311,12 +320,12 @@ class MainActivity : AppCompatActivity() {
                     })
             }
 
-            CampaignSettings.UserType.JWT.ordinal -> {
-                val jwt = CampaignSettings.jwt(this) ?: return
+            UserType.JWT.ordinal -> {
+                val jwt = viewModel.getJWT() ?: return
                 ShopLiveCommon.setAuthToken(jwt)
             }
 
-            CampaignSettings.UserType.GUEST.ordinal -> {
+            UserType.GUEST.ordinal -> {
                 ShopLiveCommon.clearAuth()
             }
         }
@@ -398,19 +407,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun play() {
-        ShopLiveCommon.setAccessKey(CampaignSettings.accessKey(this) ?: return)
-        ShopLive.play(this, ShopLivePlayerData(CampaignSettings.campaignKey(this) ?: return).apply {
+        ShopLiveCommon.setAccessKey(viewModel.getAccessKey() ?: return)
+        ShopLive.play(this, ShopLivePlayerData(viewModel.getCampaignKey() ?: return).apply {
             referrer = "referrer"
         })
     }
 
     private fun startPreview() {
-        val accessKey: String = CampaignSettings.accessKey(this) ?: return
+        val accessKey: String = viewModel.getAccessKey() ?: return
         ShopLiveCommon.setAccessKey(accessKey)
         ShopLive.showPreviewPopup(
             this,
             ShopLivePreviewData(
-                CampaignSettings.campaignKey(this) ?: return,
+                viewModel.getCampaignKey() ?: return,
             ).apply {
                 useCloseButton = Options.isUseCloseButton()
             }
@@ -854,7 +863,7 @@ class MainActivity : AppCompatActivity() {
                                 super.onSuccess(videoEditorActivity, result)
                                 Toast.makeText(
                                     this@MainActivity,
-                                    "onComplete : ${result.toString()}",
+                                    "onComplete : $result",
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 ShopLiveVideoEditor.close()

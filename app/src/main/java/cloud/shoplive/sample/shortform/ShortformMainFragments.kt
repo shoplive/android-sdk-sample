@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
 import cloud.shoplive.sample.PreferencesUtilImpl
+import cloud.shoplive.sample.data.SharedPreferenceStorage
 import cloud.shoplive.sample.databinding.FragmentShortformDetailTypeBinding
 import cloud.shoplive.sample.databinding.FragmentShortformHorizontalTypeBinding
 import cloud.shoplive.sample.databinding.FragmentShortformMainTypeBinding
@@ -22,7 +23,6 @@ import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SH
 import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_MAIN
 import cloud.shoplive.sample.shortform.NativeShortformActivity.Companion.PAGE_SHORTS_VERTICAL
 import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionData
-import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
 import cloud.shoplive.sdk.shorts.ShopLiveShortformPlayEnableListener
 import cloud.shoplive.sdk.shorts.ShopLiveShortformSubmitListener
 import kotlinx.coroutines.async
@@ -46,7 +46,7 @@ class ShortformMainFragment : Fragment(), ShopLiveShortformPlayEnableListener,
     private val viewModel: ShortformViewModel by activityViewModels {
         viewModelFactory {
             initializer {
-                ShortformViewModel(PreferencesUtilImpl(requireContext()))
+                ShortformViewModel(PreferencesUtilImpl(SharedPreferenceStorage(requireContext())))
             }
         }
     }
@@ -176,7 +176,7 @@ class ShortformVerticalFragment : Fragment(), ShopLiveShortformPlayEnableListene
     private val viewModel: ShortformViewModel by activityViewModels {
         viewModelFactory {
             initializer {
-                ShortformViewModel(PreferencesUtilImpl(requireContext()))
+                ShortformViewModel(PreferencesUtilImpl(SharedPreferenceStorage(requireContext())))
             }
         }
     }
@@ -303,7 +303,7 @@ class ShortformHorizontalFragment : Fragment(), ShopLiveShortformPlayEnableListe
     private val viewModel: ShortformViewModel by activityViewModels {
         viewModelFactory {
             initializer {
-                ShortformViewModel(PreferencesUtilImpl(requireContext()))
+                ShortformViewModel(PreferencesUtilImpl(SharedPreferenceStorage(requireContext())))
             }
         }
     }
@@ -439,7 +439,7 @@ class ShortformFullFragment : Fragment(), ShopLiveShortformPlayEnableListener,
     private val viewModel: ShortformViewModel by activityViewModels {
         viewModelFactory {
             initializer {
-                ShortformViewModel(PreferencesUtilImpl(requireContext()))
+                ShortformViewModel(PreferencesUtilImpl(SharedPreferenceStorage(requireContext())))
             }
         }
     }

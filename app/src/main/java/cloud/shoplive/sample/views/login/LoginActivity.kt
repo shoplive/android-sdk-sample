@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
         binding.etPw.setText("shoplive")
 
         binding.btLogin.setOnClickListener {
-            viewModel.saveUser(this@LoginActivity, binding.etId.text.toString())
+            viewModel.saveUser(binding.etId.text.toString())
         }
     }
 
