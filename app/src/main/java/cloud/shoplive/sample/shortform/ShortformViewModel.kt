@@ -168,8 +168,12 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
 
     private var reference: String? = null
     private var hasMore: Boolean = false
+    private var morePagingReference: String? = null
+    private var previousPagingReference: String? = null
+    private var morePagingHasMore: Boolean = false
+    private var previousPagingHasMore: Boolean = false
 
-    fun playShortformV2TestTask(activity: Activity) {
+  fun playShortformV2TestTask(activity: Activity) {
         viewModelScope.launch {
             val service = ShopLiveShortformServiceImpl()
             val response =
@@ -183,46 +187,76 @@ class ShortformViewModel(private val preference: PreferencesUtil) : ViewModel() 
                     )
                 }.getOrNull()
                     ?: return@launch
-            val list = response.shortsList?.mapNotNull { it.shortsId } ?: emptyList()
-            this@ShortformViewModel.reference = response.reference
-            this@ShortformViewModel.hasMore = response.hasMore
+            val list = response.shortsList ?: emptyList()
+            this@ShortformViewModel.morePagingReference = response.reference
+            this@ShortformViewModel.previousPagingReference = response.reference
+            this@ShortformViewModel.morePagingHasMore = response.hasMore
+            this@ShortformViewModel.previousPagingHasMore = response.hasMore
             ShopLiveShortform.play(activity, ShopLiveShortformIdsData().apply {
-                ids = list.map {
-                    ShopLiveShortformIdData(it).apply {
+                ids = list.mapNotNull {
+                    val shortsId = it.shortsId ?: return@mapNotNull null
+                    ShopLiveShortformIdData(shortsId).apply {
                         payload = mapOf(
-                            Pair("shortsId", it),
-                            Pair("title", "title + $it"),
-                            Pair("description", "description + $it")
+                            Pair("shortsId", shortsId),
+                            Pair("title", it.shortsDetail?.title ?: "title"),
+                            Pair("description", "shortsId + ${it.shortsId}")
                         )
                     }
                 }
-                currentId = list.getOrNull((Math.random() * list.size).toInt())
                 handler = ShortformSampleData.handler
-            }, ShopLiveShortformMoreSuspendListener {
+            }, moreSuspendListener = ShopLiveShortformMoreSuspendListener {
                 val moreResponse =
                     kotlin.runCatching {
                         service.collection(
                             ShopLiveCommon.getAccessKey(),
                             ShopLiveShortformCollectionRequest(
-                                reference = this@ShortformViewModel.reference,
+                                reference = this@ShortformViewModel.morePagingReference,
                                 count = ShopLiveNetwork.shortsConfig?.sdk?.detailApiPaginationCount,
                                 finite = true,
                             )
                         )
                     }.getOrNull() ?: return@ShopLiveShortformMoreSuspendListener null
-                val moreList = moreResponse.shortsList?.mapNotNull { it.shortsId } ?: emptyList()
-                this@ShortformViewModel.reference = moreResponse.reference
-                this@ShortformViewModel.hasMore = moreResponse.hasMore
+                val moreList = moreResponse.shortsList ?: emptyList()
+                this@ShortformViewModel.morePagingReference = moreResponse.reference
+                this@ShortformViewModel.morePagingHasMore = moreResponse.hasMore
                 return@ShopLiveShortformMoreSuspendListener ShopLiveShortformIdsMoreData().apply {
-                    ids = moreList.map {
-                        ShopLiveShortformIdData(it).apply {
+                    ids = moreList.mapNotNull {
+                        val shortsId = it.shortsId ?: return@mapNotNull null
+                        ShopLiveShortformIdData(shortsId).apply {
                             payload = mapOf(
-                                Pair("title", "title + $it"),
-                                Pair("description", "description + $it")
+                                Pair("title", it.shortsDetail?.title ?: "title"),
+                                Pair("description", "shortsId + ${it.shortsId}")
                             )
                         }
                     }
-                    hasMore = this@ShortformViewModel.hasMore
+                    hasMore = this@ShortformViewModel.morePagingHasMore
+                }
+            }, previousSuspendListener = ShopLiveShortformMoreSuspendListener {
+                val previous =
+                    kotlin.runCatching {
+                        service.collection(
+                            ShopLiveCommon.getAccessKey(),
+                            ShopLiveShortformCollectionRequest(
+                                reference = this@ShortformViewModel.previousPagingReference,
+                                count = ShopLiveNetwork.shortsConfig?.sdk?.detailApiPaginationCount,
+                                finite = true,
+                            )
+                        )
+                    }.getOrNull() ?: return@ShopLiveShortformMoreSuspendListener null
+                val moreList = previous.shortsList ?: emptyList()
+                this@ShortformViewModel.previousPagingReference = previous.reference
+                this@ShortformViewModel.previousPagingHasMore = previous.hasMore
+                return@ShopLiveShortformMoreSuspendListener ShopLiveShortformIdsMoreData().apply {
+                    ids = moreList.mapNotNull {
+                        val shortsId = it.shortsId ?: return@mapNotNull null
+                        ShopLiveShortformIdData(shortsId).apply {
+                            payload = mapOf(
+                                Pair("title", it.shortsDetail?.title ?: "title"),
+                                Pair("description", "shortsId + ${it.shortsId}")
+                            )
+                        }
+                    }.reversed()
+                    hasMore = this@ShortformViewModel.previousPagingHasMore
                 }
             })
         }
