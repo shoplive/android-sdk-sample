@@ -24,7 +24,7 @@ class LoginViewModelTest {
         LoginViewModel(preference)
     }
     private val mockStorage = mockk<KeyValueStorage>(relaxed = true)
-    
+
     @Test
     fun saveUser() {
         val id = "test"

@@ -124,7 +124,6 @@ class NativeShortformActivity : AppCompatActivity() {
         }
     }
 
-
     private val editorDialog: CustomListDialog<String> by lazy {
         val uploadEditorString = getString(R.string.shortform_editor_upload)
         val videoEditorString = getString(R.string.shortform_video_editor_only)

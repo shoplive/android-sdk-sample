@@ -28,6 +28,7 @@ class MockKeyValueStorageTest {
         every { sharedPreferences.edit() } returns editor
         every { editor.putInt(testIntKey, 123) } returns editor
         every { editor.putString(testStringKey, testString) } returns editor
+        every { editor.remove(testStringKey) } returns editor
     }
 
     @Test
@@ -39,8 +40,12 @@ class MockKeyValueStorageTest {
 
         storage.putInt(testIntKey, 123)
         storage.putString(testStringKey, testString)
+        storage.remove(testStringKey)
+        storage.putInt(testIntKey, null)
 
         verify { editor.putInt(testIntKey, 123) }
         verify { editor.putString(testStringKey, "test") }
+        verify { editor.remove(testStringKey) }
+        verify { editor.putInt(testIntKey, 0) }
     }
 }
