@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModel
 import cloud.shoplive.sample.PreferencesUtil
 import cloud.shoplive.sample.UserType
 import cloud.shoplive.sdk.ShopLiveUser
-import javax.inject.Inject
 
-class UserViewModel @Inject constructor(private val preferencesUtil: PreferencesUtil) :
+class UserViewModel (private val preferencesUtil: PreferencesUtil) :
     ViewModel() {
 
     private val _user = MutableLiveData<ShopLiveUser?>()

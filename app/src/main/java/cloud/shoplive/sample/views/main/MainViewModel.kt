@@ -7,9 +7,8 @@ import cloud.shoplive.sample.CampaignInfo
 import cloud.shoplive.sample.PreferencesUtil
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveUser
-import javax.inject.Inject
 
-class MainViewModel @Inject constructor(private val preferences : PreferencesUtil) : ViewModel() {
+class MainViewModel(private val preferences : PreferencesUtil) : ViewModel() {
 
     private val _campaignInfo: MutableLiveData<CampaignInfo> = MutableLiveData()
     val campaignInfo: LiveData<CampaignInfo>

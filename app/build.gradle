@@ -103,9 +103,6 @@ dependencies {
     implementation "cloud.shoplive:shoplive-filter:$shoplive_sdk_version" // for short-form editor
     implementation "cloud.shoplive:shoplive-video-editor:$shoplive_sdk_version" // for short-form editor
 
-    //di
-    implementation "javax.inject:javax.inject:1"
-
     testImplementation "io.mockk:mockk:$mockk_version"
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
 

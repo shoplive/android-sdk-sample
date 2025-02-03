@@ -5,9 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cloud.shoplive.sample.CampaignInfo
 import cloud.shoplive.sample.PreferencesUtil
-import javax.inject.Inject
 
-class CampaignViewModel @Inject constructor(private val preferencesUtil: PreferencesUtil) : ViewModel() {
+class CampaignViewModel(private val preferencesUtil: PreferencesUtil) : ViewModel() {
 
     private val _campaignInfo: MutableLiveData<CampaignInfo> = MutableLiveData()
     val campaignInfo: LiveData<CampaignInfo>
