@@ -33,42 +33,36 @@ class UserViewModelTest {
     @Test
     fun getUser() {
         every { preference.user } returns testUser
-        viewModel.loadInitialData()
         assertEquals(testUser, viewModel.user.getOrAwaitValue())
     }
 
     @Test
     fun getJwt() {
        every { preference.jwt } returns "testJWT"
-        viewModel.loadInitialData()
         assertEquals("testJWT", viewModel.jwt.getOrAwaitValue())
     }
 
     @Test
     fun getAuthType() {
         every { preference.authType } returns 1
-        viewModel.loadInitialData()
         assertEquals(1, viewModel.authType.getOrAwaitValue())
     }
 
     @Test
     fun loadUserData() {
         every { preference.user } returns testUser
-        viewModel.loadInitialData()
         assertEquals(testUser, viewModel.user.getOrAwaitValue())
     }
 
     @Test
     fun loadJwt() {
         every { preference.jwt } returns "jwt"
-        viewModel.loadInitialData()
         assertEquals("jwt", viewModel.jwt.getOrAwaitValue())
     }
 
     @Test
     fun loadType() {
         every { preference.authType } returns UserType.JWT.ordinal
-        viewModel.loadInitialData()
         assertEquals(UserType.JWT.ordinal, viewModel.authType.getOrAwaitValue())
     }
 

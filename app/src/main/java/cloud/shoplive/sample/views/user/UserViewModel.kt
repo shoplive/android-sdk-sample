@@ -26,7 +26,7 @@ class UserViewModel @Inject constructor(private val preferencesUtil: Preferences
         loadInitialData()
     }
 
-    fun loadInitialData() {
+    private fun loadInitialData() {
         _jwt.value = preferencesUtil.jwt
         _authType.value = preferencesUtil.authType
         _user.value = preferencesUtil.user
