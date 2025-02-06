@@ -1,7 +1,6 @@
 package cloud.shoplive.sample.views.main
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import cloud.shoplive.sample.CampaignInfo
 import cloud.shoplive.sample.PreferencesUtil
 import cloud.shoplive.sample.UserType
@@ -13,7 +12,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.TestCase.assertEquals
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
