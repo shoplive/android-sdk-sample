@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "cloud.shoplive.sample"
         namespace "cloud.shoplive.sample"
-        minSdk 19
+        minSdk 21
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -56,6 +56,11 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
 }
 
@@ -90,6 +95,8 @@ dependencies {
     def shoplive_exoplayer_version = your_exoplayer_version + "." + "9"
     def shoplive_media3_version = your_media3_version + "." + "9"
     def mockk_version = "1.13.16"
+    def compose_version = "1.7.7"
+    def compose_bom_version = "2025.01.01"
 
     // For submodules
     implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version" // must required
@@ -99,9 +106,21 @@ dependencies {
     // implementation "cloud.shoplive:shoplive-media3:$shoplive_media3_version"
     implementation "cloud.shoplive:shoplive-network:$shoplive_sdk_version" // must required
     implementation "cloud.shoplive:shoplive-sdk-core:$shoplive_sdk_version" // for live player
-    implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version" // for short-form player
+    implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version"
+    // for short-form player
     implementation "cloud.shoplive:shoplive-filter:$shoplive_sdk_version" // for short-form editor
-    implementation "cloud.shoplive:shoplive-video-editor:$shoplive_sdk_version" // for short-form editor
+    implementation "cloud.shoplive:shoplive-video-editor:$shoplive_sdk_version"
+    // for short-form editor
+
+    //for composable
+    def composeBom = platform("androidx.compose:compose-bom:$compose_bom_version")
+    implementation composeBom
+    androidTestImplementation composeBom
+    implementation "androidx.compose.runtime:runtime-android:$compose_version"
+    implementation 'androidx.compose.ui:ui-tooling'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.ui:ui'
+    implementation "androidx.activity:activity-compose:$compose_version"
 
     testImplementation "io.mockk:mockk:$mockk_version"
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
