@@ -154,7 +154,6 @@ class MainActivity : AppCompatActivity() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
                     result.data?.getStringExtra(LoginActivity.USER_ID)?.let { userId ->
-                        Log.d(TAG, "로그인 성공: userId=$userId")
                         setOptions()
                         play()
                     }
