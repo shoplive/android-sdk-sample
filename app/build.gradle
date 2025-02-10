@@ -57,6 +57,10 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
 }
 
@@ -87,7 +91,7 @@ dependencies {
     def exoplayer = libs.shoplive.exoplayer.get()
     def exoplaver_version = libs.versions.exoPlayer.get()
     def shopliveExoPlayerSuffix = libs.versions.shopliveExoPlayerSuffix.get()
-    
+
     // For submodules
     implementation libs.shoplive.common // must required
     implementation("$exoplayer:${exoplaver_version}${shopliveExoPlayerSuffix}")  // must required
@@ -106,4 +110,13 @@ dependencies {
 
     // For library - combined packaging
     // implementation libs.shoplive.sdk.all // live + short-form
+
+    // For composable
+    def composeBom = platform(libs.compose.bom)
+    implementation composeBom
+    implementation libs.compose.runtime.android
+    implementation libs.compose.ui.tooling
+    implementation libs.material3
+    implementation libs.compose.ui
+    implementation libs.activity.compose
 }
