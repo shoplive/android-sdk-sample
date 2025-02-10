@@ -14,17 +14,11 @@ import com.google.gson.Gson
 import org.json.JSONObject
 import java.lang.ref.WeakReference
 
-object ShopLiveSDKCommandHandler {
-    private var activityRef: WeakReference<Activity>? = null
-    private var loginLauncher: ActivityResultLauncher<Intent>? = null
-
-    fun init(activity: Activity, loginLauncher: ActivityResultLauncher<Intent>) {
-        this.activityRef = WeakReference(activity)
-        this.loginLauncher = loginLauncher
-    }
+class ShopLiveSDKCommandHandler(activity: Activity, val loginLauncher: ActivityResultLauncher<Intent>)  {
+    private var activityRef: WeakReference<Activity> = WeakReference(activity)
 
     private val activity: Activity?
-        get() = activityRef?.get()
+        get() = activityRef.get()
 
 
     fun commandHandler(command: String, data: JSONObject) {
@@ -101,7 +95,7 @@ object ShopLiveSDKCommandHandler {
                 setMessage(context.getString(R.string.alert_need_login))
                 setPositiveButton(context.getString(R.string.yes)) { dialog, _ ->
                     ShopLive.startPictureInPicture()
-                    loginLauncher?.launch(LoginActivity.buildIntent(context))
+                    loginLauncher.launch(LoginActivity.buildIntent(context))
                     dialog.dismiss()
                 }
                 setNegativeButton(context.getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
@@ -143,21 +137,23 @@ object ShopLiveSDKCommandHandler {
         )
     }
 
-    private const val LOGIN_REQUIRED = "LOGIN_REQUIRED"
-    private const val CLICK_PRODUCT_DETAIL = "CLICK_PRODUCT_DETAIL"
-    private const val CLICK_PRODUCT_CART = "CLICK_PRODUCT_CART"
-    private const val ON_SUCCESS_CAMPAIGN_JOIN = "ON_SUCCESS_CAMPAIGN_JOIN"
-    private const val EVENT_DEEPLINK = "EVENT_DEEPLINK"
-    private const val CLICK_PRODUCT_BANNER_LINK = "CLICK_PRODUCT_BANNER_LINK"
-    private const val CLICK_PRODUCT_BANNER_COUPON = "CLICK_PRODUCT_BANNER_COUPON"
-    private const val CLICK_BACK_BUTTON = "CLICK_BACK_BUTTON"
-    private const val ON_CLICK_BRAND_FAVORITE_BUTTON = "ON_CLICK_BRAND_FAVORITE_BUTTON"
-    private const val SET_BRAND_FAVORITE = "SET_BRAND_FAVORITE"
-    private const val SHOW_LAYER_TOAST = "SHOW_LAYER_TOAST"
-    private const val ON_CHANGED_BRAND_FAVORITE = "ON_CHANGED_BRAND_FAVORITE"
-    private const val ON_RECEIVED_SELLER_CONFIG = "ON_RECEIVED_SELLER_CONFIG"
-    private const val ON_CLICK_VIEW_SELLER_STORE = "ON_CLICK_VIEW_SELLER_STORE"
-    private const val ON_CLICK_SELLER_SUBSCRIPTION = "ON_CLICK_SELLER_SUBSCRIPTION"
-    private const val SET_SELLER_SAVED_STATE = "SET_SELLER_SAVED_STATE"
-    private const val MESSAGE = "MESSAGE"
+    companion object {
+        private const val LOGIN_REQUIRED = "LOGIN_REQUIRED"
+        private const val CLICK_PRODUCT_DETAIL = "CLICK_PRODUCT_DETAIL"
+        private const val CLICK_PRODUCT_CART = "CLICK_PRODUCT_CART"
+        private const val ON_SUCCESS_CAMPAIGN_JOIN = "ON_SUCCESS_CAMPAIGN_JOIN"
+        private const val EVENT_DEEPLINK = "EVENT_DEEPLINK"
+        private const val CLICK_PRODUCT_BANNER_LINK = "CLICK_PRODUCT_BANNER_LINK"
+        private const val CLICK_PRODUCT_BANNER_COUPON = "CLICK_PRODUCT_BANNER_COUPON"
+        private const val CLICK_BACK_BUTTON = "CLICK_BACK_BUTTON"
+        private const val ON_CLICK_BRAND_FAVORITE_BUTTON = "ON_CLICK_BRAND_FAVORITE_BUTTON"
+        private const val SET_BRAND_FAVORITE = "SET_BRAND_FAVORITE"
+        private const val SHOW_LAYER_TOAST = "SHOW_LAYER_TOAST"
+        private const val ON_CHANGED_BRAND_FAVORITE = "ON_CHANGED_BRAND_FAVORITE"
+        private const val ON_RECEIVED_SELLER_CONFIG = "ON_RECEIVED_SELLER_CONFIG"
+        private const val ON_CLICK_VIEW_SELLER_STORE = "ON_CLICK_VIEW_SELLER_STORE"
+        private const val ON_CLICK_SELLER_SUBSCRIPTION = "ON_CLICK_SELLER_SUBSCRIPTION"
+        private const val SET_SELLER_SAVED_STATE = "SET_SELLER_SAVED_STATE"
+        private const val MESSAGE = "MESSAGE"
+    }
 }

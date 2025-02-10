@@ -105,6 +105,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    val loginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.getStringExtra(LoginActivity.USER_ID)?.let { userId ->
+                    setOptions()
+                    play()
+                }
+            }
+        }
+
+    private val shopLiveSdkCommandHandler by lazy {
+        ShopLiveSDKCommandHandler(activity = this@MainActivity, loginLauncher = loginLauncher)
+    }
+
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -150,18 +164,7 @@ class MainActivity : AppCompatActivity() {
 
         title = getString(R.string.title_main)
 
-        val loginLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == RESULT_OK) {
-                    result.data?.getStringExtra(LoginActivity.USER_ID)?.let { userId ->
-                        setOptions()
-                        play()
-                    }
-                }
-            }
-
         Options.init(this)
-        ShopLiveSDKCommandHandler.init(activity = this@MainActivity, loginLauncher = loginLauncher)
 
         viewModel.deeplinkInfo.observe(this) {
             viewModel.setAccessKey(it.accessKey ?: return@observe)
@@ -569,7 +572,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceivedCommand(context: Context, command: String, data: JSONObject) {
             Log.d(TAG, "onReceivedCommand = command=$command, data=$data")
-            ShopLiveSDKCommandHandler.commandHandler(command = command, data = data)
+            shopLiveSdkCommandHandler.commandHandler(command = command, data = data)
         }
 
         private var isMuted = false
