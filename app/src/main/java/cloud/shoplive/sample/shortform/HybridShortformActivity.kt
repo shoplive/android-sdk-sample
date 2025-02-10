@@ -1,20 +1,24 @@
 package cloud.shoplive.sample.shortform
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import cloud.shoplive.sample.databinding.ActivityHybridShortformBinding
 import cloud.shoplive.sdk.common.ShopLiveCommon
-import cloud.shoplive.sdk.common.ShopLiveCommonError
 import cloud.shoplive.sdk.network.ShopLiveNetwork
+import cloud.shoplive.sdk.network.response.ShopLiveShortformData
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
-import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
-import cloud.shoplive.sdk.shorts.ShopLiveShortformShareData
+import cloud.shoplive.sdk.shorts.ShopLiveShortformCollectionData
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+import org.json.JSONObject
 
 class HybridShortformActivity : AppCompatActivity() {
 
@@ -55,7 +59,8 @@ class HybridShortformActivity : AppCompatActivity() {
         binding.webView.settings.javaScriptEnabled = true // Required
 
         // Required
-        ShopLiveShortform.connectBridgeInterface(this, binding.webView)
+        val shopliveBridgeInterface = ShopLiveAppBridgeInterface(this, binding.webView)
+        binding.webView.addJavascriptInterface(shopliveBridgeInterface, "ShopLiveBridgeInterface")
 
         intent.getStringExtra("url")?.let {
             binding.webView.loadUrl(it)
@@ -77,5 +82,52 @@ class HybridShortformActivity : AppCompatActivity() {
         super.onDestroy()
         ShopLiveCommon.clearAuth()
         ShopLiveNetwork.clearShortsConfig()
+    }
+}
+
+internal class ShopLiveAppBridgeInterface(
+    private val activity: Activity,
+    private val webView: WebView
+) {
+    @JavascriptInterface
+    fun onReceiveShopliveShortsEvent(shopliveEvent: String, payload: String?) {
+        shopliveEvent.let {
+            val eventObj = JSONObject(shopliveEvent)
+            val cmdName = eventObj.getString("name")
+            val metadata = eventObj.getJSONObject("metadata")
+            when (cmdName) {
+                "PLAY_SHORTFORM_DETAIL" -> {
+                    payload?.fromJson<ShopLiveShortformMetaData>()?.let {
+                        ShopLiveShortform.play(
+                            activity,
+                            ShopLiveShortformCollectionData().apply {
+                                shortsId = it.shorts?.shortsId
+                                handler = ShortformSampleData.handler
+                            }
+                        )
+                    }
+                }
+
+                else -> Unit
+            }
+        }
+    }
+}
+
+@Keep
+private data class ShopLiveShortformMetaData(val shorts: ShopLiveShortformData?)
+
+@Keep
+private data class ShopLiveShortformData(val shortsId: String?)
+
+private inline fun <reified T> String.fromJson(): T? {
+    return try {
+        GsonBuilder()
+            .serializeNulls().create().fromJson(
+                this,
+                object : TypeToken<T>() {}.type
+            )
+    } catch (e: Exception) {
+        null
     }
 }

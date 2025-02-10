@@ -128,6 +128,22 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private val accessKey: String?
+        get() {
+            return viewModel.getAccessKey() ?: kotlin.run {
+                startActivity(CampaignActivity.buildIntent(this))
+                return null
+            }
+        }
+
+    private val campaignKey: String?
+        get() {
+            return viewModel.getCampaignKey() ?: kotlin.run {
+                startActivity(CampaignActivity.buildIntent(this))
+                return null
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -220,10 +236,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // set user when pip mode
                 setUserOrJwt()
-                val campaignKey = viewModel.getCampaignKey() ?: run {
-                    startActivity(CampaignActivity.buildIntent(this))
-                    return@setOnClickListener
-                }
+                val campaignKey = campaignKey ?: return@setOnClickListener
                 ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
                     referrer = "referrer"
                 })
@@ -239,12 +252,10 @@ class MainActivity : AppCompatActivity() {
             if (binding.preview.visibility == View.VISIBLE) {
                 binding.preview.release()
             } else {
-                val accessKey =
-                    viewModel.getAccessKey() ?: return@setOnClickListener
-                val campaignKey =
-                    viewModel.getCampaignKey() ?: return@setOnClickListener
-
-                binding.preview.start(accessKey, campaignKey)
+                binding.preview.start(
+                    accessKey ?: return@setOnClickListener,
+                    campaignKey ?: return@setOnClickListener
+                )
                 binding.preview.visibility = View.VISIBLE
             }
         }
@@ -252,8 +263,7 @@ class MainActivity : AppCompatActivity() {
         binding.preview.useCloseButton(Options.isUseCloseButton())
         binding.preview.setOnClickListener {
             setOptions()
-            val campaignKey =
-                viewModel.getCampaignKey() ?: return@setOnClickListener
+            val campaignKey = campaignKey ?: return@setOnClickListener
             // Preview transition animation
             ShopLive.setPreviewTransitionAnimation(this, binding.preview)
             ShopLive.play(this, ShopLivePlayerData(campaignKey).apply {
@@ -266,19 +276,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btHybridShortform.setOnClickListener {
+            val accessKey = accessKey ?: return@setOnClickListener
+            ShopLiveCommon.setAccessKey(accessKey)
             startActivity(
                 HybridShortformActivity.buildIntent(
                     this,
-                    "https://shopliveshorts.cafe24.com/index.html"
+                    "https://shortform.shoplive.show/collection.html?ak=${accessKey}"
                 )
             )
         }
 
         binding.btNativeShortform.setOnClickListener {
-            val accessKey: String = viewModel.getAccessKey() ?: kotlin.run {
-                startActivity(CampaignActivity.buildIntent(this))
-                return@setOnClickListener
-            }
+            val accessKey = accessKey ?: return@setOnClickListener
             ShopLiveCommon.setAccessKey(accessKey)
             startActivity(NativeShortformActivity.intent(this))
         }
@@ -309,10 +318,7 @@ class MainActivity : AppCompatActivity() {
     private fun setUserOrJwt() {
         when (viewModel.getAuthType()) {
             UserType.USER.ordinal -> {
-                val accessKey: String = viewModel.getAccessKey() ?: kotlin.run {
-                    startActivity(CampaignActivity.buildIntent(this))
-                    return
-                }
+                val accessKey = accessKey ?: return
                 val user = viewModel.getUserData() ?: return
                 ShopLiveCommon.setUser(
                     accessKey,
@@ -416,20 +422,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun play() {
-        ShopLiveCommon.setAccessKey(viewModel.getAccessKey() ?: return)
-        ShopLive.play(this, ShopLivePlayerData(viewModel.getCampaignKey() ?: return).apply {
+        ShopLiveCommon.setAccessKey(accessKey ?: return)
+        ShopLive.play(this, ShopLivePlayerData(campaignKey ?: return).apply {
             referrer = "referrer"
         })
     }
 
     private fun startPreview() {
-        val accessKey: String = viewModel.getAccessKey() ?: return
-        ShopLiveCommon.setAccessKey(accessKey)
+        ShopLiveCommon.setAccessKey(accessKey ?: return)
         ShopLive.showPreviewPopup(
             this,
-            ShopLivePreviewData(
-                viewModel.getCampaignKey() ?: return,
-            ).apply {
+            ShopLivePreviewData(campaignKey ?: return).apply {
                 useCloseButton = Options.isUseCloseButton()
             }
         )
