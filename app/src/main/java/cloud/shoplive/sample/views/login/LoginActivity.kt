@@ -4,29 +4,40 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import cloud.shoplive.sample.PreferencesUtilImpl
 import cloud.shoplive.sample.R
-import cloud.shoplive.sample.databinding.ActivityLoginBinding
+import cloud.shoplive.sample.data.SharedPreferenceStorage
 
 class LoginActivity : AppCompatActivity() {
 
     companion object {
         const val USER_ID = "userId"
-        fun buildIntent(context: Context) : Intent {
+        fun buildIntent(context: Context): Intent {
             return Intent(context, LoginActivity::class.java)
         }
     }
 
-    private val binding: ActivityLoginBinding by lazy {
-        ActivityLoginBinding.inflate(layoutInflater)
+    private val viewModel: LoginViewModel by viewModels {
+        viewModelFactory {
+            initializer {
+                LoginViewModel(PreferencesUtilImpl(SharedPreferenceStorage(this@LoginActivity)))
+            }
+        }
     }
-
-    private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+
+        setContent {
+            LoginScreen(
+                viewModel = viewModel
+            )
+        }
 
         title = getString(R.string.title_login)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -36,13 +47,6 @@ class LoginActivity : AppCompatActivity() {
                 putExtra(USER_ID, userId)
             })
             finish()
-        }
-
-        binding.etId.setText("shoplive")
-        binding.etPw.setText("shoplive")
-
-        binding.btLogin.setOnClickListener {
-            viewModel.saveUser(binding.etId.text.toString())
         }
     }
 

@@ -1,6 +1,5 @@
 package cloud.shoplive.sample.views.main
 
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -19,9 +18,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import cloud.shoplive.sample.Options
-import cloud.shoplive.sample.PreferencesUtil
 import cloud.shoplive.sample.PreferencesUtilImpl
 import cloud.shoplive.sample.R
+import cloud.shoplive.sample.ShopLiveSDKCommandHandler
 import cloud.shoplive.sample.UserType
 import cloud.shoplive.sample.WebViewActivity
 import cloud.shoplive.sample.WebViewDialogFragment
@@ -36,7 +35,6 @@ import cloud.shoplive.sample.views.dialog.CustomShareDialog
 import cloud.shoplive.sample.views.login.LoginActivity
 import cloud.shoplive.sample.views.settings.SettingsActivity
 import cloud.shoplive.sample.views.user.UserActivity
-import cloud.shoplive.sample.views.user.UserViewModel
 import cloud.shoplive.sdk.OnAudioFocusListener
 import cloud.shoplive.sdk.ShopLive
 import cloud.shoplive.sdk.ShopLiveHandler
@@ -72,7 +70,6 @@ import cloud.shoplive.sdk.editor.ShopLiveVideoUploaderData
 import cloud.shoplive.sdk.network.ShopLiveConversionData
 import cloud.shoplive.sdk.network.ShopLiveConversionProductData
 import cloud.shoplive.sdk.network.ShopLiveEvent
-import com.google.gson.Gson
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.concurrent.atomic.AtomicBoolean
@@ -106,6 +103,20 @@ class MainActivity : AppCompatActivity() {
                 MainViewModel(PreferencesUtilImpl(SharedPreferenceStorage(this@MainActivity)))
             }
         }
+    }
+
+    val loginLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.getStringExtra(LoginActivity.USER_ID)?.let { userId ->
+                    setOptions()
+                    play()
+                }
+            }
+        }
+
+    private val shopLiveSdkCommandHandler by lazy {
+        ShopLiveSDKCommandHandler(activity = this@MainActivity, loginLauncher = loginLauncher)
     }
 
     private val binding: ActivityMainBinding by lazy {
@@ -499,12 +510,6 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "code:${error.code}, message:${error.message}")
         }
 
-        /*
-        override fun handlePreview(context: Context, campaignKey: String) {
-            super.handlePreview(context, campaignKey)
-            //Toast.makeText(context, "ck=$campaignKey", Toast.LENGTH_SHORT).show()
-        }*/
-
         override fun handleShare(context: Context, data: ShopLivePlayerShareData) {
             val shareUrl = data.url.let { url ->
                 if (url.isNullOrEmpty()) {
@@ -567,174 +572,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceivedCommand(context: Context, command: String, data: JSONObject) {
             Log.d(TAG, "onReceivedCommand = command=$command, data=$data")
-
-            when (command) {
-                "LOGIN_REQUIRED" -> {
-                    AlertDialog.Builder(context).apply {
-                        setMessage(getString(R.string.alert_need_login))
-                        setPositiveButton(getString(R.string.yes)) { dialog, _ ->
-                            ShopLive.startPictureInPicture()
-                            loginResult.launch(LoginActivity.buildIntent(this@MainActivity))
-                            dialog.dismiss()
-                        }
-                        setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-                    }.run {
-                        this.create().show()
-                    }
-                }
-
-                "CLICK_PRODUCT_DETAIL" -> {
-                    /*
-                    val builder = AlertDialog.Builder(context)
-                    builder.setTitle(command)
-                    builder.setMessage(data.toString())
-                    builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    val dialog: Dialog = builder.create()
-                    dialog.show()*/
-                    //Toast.makeText(this@MainActivity, command, Toast.LENGTH_SHORT).show()
-                }
-
-                "CLICK_PRODUCT_CART" -> {
-                    val builder = AlertDialog.Builder(context)
-                    builder.setTitle(command)
-                    builder.setMessage(data.toString())
-                    builder.setPositiveButton(getString(R.string.confirm)) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    val dialog: Dialog = builder.create()
-                    dialog.show()
-                }
-
-                "ON_SUCCESS_CAMPAIGN_JOIN" -> {
-                    /*
-                    val isGuest = data.getString("isGuest")
-                    Toast.makeText(this@MainActivity, "isGuest=$isGuest", Toast.LENGTH_SHORT).show()
-                    */
-                }
-
-                "EVENT_DEEPLINK" -> {
-                    val builder = AlertDialog.Builder(context)
-                    builder.setTitle(command)
-                    builder.setMessage(data.toString())
-                    builder.setPositiveButton(getString(R.string.confirm)) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    val dialog: Dialog = builder.create()
-                    dialog.show()
-                }
-
-                "CLICK_PRODUCT_BANNER_LINK",
-                "CLICK_PRODUCT_BANNER_COUPON" -> {
-                    val builder = AlertDialog.Builder(context)
-                    builder.setTitle(command)
-                    builder.setMessage(data.toString())
-                    builder.setPositiveButton("OK") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    val dialog: Dialog = builder.create()
-                    dialog.show()
-                }
-
-                "CLICK_BACK_BUTTON" -> {
-                    ShopLive.close()
-                }
-
-                "ON_CLICK_BRAND_FAVORITE_BUTTON" -> {
-                    val identifier = data.getString("identifier")
-                    val isFavorite = data.getBoolean("favorite")
-                    val brandFavorite = mapOf(
-                        Pair("identifier", identifier),
-                        Pair("favorite", !isFavorite)
-                    )
-                    ShopLive.sendCommandMessage(
-                        "SET_BRAND_FAVORITE",
-                        brandFavorite
-                    )
-                    val layerToastData = mapOf(
-                        Pair(
-                            "message",
-                            "ON_CLICK_BRAND_FAVORITE_BUTTON : ${!isFavorite}"
-                        ),
-                        Pair("duration", 1000),
-                        Pair("position", "CENTER")
-                    )
-                    ShopLive.sendCommandMessage(
-                        "SHOW_LAYER_TOAST",
-                        layerToastData,
-                    )
-                }
-
-                "ON_CHANGED_BRAND_FAVORITE" -> {
-                    val identifier = data.getString("identifier")
-                    val layerToastData = mapOf(
-                        Pair(
-                            "message",
-                            "ON_CHANGED_BRAND_FAVORITE : $identifier"
-                        ),
-                        Pair("duration", 1000),
-                        Pair("position", "CENTER")
-                    )
-                    ShopLive.sendCommandMessage(
-                        "SHOW_LAYER_TOAST",
-                        layerToastData,
-                    )
-                }
-
-                "ON_RECEIVED_SELLER_CONFIG" -> {
-                    val sellerSavedData = mapOf(
-                        Pair("saved", true)
-                    )
-                    ShopLive.sendCommandMessage(
-                        "SET_SELLER_SAVED_STATE",
-                        sellerSavedData
-                    )
-                }
-
-                "ON_CLICK_VIEW_SELLER_STORE" -> {
-                    val sellerStoreData =
-                        Gson().fromJson(data.toString(), SellerStoreData::class.java)
-
-                    val layerToastData = mapOf(
-                        Pair(
-                            "message",
-                            "ON_CLICK_VIEW_SELLER_STORE : ${sellerStoreData.seller?.storeUrl ?: return}"
-                        ),
-                        Pair("duration", 1000),
-                        Pair("position", "CENTER")
-                    )
-                    ShopLive.sendCommandMessage(
-                        "SHOW_LAYER_TOAST",
-                        layerToastData,
-                    )
-                }
-
-                "ON_CLICK_SELLER_SUBSCRIPTION" -> {
-                    val sellerSubscriptionData =
-                        Gson().fromJson(data.toString(), SellerSubscriptionData::class.java)
-                    val sellerSavedData = mapOf(
-                        Pair("saved", !sellerSubscriptionData.saved)
-                    )
-                    ShopLive.sendCommandMessage(
-                        "SET_SELLER_SAVED_STATE",
-                        sellerSavedData
-                    )
-                    val layerToastData = mapOf(
-                        Pair(
-                            "message",
-                            "SET_SELLER_SAVED_STATE : ${!sellerSubscriptionData.saved}"
-                        ),
-                        Pair("duration", 1000),
-                        Pair("position", "CENTER")
-                    )
-                    ShopLive.sendCommandMessage(
-                        "SHOW_LAYER_TOAST",
-                        layerToastData,
-                    )
-                    Toast.makeText(context, "MESSAGE", Toast.LENGTH_SHORT).show()
-                }
-            }
+            shopLiveSdkCommandHandler.commandHandler(command = command, data = data)
         }
 
         private var isMuted = false
@@ -773,21 +611,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    private val loginResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            when (result.resultCode) {
-                RESULT_OK -> {
-                    result.data?.let {
-                        val userId = it.getStringExtra(LoginActivity.USER_ID)
-                        Log.d(TAG, "login userId=$userId")
-                        setOptions()
-                        play()
-                    }
-                }
-            }
-        }
-
 
     private fun showShortformEditor() {
         ShopLiveShortformEditor(this)
@@ -978,28 +801,3 @@ class MainActivity : AppCompatActivity() {
             .start(ShopLiveCoverPickerUrlData("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
     }
 }
-
-private data class SellerStoreData(
-    val campaignKey: String?,
-    val campaignStatus: String?,
-    val campaignTitle: String?,
-    val seller: Seller?
-)
-
-private data class SellerSubscriptionData(
-    val campaignKey: String?,
-    val campaignStatus: String?,
-    val campaignTitle: String?,
-    val isLogin: Boolean,
-    val saved: Boolean,
-    val seller: Seller?
-)
-
-private data class Seller(
-    val description: String?,
-    val name: String?,
-    val profileUrl: String?,
-    val sellerId: Int,
-    val sellerIdentifier: String,
-    val storeUrl: String?
-)
