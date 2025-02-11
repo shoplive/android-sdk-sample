@@ -89,7 +89,7 @@ class ShopLiveSDKCommandHandler(
     }
 
     private fun showLoginRequiredDialog() {
-        activity?.let {
+        activity.let {
             AlertDialog.Builder(it).apply {
                 setMessage(context.getString(R.string.alert_need_login))
                 setPositiveButton(context.getString(R.string.yes)) { dialog, _ ->
@@ -107,16 +107,16 @@ class ShopLiveSDKCommandHandler(
     private fun showDialog(
         title: String,
         message: String,
-        positiveButtonLabel: String? = activity?.getString(R.string.confirm)
+        positiveButtonLabel: String? = activity.getString(R.string.confirm)
     ) {
-        val builder = activity?.let { AlertDialog.Builder(it) }
-        builder?.let { builder ->
-            builder.setTitle(title)
-            builder.setMessage(message)
-            builder.setPositiveButton(positiveButtonLabel) { dialog, _ ->
+        val builder = activity.let { AlertDialog.Builder(it) }
+        builder.let { dialogBuilder ->
+            dialogBuilder.setTitle(title)
+            dialogBuilder.setMessage(message)
+            dialogBuilder.setPositiveButton(positiveButtonLabel) { dialog, _ ->
                 dialog.dismiss()
             }
-            val dialog: Dialog = builder.create()
+            val dialog: Dialog = dialogBuilder.create()
             dialog.show()
         }
     }
