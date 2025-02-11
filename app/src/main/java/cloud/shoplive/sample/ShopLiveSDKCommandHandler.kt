@@ -12,14 +12,11 @@ import cloud.shoplive.sample.views.login.LoginActivity
 import cloud.shoplive.sdk.ShopLive
 import com.google.gson.Gson
 import org.json.JSONObject
-import java.lang.ref.WeakReference
 
-class ShopLiveSDKCommandHandler(activity: Activity, val loginLauncher: ActivityResultLauncher<Intent>)  {
-    private var activityRef: WeakReference<Activity> = WeakReference(activity)
-
-    private val activity: Activity?
-        get() = activityRef.get()
-
+class ShopLiveSDKCommandHandler(
+    private val activity: Activity,
+    private val loginLauncher: ActivityResultLauncher<Intent>
+) {
 
     fun commandHandler(command: String, data: JSONObject) {
         when (command) {
@@ -32,8 +29,9 @@ class ShopLiveSDKCommandHandler(activity: Activity, val loginLauncher: ActivityR
             CLICK_PRODUCT_BANNER_COUPON -> showDialog(
                 title = command,
                 message = data.toString(),
-                positiveButtonLabel = activity?.getString(R.string.bt_ok)
+                positiveButtonLabel = activity.getString(R.string.bt_ok)
             )
+
             CLICK_BACK_BUTTON -> ShopLive.close()
             ON_CLICK_BRAND_FAVORITE_BUTTON -> likeBrand(data)
             ON_CHANGED_BRAND_FAVORITE -> showToast("$ON_CHANGED_BRAND_FAVORITE : ${data.getString("identifier")}")
@@ -44,6 +42,7 @@ class ShopLiveSDKCommandHandler(activity: Activity, val loginLauncher: ActivityR
                         showToast("$ON_CLICK_VIEW_SELLER_STORE : ${sellerStoreData.seller?.storeUrl ?: return}")
                     }
             }
+
             ON_CLICK_SELLER_SUBSCRIPTION -> {
                 Gson().fromJson(data.toString(), SellerSubscriptionData::class.java)
                     ?.let { sellerSubscriptionData ->
