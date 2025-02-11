@@ -17,7 +17,6 @@ class ShopLiveSDKCommandHandler(
     private val activity: Activity,
     private val loginLauncher: ActivityResultLauncher<Intent>
 ) {
-
     fun commandHandler(command: String, data: JSONObject) {
         when (command) {
             LOGIN_REQUIRED -> showLoginRequiredDialog()
@@ -89,18 +88,17 @@ class ShopLiveSDKCommandHandler(
     }
 
     private fun showLoginRequiredDialog() {
-        activity.let {
-            AlertDialog.Builder(it).apply {
-                setMessage(context.getString(R.string.alert_need_login))
-                setPositiveButton(context.getString(R.string.yes)) { dialog, _ ->
-                    ShopLive.startPictureInPicture()
-                    loginLauncher.launch(LoginActivity.buildIntent(context))
-                    dialog.dismiss()
-                }
-                setNegativeButton(context.getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-            }.run {
-                this.create().show()
+        val builder = AlertDialog.Builder(activity)
+        builder.apply {
+            setMessage(context.getString(R.string.alert_need_login))
+            setPositiveButton(context.getString(R.string.yes)) { dialog, _ ->
+                ShopLive.startPictureInPicture()
+                loginLauncher.launch(LoginActivity.buildIntent(context))
+                dialog.dismiss()
             }
+            setNegativeButton(context.getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
+        }.run {
+            this.create().show()
         }
     }
 
@@ -109,7 +107,7 @@ class ShopLiveSDKCommandHandler(
         message: String,
         positiveButtonLabel: String? = activity.getString(R.string.confirm)
     ) {
-        val builder = activity.let { AlertDialog.Builder(it) }
+        val builder = AlertDialog.Builder(activity)
         builder.let { dialogBuilder ->
             dialogBuilder.setTitle(title)
             dialogBuilder.setMessage(message)
