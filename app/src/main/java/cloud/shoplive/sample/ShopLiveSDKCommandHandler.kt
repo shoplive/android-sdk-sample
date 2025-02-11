@@ -108,14 +108,14 @@ class ShopLiveSDKCommandHandler(
         positiveButtonLabel: String? = activity.getString(R.string.confirm)
     ) {
         val builder = AlertDialog.Builder(activity)
-        builder.let { dialogBuilder ->
-            dialogBuilder.setTitle(title)
-            dialogBuilder.setMessage(message)
-            dialogBuilder.setPositiveButton(positiveButtonLabel) { dialog, _ ->
+        builder.apply {
+            setTitle(title)
+            setMessage(message)
+            setPositiveButton(positiveButtonLabel) { dialog, _ ->
                 dialog.dismiss()
             }
-            val dialog: Dialog = dialogBuilder.create()
-            dialog.show()
+        }.run {
+            this.create().show()
         }
     }
 
