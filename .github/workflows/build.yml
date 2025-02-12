@@ -22,9 +22,7 @@ jobs:
       run: chmod +x gradlew
 
     - name: Update local.properties
-      env:
-        SDK_PATH: ${{ secrets.SDK_PATH }}
-        run: echo -e "sdk.dir =/Users/shoplive/Library/Android/sdk" > ./local.properties
+      run: echo -e "sdk.dir=/Users/shoplive/Library/Android/sdk" > ./local.properties
 
     - uses: actions/cache@v2
       with:
