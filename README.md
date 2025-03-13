@@ -48,34 +48,55 @@ To use the Shoplive SDK for Android, ask the Shoplive representative for an admi
 
 Installing the Shoplive SDK is simple if you're familiar with using external libraries or SDKs. 
 
-Add the dependency to the project's top-level `build.gradle` file:
+Add the dependency to the project's top-level `build.gradle` file and `libs.versions.toml` file as shown below:
 
 ```gradle
 dependencies {
     ...
-    def shoplive_sdk_version = "1.6.6"
-    def your_exoplayer_version = "2.19.1"
-    def your_media3_version = "1.5.1"
-    def shoplive_exoplayer_version = your_exoplayer_version + "." + "9"
-    def shoplive_media3_version = your_media3_version + "." + "9"
-
+    def exoplayer = libs.shoplive.exoplayer.get()
+    def exoplaver_version = libs.versions.exoPlayer.get()
+    def shopliveExoPlayerSuffix = libs.versions.shopliveExoPlayerSuffix.get()
+     
     // For submodules
-    implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version" // must required
-    implementation "cloud.shoplive:shoplive-exoplayer:$shoplive_exoplayer_version" // must required
+    implementation libs.shoplive.common // must required
+    implementation("$exoplayer:${exoplaver_version}${shopliveExoPlayerSuffix}")  // must required
+
     // When using media3. Exoplayer will be deprecated soon.
     // https://developer.android.com/guide/topics/media/media3/getting-started/migration-guide
     // implementation "cloud.shoplive:shoplive-media3:$shoplive_media3_version"
-    implementation "cloud.shoplive:shoplive-network:$shoplive_sdk_version" // must required
-    implementation "cloud.shoplive:shoplive-sdk-core:$shoplive_sdk_version" // for live player
-    implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version" // for short-form player
-    implementation "cloud.shoplive:shoplive-filter:$shoplive_sdk_version" // for short-form editor
-    implementation "cloud.shoplive:shoplive-video-editor:$shoplive_sdk_version" // for short-form editor
+    implementation libs.shoplive.network // must required
+    implementation libs.shoplive.sdk.core // for live player
+    implementation libs.shoplive.short.form // for short-form player
+    implementation libs.shoplive.filter // for short-form editor
+    implementation libs.shoplive.video.editor // for short-form editor
 
     // For library - combined packaging
-//    implementation "cloud.shoplive:shoplive-sdk-all:$shoplive_sdk_version" // live + short-form
+    // implementation libs.shoplive.sdk.all // live + short-form
     ...
 }
 ```
+
+```toml
+[versions]
+exoPlayer = "2.19.1"
+media3Player = "1.4.1"
+shopliveSdk = "1.6.6"
+
+[libraries]
+#shoplive
+shoplive-common = { module = "cloud.shoplive:shoplive-common", version.ref = "shopliveSdk"}
+#When using media3. Exoplayer will be deprecated soon.
+shoplive-media3 = { module = "cloud.shoplive:shoplive-media3" }
+shoplive-exoplayer = { module = "cloud.shoplive:shoplive-exoplayer" }
+shoplive-filter = { module = "cloud.shoplive:shoplive-filter", version.ref = "shopliveSdk" }
+shoplive-network = { module = "cloud.shoplive:shoplive-network", version.ref = "shopliveSdk" }
+shoplive-sdk-core = { module = "cloud.shoplive:shoplive-sdk-core", version.ref = "shopliveSdk" }
+shoplive-short-form = { module = "cloud.shoplive:shoplive-short-form", version.ref = "shopliveSdk" }
+shoplive-video-editor = { module = "cloud.shoplive:shoplive-video-editor", version.ref = "shopliveSdk" }
+#For library - combined packaging
+shoplive-sdk-all = { module =  "cloud.shoplive:shoplive-sdk-all", version.ref = "shopliveSdk" }
+```
+
 
 ### Step 3: Grant system permissions to the Shoplive SDK
 
