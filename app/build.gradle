@@ -90,15 +90,19 @@ dependencies {
 
     def exoplayer = libs.shoplive.exoplayer.get()
     def exoplaver_version = libs.versions.exoPlayer.get()
-    def shopliveExoPlayerSuffix = libs.versions.shopliveExoPlayerSuffix.get()
+    def shoplivePlayerSuffix = libs.versions.shoplivePlayerSuffix.get()
+    def media3_player = libs.shoplive.media3.get()
+    def shoplive_media3_version = libs.versions.media3Player.get()
 
     // For submodules
     implementation libs.shoplive.common // must required
-    implementation("$exoplayer:${exoplaver_version}${shopliveExoPlayerSuffix}")  // must required
+    implementation("$exoplayer:${exoplaver_version}${shoplivePlayerSuffix}")  // must required
 
     // When using media3. Exoplayer will be deprecated soon.
     // https://developer.android.com/guide/topics/media/media3/getting-started/migration-guide
-    // implementation "cloud.shoplive:shoplive-media3:$shoplive_media3_version"
+    // implementation("$media3_player:${shoplive_media3_version}${shoplivePlayerSuffix}")
+
+    // must required
     implementation libs.shoplive.network // must required
     implementation libs.shoplive.sdk.core // for live player
     implementation libs.shoplive.short.form // for short-form player

@@ -20,11 +20,11 @@ material = "1.12.0"
 preferenceKtx = "1.2.1"
 exoPlayer = "2.19.1"
 media3Player = "1.4.1"
-shopliveSdk = "1.6.5.1"
+shopliveSdk = "1.6.6"
 testng = "6.9.6"
 mockk = "1.13.16"
 jvm = "1.8"
-shopliveExoPlayerSuffix = ".9"
+shoplivePlayerSuffix = ".9"
 
 [libraries]
 #android
@@ -51,7 +51,8 @@ compose-ui = { module = "androidx.compose.ui:ui" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 
 #shoplive
-shoplive-common = { module = "cloud.shoplive:shoplive-common", version.ref = "shopliveSdk" }
+shoplive-common = { module = "cloud.shoplive:shoplive-common", version.ref = "shopliveSdk"}
+shoplive-media3 = { module = "cloud.shoplive:shoplive-media3" }
 shoplive-exoplayer = { module = "cloud.shoplive:shoplive-exoplayer" }
 shoplive-filter = { module = "cloud.shoplive:shoplive-filter", version.ref = "shopliveSdk" }
 shoplive-network = { module = "cloud.shoplive:shoplive-network", version.ref = "shopliveSdk" }
