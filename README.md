@@ -53,11 +53,11 @@ Add the dependency to the project's top-level `build.gradle` file:
 ```gradle
 dependencies {
     ...
-    def shoplive_sdk_version = "1.6.6"
+    def shoplive_sdk_version = "1.6.7"
     def your_exoplayer_version = "2.19.1"
     def your_media3_version = "1.5.1"
-    def shoplive_exoplayer_version = your_exoplayer_version + "." + "9"
-    def shoplive_media3_version = your_media3_version + "." + "9"
+    def shoplive_exoplayer_version = your_exoplayer_version + "." + "10"
+    def shoplive_media3_version = your_media3_version + "." + "10"
 
     // For submodules
     implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version" // must required
