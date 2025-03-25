@@ -1,7 +1,6 @@
 package cloud.shoplive.sample
 
-import android.app.Activity
-import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -13,27 +12,37 @@ import cloud.shoplive.sdk.ShopLive
 import com.google.gson.Gson
 import org.json.JSONObject
 
-class ShopLiveSDKCommandHandler(
-    private val activity: Activity,
-    private val loginLauncher: ActivityResultLauncher<Intent>
-) {
-    fun commandHandler(command: String, data: JSONObject) {
+class ShopLiveSDKCommandHandler(private val loginLauncher: ActivityResultLauncher<Intent>) {
+    fun commandHandler(context: Context, command: String, data: JSONObject) {
         when (command) {
-            LOGIN_REQUIRED -> showLoginRequiredDialog()
+            LOGIN_REQUIRED -> showLoginRequiredDialog(context)
             CLICK_PRODUCT_DETAIL -> {}
-            CLICK_PRODUCT_CART -> showDialog(title = command, message = data.toString())
+            CLICK_PRODUCT_CART -> showDialog(
+                context,
+                title = command,
+                message = data.toString()
+            )
+
             ON_SUCCESS_CAMPAIGN_JOIN -> {}
-            EVENT_DEEPLINK -> showDialog(title = command, message = data.toString())
+            EVENT_DEEPLINK -> showDialog(context, title = command, message = data.toString())
             CLICK_PRODUCT_BANNER_LINK,
             CLICK_PRODUCT_BANNER_COUPON -> showDialog(
+                context = context,
                 title = command,
                 message = data.toString(),
-                positiveButtonLabel = activity.getString(R.string.bt_ok)
+                positiveButtonLabel = context.getString(R.string.bt_ok)
             )
 
             CLICK_BACK_BUTTON -> ShopLive.close()
             ON_CLICK_BRAND_FAVORITE_BUTTON -> likeBrand(data)
-            ON_CHANGED_BRAND_FAVORITE -> showToast("$ON_CHANGED_BRAND_FAVORITE : ${data.getString("identifier")}")
+            ON_CHANGED_BRAND_FAVORITE -> showToast(
+                "$ON_CHANGED_BRAND_FAVORITE : ${
+                    data.getString(
+                        "identifier"
+                    )
+                }"
+            )
+
             ON_RECEIVED_SELLER_CONFIG -> setSellerConfig()
             ON_CLICK_VIEW_SELLER_STORE -> {
                 Gson().fromJson(data.toString(), SellerStoreData::class.java)
@@ -45,7 +54,7 @@ class ShopLiveSDKCommandHandler(
             ON_CLICK_SELLER_SUBSCRIPTION -> {
                 Gson().fromJson(data.toString(), SellerSubscriptionData::class.java)
                     ?.let { sellerSubscriptionData ->
-                        subscribeSeller(sellerSubscriptionData)
+                        subscribeSeller(context, sellerSubscriptionData)
                     }
             }
         }
@@ -75,7 +84,7 @@ class ShopLiveSDKCommandHandler(
         )
     }
 
-    private fun subscribeSeller(sellerSubscriptionData: SellerSubscriptionData) {
+    private fun subscribeSeller(context: Context, sellerSubscriptionData: SellerSubscriptionData) {
         val sellerSavedData = mapOf(
             Pair("saved", !sellerSubscriptionData.saved)
         )
@@ -84,11 +93,11 @@ class ShopLiveSDKCommandHandler(
             sellerSavedData
         )
         showToast("$SET_SELLER_SAVED_STATE : ${!sellerSubscriptionData.saved}")
-        Toast.makeText(activity, MESSAGE, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, MESSAGE, Toast.LENGTH_SHORT).show()
     }
 
-    private fun showLoginRequiredDialog() {
-        val builder = AlertDialog.Builder(activity)
+    private fun showLoginRequiredDialog(context: Context) {
+        val builder = AlertDialog.Builder(context)
         builder.apply {
             setMessage(context.getString(R.string.alert_need_login))
             setPositiveButton(context.getString(R.string.yes)) { dialog, _ ->
@@ -103,11 +112,12 @@ class ShopLiveSDKCommandHandler(
     }
 
     private fun showDialog(
+        context: Context,
         title: String,
         message: String,
-        positiveButtonLabel: String? = activity.getString(R.string.confirm)
+        positiveButtonLabel: String? = context.getString(R.string.confirm)
     ) {
-        val builder = AlertDialog.Builder(activity)
+        val builder = AlertDialog.Builder(context)
         builder.apply {
             setTitle(title)
             setMessage(message)

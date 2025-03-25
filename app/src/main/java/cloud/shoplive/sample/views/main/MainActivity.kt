@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    val loginLauncher =
+    private val loginLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 result.data?.getStringExtra(LoginActivity.USER_ID)?.let { userId ->
@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     private val shopLiveSdkCommandHandler by lazy {
-        ShopLiveSDKCommandHandler(activity = this@MainActivity, loginLauncher = loginLauncher)
+        ShopLiveSDKCommandHandler(loginLauncher = loginLauncher)
     }
 
     private val binding: ActivityMainBinding by lazy {
@@ -572,7 +572,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onReceivedCommand(context: Context, command: String, data: JSONObject) {
             Log.d(TAG, "onReceivedCommand = command=$command, data=$data")
-            shopLiveSdkCommandHandler.commandHandler(command = command, data = data)
+            shopLiveSdkCommandHandler.commandHandler(context, command = command, data = data)
         }
 
         private var isMuted = false
