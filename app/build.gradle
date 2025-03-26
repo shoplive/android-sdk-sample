@@ -1,17 +1,17 @@
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
-    compileSdk 34
+    compileSdk project.findProperty("compileSdk") as Integer
 
     defaultConfig {
-        applicationId "cloud.shoplive.sample"
-        namespace "cloud.shoplive.sample"
-        minSdk 19
-        targetSdk 34
+        applicationId project.findProperty("appId") as String
+        namespace project.findProperty("nameSpace") as String
+        minSdk project.findProperty("minSdk") as Integer
+        targetSdk project.findProperty("targetSdk") as Integer
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -21,10 +21,11 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('../keystore/debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storeFile file(project.findProperty("keystoreFile") as String)
+            storePassword project.findProperty("keystorePassword") as String
+            keyAlias project.findProperty("keyAlias") as String
+            keyPassword project.findProperty("keyPassword") as String
+
         }
     }
 
@@ -50,62 +51,76 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = libs.versions.jvm.get()
     }
 
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
 }
 
 dependencies {
-
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.fragment:fragment-ktx:1.6.0"
-    implementation 'androidx.preference:preference-ktx:1.2.0'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0"
+    implementation libs.kotlin.stdlib
+    implementation libs.core.ktx
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.constraintlayout
+    implementation libs.fragment.ktx
+    implementation libs.preference.ktx
+    implementation libs.kotlinx.coroutines.core
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
-    testImplementation 'org.testng:testng:6.9.6'
-    testImplementation 'androidx.test.ext:junit:1.2.1'
-    testImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1"
+    testImplementation libs.junit
+    testImplementation libs.junit.jupiter
+    testImplementation libs.testng
+    testImplementation libs.ext.junit
+    testImplementation libs.espresso.core
+    testImplementation libs.kotlinx.coroutines.test
 
-    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation libs.arch
 
     // alternately-if using Java8, use following instead of compiler
-    implementation "android.arch.lifecycle:common-java8:1.1.1"
+    implementation libs.common.java8
 
-    def shoplive_sdk_version = "1.6.6"
-    def your_exoplayer_version = "2.19.1"
-    def your_media3_version = "1.5.1"
-    def shoplive_exoplayer_version = your_exoplayer_version + "." + "9"
-    def shoplive_media3_version = your_media3_version + "." + "9"
-    def mockk_version = "1.13.16"
+    def exoplayer = libs.shoplive.exoplayer.get()
+    def your_exoplayer_version = libs.versions.exoplayer.get()
+    def shoplive_exoplayer_suffix = libs.versions.shopliveExoplayerSuffix.get()
+    def media3_player = libs.shoplive.media3.get()
+    def shoplive_media3_version = libs.versions.media3player.get()
 
     // For submodules
-    implementation "cloud.shoplive:shoplive-common:$shoplive_sdk_version" // must required
-    implementation "cloud.shoplive:shoplive-exoplayer:$shoplive_exoplayer_version" // must required
+    implementation libs.shoplive.common // must required
+    implementation("$exoplayer:${your_exoplayer_version}${shoplive_exoplayer_suffix}")  // must required
+
     // When using media3. Exoplayer will be deprecated soon.
     // https://developer.android.com/guide/topics/media/media3/getting-started/migration-guide
-    // implementation "cloud.shoplive:shoplive-media3:$shoplive_media3_version"
-    implementation "cloud.shoplive:shoplive-network:$shoplive_sdk_version" // must required
-    implementation "cloud.shoplive:shoplive-sdk-core:$shoplive_sdk_version" // for live player
-    implementation "cloud.shoplive:shoplive-short-form:$shoplive_sdk_version" // for short-form player
-    implementation "cloud.shoplive:shoplive-filter:$shoplive_sdk_version" // for short-form editor
-    implementation "cloud.shoplive:shoplive-video-editor:$shoplive_sdk_version" // for short-form editor
+    // implementation("$media3_player:${your_media3_version}${shoplive_exoplayer_suffix}")
 
-    testImplementation "io.mockk:mockk:$mockk_version"
-    testImplementation 'androidx.arch.core:core-testing:2.2.0'
+    // must required
+    implementation libs.shoplive.network // must required
+    implementation libs.shoplive.sdk.core // for live player
+    implementation libs.shoplive.short.form // for short-form player
+    implementation libs.shoplive.filter // for short-form editor
+    implementation libs.shoplive.video.editor // for short-form editor
+
+    testImplementation libs.mockk.test
+    testImplementation libs.core.testing
 
     // For library - combined packaging
-//    implementation "cloud.shoplive:shoplive-sdk-all:$shoplive_sdk_version" // live + short-form
+    // implementation libs.shoplive.sdk.all // live + short-form
+
+    // For composable
+    def composeBom = platform(libs.compose.bom)
+    implementation composeBom
+    implementation libs.compose.runtime.android
+    implementation libs.compose.ui.tooling
+    implementation libs.material3
+    implementation libs.compose.ui
+    implementation libs.activity.compose
 }

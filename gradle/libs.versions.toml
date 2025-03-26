@@ -1,0 +1,82 @@
+[versions]
+kotlin = "1.9.25"
+appcompat = "1.7.0"
+commonJava8 = "1.1.1"
+constraintlayout = "2.1.4"
+coreKtx = "1.13.0"
+coreTesting = "2.2.0"
+compose = "1.7.7"
+composeBom = "2025.01.01"
+espressoCore = "3.6.1"
+fragmentKtx = "1.8.5"
+gradle = "8.7.3"
+gradlePlugin = "8.7.3"
+junit = "4.13.2"
+junitJupiter = "5.9.1"
+junitVersion = "1.2.1"
+kotlinStdlib = "2.0.20"
+kotlinxCoroutinesTest = "1.9.0"
+material = "1.12.0"
+preferenceKtx = "1.2.1"
+exoplayer = "2.19.1"
+media3player = "1.5.1"
+shopliveSdk = "1.6.7"
+testng = "6.9.6"
+mockk = "1.13.16"
+jvm = "1.8"
+shopliveExoplayerSuffix = ".10"
+
+[libraries]
+#android
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+common-java8 = { module = "android.arch.lifecycle:common-java8", version.ref = "commonJava8" }
+constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+arch = { module = "android.arch.lifecycle:extensions", version.ref = "commonJava8" }
+fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+
+#kotlin
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlib" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesTest" }
+
+#compose
+material3 = { module = "androidx.compose.material3:material3" }
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "compose" }
+compose-runtime-android = { module = "androidx.compose.runtime:runtime-android", version.ref = "compose" }
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+
+#shoplive
+shoplive-common = { module = "cloud.shoplive:shoplive-common", version.ref = "shopliveSdk"}
+shoplive-media3 = { module = "cloud.shoplive:shoplive-media3" }
+shoplive-exoplayer = { module = "cloud.shoplive:shoplive-exoplayer" }
+shoplive-filter = { module = "cloud.shoplive:shoplive-filter", version.ref = "shopliveSdk" }
+shoplive-network = { module = "cloud.shoplive:shoplive-network", version.ref = "shopliveSdk" }
+shoplive-sdk-core = { module = "cloud.shoplive:shoplive-sdk-core", version.ref = "shopliveSdk" }
+shoplive-short-form = { module = "cloud.shoplive:shoplive-short-form", version.ref = "shopliveSdk" }
+shoplive-video-editor = { module = "cloud.shoplive:shoplive-video-editor", version.ref = "shopliveSdk" }
+shoplive-sdk-all = { module =  "cloud.shoplive:shoplive-sdk-all", version.ref = "shopliveSdk" }
+
+#data
+preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
+
+#for test
+testng = { module = "org.testng:testng", version.ref = "testng" }
+mockk-test = { module = "io.mockk:mockk", version.ref = "mockk" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
+espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+ext-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
+junit = { module = "junit:junit", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "gradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "gradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

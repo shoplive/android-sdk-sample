@@ -30,12 +30,12 @@ class LoginViewModelTest {
         val id = "test"
         val id_2 = "test2"
 
-        viewModel.saveUser(id)
+        viewModel.saveUser()
 
         verify { preference.user = ShopLiveUser().apply { userId = id } }
         assertEquals(viewModel.done.getOrAwaitValue(), id)
 
-        viewModel.saveUser(id_2)
+        viewModel.saveUser()
 
         verify { preference.user = ShopLiveUser().apply { userId = id_2 } }
         assertEquals(viewModel.done.getOrAwaitValue(), id_2)

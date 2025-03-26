@@ -18,6 +18,7 @@
     <string name="bt_hybrid_shortform">Hybrid Shortform</string>
     <string name="bt_native_shortform">Native Shortform</string>
     <string name="bt_shortform_editor">Shortform Editor</string>
+    <string name="bt_ok">OK</string>
 
     <!-- title -->
     <string name="title_main">Shoplive SDK Sample</string>
