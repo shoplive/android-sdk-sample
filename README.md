@@ -53,17 +53,19 @@ Add the dependency to the project's top-level `build.gradle` file and `libs.vers
 ```gradle
 dependencies {
     ...
-    def exoplayer = libs.shoplive.exoplayer.get()
-    def exoplaver_version = libs.versions.exoPlayer.get()
-    def shopliveExoPlayerSuffix = libs.versions.shopliveExoPlayerSuffix.get()
+    def exoplayer = "your_exoplayer_version
+    def your_exoplayer_version = libs.versions.exoplayer.get()
+    def shoplive_exoplayer_suffix = libs.versions.shopliveExoplayerSuffix.get()
      
     // For submodules
     implementation libs.shoplive.common // must required
-    implementation("$exoplayer:${exoplaver_version}${shopliveExoPlayerSuffix}")  // must required
+    implementation "$exoplayer:${your_exoplayer_version}${shoplive_exoplayer_suffix}"  // must required
+    // implementation "cloud.shoplive:shoplive-exoplayer:2.19.1.10"
 
     // When using media3. Exoplayer will be deprecated soon.
     // https://developer.android.com/guide/topics/media/media3/getting-started/migration-guide
-    // implementation "cloud.shoplive:shoplive-media3:$shoplive_media3_version"
+    // implementation "$media3_player:${your_media3_version}${shoplive_exoplayer_suffix}"
+    // implementation "cloud.shoplive:shoplive-media3:1.5.1.10"
     implementation libs.shoplive.network // must required
     implementation libs.shoplive.sdk.core // for live player
     implementation libs.shoplive.short.form // for short-form player
@@ -79,8 +81,9 @@ dependencies {
 ```toml
 [versions]
 exoPlayer = "2.19.1"
-media3Player = "1.4.1"
+media3Player = "1.5.1"
 shopliveSdk = "1.6.7"
+shopliveExoplayerSuffix = ".10"
 
 [libraries]
 #shoplive
