@@ -59,13 +59,13 @@ dependencies {
      
     // For submodules
     implementation libs.shoplive.common // must required
-    implementation "$exoplayer:${your_exoplayer_version}${shoplive_exoplayer_suffix}"  // must required
-    // implementation "cloud.shoplive:shoplive-exoplayer:2.19.1.10"
+    implementation("$exoplayer:${your_exoplayer_version}${shoplive_exoplayer_suffix}")  // must required
+    // implementation("cloud.shoplive:shoplive-exoplayer:2.19.1.10")
 
     // When using media3. Exoplayer will be deprecated soon.
     // https://developer.android.com/guide/topics/media/media3/getting-started/migration-guide
-    // implementation "$media3_player:${your_media3_version}${shoplive_exoplayer_suffix}"
-    // implementation "cloud.shoplive:shoplive-media3:1.5.1.10"
+    // implementation("$media3_player:${your_media3_version}${shoplive_exoplayer_suffix}")
+    // implementation("cloud.shoplive:shoplive-media3:1.5.1.10")
     implementation libs.shoplive.network // must required
     implementation libs.shoplive.sdk.core // for live player
     implementation libs.shoplive.short.form // for short-form player
