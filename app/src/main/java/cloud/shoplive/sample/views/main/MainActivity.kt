@@ -62,11 +62,11 @@ import cloud.shoplive.sdk.editor.ShopLiveShortformEditor
 import cloud.shoplive.sdk.editor.ShopLiveShortformEditorAspectRatio
 import cloud.shoplive.sdk.editor.ShopLiveShortformEditorHandler
 import cloud.shoplive.sdk.editor.ShopLiveShortformEditorVisibleActionButton
-import cloud.shoplive.sdk.editor.ShopLiveShortformEditorVisibleContentData
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditor
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditorData
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditorHandler
-import cloud.shoplive.sdk.editor.ShopLiveVideoUploaderData
+import cloud.shoplive.sdk.editor.upload.ShopLiveShortformUploaderData
+import cloud.shoplive.sdk.editor.upload.ShopLiveShortformUploaderUiData
 import cloud.shoplive.sdk.network.ShopLiveConversionData
 import cloud.shoplive.sdk.network.ShopLiveConversionProductData
 import cloud.shoplive.sdk.network.ShopLiveEvent
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
             listOf(uploadEditorString, videoEditorString, imageEditorString, coverPickerString)
         CustomListDialog(this, list, callback = {
             when (it) {
-                uploadEditorString -> showShortformEditor()
+                uploadEditorString -> showShortformUploader()
                 videoEditorString -> showVideoEditor()
                 imageEditorString -> showImageEditor()
                 coverPickerString -> showCoverPicker()
@@ -322,6 +322,7 @@ class MainActivity : AppCompatActivity() {
             UserType.USER.ordinal -> {
                 val accessKey = accessKey ?: return
                 val user = viewModel.getUserData() ?: return
+                ShopLiveCommon.setAccessKey(accessKey)
                 ShopLiveCommon.setUser(
                     accessKey,
                     ShopLiveCommonUser(user.userId ?: return).apply {
@@ -350,7 +351,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun setOptions() {
         setUserOrJwt()
-
         // loading progress option
         if (Options.useLoadingImageAnimation()) {
             ShopLive.setLoadingAnimation(R.drawable.progress_animation1)
@@ -612,7 +612,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showShortformEditor() {
+    private fun showShortformUploader() {
+        if (ShopLiveCommon.getUserId().isNullOrBlank()) setUserOrJwt()
         ShopLiveShortformEditor(this)
             .apply {
                 setVideoEditorData(ShopLiveVideoEditorData().apply {
@@ -627,19 +628,10 @@ class MainActivity : AppCompatActivity() {
                     minVideoDuration = 3 * 1000
                     maxVideoDuration = 90 * 1000
                 })
-                setVideoUploaderData(ShopLiveVideoUploaderData().apply {
-                    visibleContentData =
-                        ShopLiveShortformEditorVisibleContentData().apply {
-                            isDescriptionVisible = true
-                            isTagsVisible = true
-                        }
-                })
+                setShortformUploaderData(ShopLiveShortformUploaderData())
                 setHandler(object : ShopLiveShortformEditorHandler() {
-                    override fun onSuccess(
-                        activity: ComponentActivity,
-                        resultData: ShopLiveEditorResultData
-                    ) {
-                        super.onSuccess(activity, resultData)
+                    override fun onSuccess(activity: ComponentActivity) {
+                        super.onSuccess(activity)
                         Toast.makeText(
                             this@MainActivity,
                             "onComplete",
