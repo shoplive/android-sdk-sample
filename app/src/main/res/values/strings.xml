@@ -42,6 +42,7 @@
 
     <!-- toast -->
     <string name="toast_headset_mute_option">It can be set only when the Earphone/Headset Option 1 is enabled.</string>
+    <string name="toast_user_id_required">User id required to use Shortform Editor.</string>
 
     <!-- alert -->
     <string name="alert_coupon_download_success">The coupon has been downloaded.</string>
@@ -181,7 +182,7 @@
     <string name="shortform_tab_vertical_subtitle">Highlight exposure</string>
     <string name="shortform_tab_horizontal_subtitle">Free space, Banner</string>
     <string name="shortform_tab_full_subtitle">Expand</string>
-    <string name="shortform_editor_upload">ShortformEditor</string>
+    <string name="shortform_editor_upload">ShortformUploader</string>
     <string name="shortform_video_editor_only">VideoEditor</string>
     <string name="shortform_image_editor_only">ImageEditor</string>
     <string name="shortform_cover_picker_only">CoverPicker</string>

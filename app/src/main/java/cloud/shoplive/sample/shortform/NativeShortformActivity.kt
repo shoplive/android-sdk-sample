@@ -41,7 +41,6 @@ import cloud.shoplive.sdk.editor.ShopLiveImageEditorData
 import cloud.shoplive.sdk.editor.ShopLiveImageEditorHandler
 import cloud.shoplive.sdk.editor.ShopLiveShortformEditor
 import cloud.shoplive.sdk.editor.ShopLiveShortformEditorHandler
-import cloud.shoplive.sdk.editor.ShopLiveShortformEditorVisibleContentData
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditor
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditorCustomizeCropData
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditorCustomizeData
@@ -51,7 +50,8 @@ import cloud.shoplive.sdk.editor.ShopLiveVideoEditorCustomizePlaybackSpeedData
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditorCustomizeVoluemeData
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditorData
 import cloud.shoplive.sdk.editor.ShopLiveVideoEditorHandler
-import cloud.shoplive.sdk.editor.ShopLiveVideoUploaderData
+import cloud.shoplive.sdk.editor.upload.ShopLiveShortformUploaderData
+import cloud.shoplive.sdk.editor.upload.ShopLiveShortformUploaderUiData
 import cloud.shoplive.sdk.network.ShopLiveNetwork
 import cloud.shoplive.sdk.shorts.ShopLiveShortform
 import cloud.shoplive.sdk.shorts.ShopLiveShortformHandler
@@ -130,10 +130,11 @@ class NativeShortformActivity : AppCompatActivity() {
         val imageEditorString = getString(R.string.shortform_image_editor_only)
         val coverPickerString = getString(R.string.shortform_cover_picker_only)
 
-        val list = listOf(uploadEditorString, videoEditorString, imageEditorString, coverPickerString)
+        val list =
+            listOf(uploadEditorString, videoEditorString, imageEditorString, coverPickerString)
         CustomListDialog(this, list, callback = {
             when (it) {
-                uploadEditorString -> showShortformEditor()
+                uploadEditorString -> showShortformUploader()
                 videoEditorString -> showVideoEditor()
                 imageEditorString -> showImageEditor()
                 coverPickerString -> showCoverPicker()
@@ -278,7 +279,7 @@ class NativeShortformActivity : AppCompatActivity() {
         }
     }
 
-    private fun showShortformEditor() {
+    private fun showShortformUploader() {
         if (viewModel.isCustomShortform) {
             ShopLiveCommon.setCustomize(
                 ShopLiveCommonCustomizeData(
@@ -358,19 +359,10 @@ class NativeShortformActivity : AppCompatActivity() {
                         ShopLiveCoverPickerCustomizeData()
                     }
                 )
-                setVideoUploaderData(ShopLiveVideoUploaderData().apply {
-                    visibleContentData =
-                        ShopLiveShortformEditorVisibleContentData().apply {
-                            isDescriptionVisible = true
-                            isTagsVisible = true
-                        }
-                })
+                setShortformUploaderData(ShopLiveShortformUploaderData())
                 setHandler(object : ShopLiveShortformEditorHandler() {
-                    override fun onSuccess(
-                        activity: ComponentActivity,
-                        resultData: ShopLiveEditorResultData
-                    ) {
-                        super.onSuccess(activity, resultData)
+                    override fun onSuccess(activity: ComponentActivity) {
+                        super.onSuccess(activity)
                         Toast.makeText(
                             this@NativeShortformActivity,
                             "onComplete",
