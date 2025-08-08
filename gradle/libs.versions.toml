@@ -1,30 +1,30 @@
 [versions]
-kotlin = "1.9.25"
-appcompat = "1.7.0"
+kotlin = "2.1.0"
+appcompat = "1.7.1"
 commonJava8 = "1.1.1"
-constraintlayout = "2.1.4"
-coreKtx = "1.13.0"
+constraintlayout = "2.2.1"
+coreKtx = "1.16.0"
 coreTesting = "2.2.0"
-compose = "1.7.7"
-composeBom = "2025.05.00"
-espressoCore = "3.6.1"
-fragmentKtx = "1.8.5"
+composeBom = "2025.07.00"
+espressoCore = "3.7.0"
+fragmentKtx = "1.8.8"
 gradle = "8.7.3"
 gradlePlugin = "8.7.3"
 junit = "4.13.2"
 junitJupiter = "5.9.1"
-junitVersion = "1.2.1"
-kotlinStdlib = "2.0.20"
+junitVersion = "1.3.0"
+kotlinStdlib = "2.1.0"
 kotlinxCoroutinesTest = "1.9.0"
 material = "1.12.0"
 preferenceKtx = "1.2.1"
 exoplayer = "2.19.1"
 media3player = "1.5.1"
-shopliveSdk = "1.7.0"
+shopliveSdk = "1.7.5"
 testng = "6.9.6"
 mockk = "1.13.16"
 jvm = "1.8"
 shopliveExoplayerSuffix = ".10"
+kotlinCompilerExtensions = "1.5.3"
 
 [libraries]
 #android
@@ -44,8 +44,8 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 
 #compose
 material3 = { module = "androidx.compose.material3:material3" }
-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "compose" }
-compose-runtime-android = { module = "androidx.compose.runtime:runtime-android", version.ref = "compose" }
+activity-compose = { module = "androidx.activity:activity-compose"}
+compose-runtime-android = { module = "androidx.compose.runtime:runtime-android" }
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
@@ -80,3 +80,4 @@ android-application = { id = "com.android.application", version.ref = "gradlePlu
 android-library = { id = "com.android.library", version.ref = "gradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
