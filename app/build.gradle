@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -17,6 +18,10 @@ android {
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.kotlinCompilerExtensions.get()
     }
 
     signingConfigs {
