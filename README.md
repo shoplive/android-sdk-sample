@@ -82,8 +82,8 @@ dependencies {
 [versions]
 exoPlayer = "2.19.1"
 media3Player = "1.5.1"
-shopliveSdk = "1.7.0"
-shopliveExoplayerSuffix = ".10"
+shopliveSdk = "1.7.7"
+shopliveExoplayerSuffix = ".11"
 
 [libraries]
 #shoplive

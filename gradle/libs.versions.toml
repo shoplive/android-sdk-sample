@@ -23,7 +23,7 @@ shopliveSdk = "1.7.7"
 testng = "6.9.6"
 mockk = "1.13.16"
 jvm = "1.8"
-shopliveExoplayerSuffix = ".10"
+shopliveExoplayerSuffix = ".11"
 kotlinCompilerExtensions = "1.5.3"
 
 [libraries]
