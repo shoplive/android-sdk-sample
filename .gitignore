@@ -1,10 +1,12 @@
-*.iml
-.gradle
-/.idea
-/local.properties
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# Binaries must not land on develop/main — they ship on the maven-repo branch and Releases only.
+*.aar
+*.jar
+*.apk
+*.ap_
 local.properties
+.gradle/
+build/
+**/build/
+.idea/
+*.iml
+.DS_Store
