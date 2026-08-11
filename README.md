@@ -1,140 +1,137 @@
-# [Shoplive](https://www.shoplive.cloud/kr) Player SDK for Android
+# Shoplive Android SDK
 
-[![Platform](https://img.shields.io/badge/platform-android-orange.svg)](https://github.com/shoplive/android-sdk-sample)
-[![Languages](https://img.shields.io/badge/language-kotlin-orange.svg)](https://github.com/shoplive/android-sdk-sample)
+Distribution repository for the Shoplive Android SDK. **No SDK source lives here.**
 
-## Table of contents
+> Canonical repo: [`shoplive/shoplive-sdk-android`](https://github.com/shoplive/shoplive-sdk-android)  
+> (`android-sdk-sample` redirects here.)
 
-1.  [Introduction](#introduction)
-1.  [Requirements](#requirements)
-1.  [Getting started](#getting-started)
+Binaries (AAR + POM) are published to:
 
-## Introduction
+| Channel | Purpose |
+| --- | --- |
+| **GitHub Releases** | Downloadable AAR/POM assets per version tag |
+| **`maven-repo` branch** | Maven repository layout for Gradle `implementation(...)` resolve |
 
-Simply install the SHOPLIVE SDK to quickly and easily provide live broadcasts to customers using your application.
-
-<image src="doc/images/guide.gif" width="200" height="410"></image>
-
-### Documentation
-
-If you have any comments, questions or feature requests, let us know in the [email](mailto:ask@shoplive.cloud).
-
-[English](https://en.shoplive.guide/docs/shoplive-sdk-for-android)<br />
-[한국어](https://docs.shoplive.kr/docs/shoplive-android-sdk)
-
+Consumers never need the internal modules (`shoplive-core`, `shoplive-webrtc`, …).  
+Declare **only** the product(s) you use — transitive dependencies come from each artifact’s POM (same behaviour as Maven Central).
 
 ## Requirements
 
-The minimum requirements for the Player SDK for Android are:
+| | |
+| --- | --- |
+| Min SDK | **21+** (see release notes if a release raises the floor) |
+| Distribution | Gradle Maven repository (this GitHub `maven-repo` branch) |
+| Android Gradle Plugin | 8.x recommended |
 
-- `Android 4.4 (API level 19) or higher`
-- `targetSdkVersion 34 or higher`
+## Installation
 
-## Getting started
+### 1. Repository
 
-Please follow the step by step. <br />
+`settings.gradle.kts` (or root `repositories` block):
 
-## Step by step
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://raw.githubusercontent.com/shoplive/shoplive-sdk-android/maven-repo")
+        }
+    }
+}
+```
 
-### Step 1: Creating an admin account
+### 2. Dependencies
 
-To use the Shoplive SDK for Android, ask the Shoplive representative for an admin account and password. [Admin Guide - Creating Admin Account](https://en.shoplive.guide/docs/admin-account)
+#### Player only
 
-> **Note**: Please request for your admin account to a Shoplive representative. Your account will be issued once you provide your registered email and name. Once your account is issued, a temporary password will be sent to your email. Please reset the password on your first login.
-
-<br />
-
-### Step 2: Install the Shoplive SDK
-
-Installing the Shoplive SDK is simple if you're familiar with using external libraries or SDKs. 
-
-Add the dependency to the project's top-level `build.gradle` file and `libs.versions.toml` file as shown below:
-
-```gradle
+```kotlin
 dependencies {
-    ...
-    def exoplayer = "your_exoplayer_version
-    def your_exoplayer_version = libs.versions.exoplayer.get()
-    def shoplive_exoplayer_suffix = libs.versions.shopliveExoplayerSuffix.get()
-     
-    // For submodules
-    implementation libs.shoplive.common // must required
-    implementation("$exoplayer:${your_exoplayer_version}${shoplive_exoplayer_suffix}")  // must required
-    // implementation("cloud.shoplive:shoplive-exoplayer:2.19.1.10")
+    implementation("cloud.shoplive:shoplive-player-sdk:3.0.0")
+}
+```
 
-    // When using media3. Exoplayer will be deprecated soon.
-    // https://developer.android.com/guide/topics/media/media3/getting-started/migration-guide
-    // implementation("$media3_player:${your_media3_version}${shoplive_exoplayer_suffix}")
-    // implementation("cloud.shoplive:shoplive-media3:1.5.1.10")
-    implementation libs.shoplive.network // must required
-    implementation libs.shoplive.sdk.core // for live player
-    implementation libs.shoplive.short.form // for short-form player
-    implementation libs.shoplive.filter // for short-form editor
-    implementation libs.shoplive.video.editor // for short-form editor
+Version catalog (`gradle/libs.versions.toml`):
 
-    // For library - combined packaging
-    // implementation libs.shoplive.sdk.all // live + short-form
-    ...
+```toml
+[versions]
+shoplive = "3.0.0"
+
+[libraries]
+shoplive-player-sdk = { module = "cloud.shoplive:shoplive-player-sdk", version.ref = "shoplive" }
+```
+
+```kotlin
+implementation(libs.shoplive.player.sdk)
+```
+
+That single line pulls in the transitive Shoplive modules declared in the published POM
+(`shoplive-core`, `shoplive-core-player`, `shoplive-exoplayer`, `shoplive-webrtc`, …).
+
+#### Streamer only
+
+```kotlin
+dependencies {
+    implementation("cloud.shoplive:shoplive-streamer-sdk:3.0.0")
 }
 ```
 
 ```toml
-[versions]
-exoPlayer = "2.19.1"
-media3Player = "1.5.1"
-shopliveSdk = "1.7.7"
-shopliveExoplayerSuffix = ".11"
-
-[libraries]
-#shoplive
-shoplive-common = { module = "cloud.shoplive:shoplive-common", version.ref = "shopliveSdk"}
-#When using media3. Exoplayer will be deprecated soon.
-shoplive-media3 = { module = "cloud.shoplive:shoplive-media3" }
-shoplive-exoplayer = { module = "cloud.shoplive:shoplive-exoplayer" }
-shoplive-filter = { module = "cloud.shoplive:shoplive-filter", version.ref = "shopliveSdk" }
-shoplive-network = { module = "cloud.shoplive:shoplive-network", version.ref = "shopliveSdk" }
-shoplive-sdk-core = { module = "cloud.shoplive:shoplive-sdk-core", version.ref = "shopliveSdk" }
-shoplive-short-form = { module = "cloud.shoplive:shoplive-short-form", version.ref = "shopliveSdk" }
-shoplive-video-editor = { module = "cloud.shoplive:shoplive-video-editor", version.ref = "shopliveSdk" }
-#For library - combined packaging
-shoplive-sdk-all = { module =  "cloud.shoplive:shoplive-sdk-all", version.ref = "shopliveSdk" }
+shoplive-streamer-sdk = { module = "cloud.shoplive:shoplive-streamer-sdk", version.ref = "shoplive" }
 ```
 
-
-### Step 3: Grant system permissions to the Shoplive SDK
-
-The Shoplive SDK requires system permissions, add the following lines to your `AndroidManifest.xml` file.
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
+```kotlin
+implementation(libs.shoplive.streamer.sdk)
 ```
 
-### Step 4: Registering AccessKey & Handler
+#### Player + Streamer together
 
-Register a accessKey & handler to receive multiple events from the Shoplive SDK for Android. <br />
-
-```
-ShopLive.setAccessKey("{accessKey}")
-ShopLive.setHandler(object : ShopLiveHandler() {
-    override fun handleNavigation(context: Context, url: String) {
-        // Do something
-    }
-})
+```kotlin
+dependencies {
+    implementation("cloud.shoplive:shoplive-player-sdk:3.0.0")
+    implementation("cloud.shoplive:shoplive-streamer-sdk:3.0.0")
+}
 ```
 
-### Step 5: Running Shoplive Player
-
-Play the video using the access key and campaign key.
-
-
-#### A. Play the campaign
-
-```
-ShopLive.play(context, ShopLivePlayerData("{campaignKey}")) 
+```kotlin
+implementation(libs.shoplive.player.sdk)
+implementation(libs.shoplive.streamer.sdk)
 ```
 
-#### B. Preview the campaign
+Shared modules (`shoplive-core`, `shoplive-webrtc`, …) resolve once; Gradle deduplicates identical coordinates via the POMs.
 
+> Do **not** add `shoplive-core` / `shoplive-webrtc` / `shoplive-exoplayer` yourself unless Shoplive support asks you to. They are implementation details of the product SDKs.
+
+## Products
+
+| Product coordinate | Purpose | Pulled transitively (examples) |
+| --- | --- | --- |
+| `cloud.shoplive:shoplive-player-sdk` | Live / VOD playback | `shoplive-core`, `shoplive-core-player`, `shoplive-exoplayer`, `shoplive-webrtc` → `shoplive-android-webrtc`, … |
+| `cloud.shoplive:shoplive-streamer-sdk` | Broadcasting | `shoplive-core`, `shoplive-webrtc` → `shoplive-android-webrtc`, … |
+
+On international **3.x**, former `common` / `lokalise` / `network` / `permission` surfaces ship inside `shoplive-core`. You only depend on the product SDK rows above.
+
+## Releases
+
+- See [Releases](https://github.com/shoplive/shoplive-sdk-android/releases) for tagged versions and attached AAR/POM files.
+- The `maven-repo` branch holds the same binaries in Maven path layout for Gradle resolve.
+
+## Note on “Source code” zip / tar.gz
+
+GitHub always attaches auto-generated source archives to a Release. Those archives are **this distribution repo** (README / docs), not the private SDK sources.
+
+## Cutting a release (maintainers)
+
+Artifacts are built in the private SDK source repository (`matrix-sdk-android`, international line) and published here.
+
+```bash
+# from matrix-sdk-android
+make githubReleaseInternational
+# or: VERSION=3.0.0 ./scripts/deploy-github-release-international.sh
 ```
-ShopLive.showPreviewPopup(this@YourActivity, ShopLivePreviewData("{campaignKey}"))
-```
+
+## Ownership
+
+- Team: Shoplive Mobile
+- Contact: [ask@shoplive.cloud](mailto:ask@shoplive.cloud)
+

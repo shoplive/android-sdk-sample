@@ -1,35 +1,18 @@
-name: Build CI
-
+# Satisfy required status check "build" on develop (distribution README only — no app to compile).
+name: build
 on:
   pull_request:
-    branches:
-      - "**"
-
+  push:
+    branches: [develop, main]
 jobs:
   build:
-    runs-on: [self-hosted, macos]
-
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: gradle
-
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-
-    - name: Update local.properties
-      run: echo -e "sdk.dir=/Users/shoplive/Library/Android/sdk" > ./local.properties
-
-    - uses: actions/cache@v3
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
-
-    - name: Build with Gradle
-      run: ./gradlew assembleDebug --stacktrace
+      - uses: actions/checkout@v4
+      - name: Landing page sanity
+        run: |
+          test -f README.md
+          test -f LICENSE
+          # Fail if SDK / sample app sources reappear on the docs branch
+          ! test -d app
+          echo "OK — distribution landing page"
