@@ -1,8 +1,4 @@
-# Binaries must not land on develop/main — they ship on the maven-repo branch and Releases only.
-*.aar
-*.jar
-*.apk
-*.ap_
+# This branch hosts Maven binaries (AAR/POM/jar). Do not ignore them.
 local.properties
 .gradle/
 build/
