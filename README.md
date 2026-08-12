@@ -19,7 +19,7 @@ Declare **only** the product(s) you use — transitive dependencies come from ea
 
 | | |
 | --- | --- |
-| Min SDK | **21+** (see release notes if a release raises the floor) |
+| Min SDK | **23+** (see release notes if a release raises the floor) |
 | Distribution | Gradle Maven repository (this GitHub `maven-repo` branch) |
 | Android Gradle Plugin | 8.x recommended |
 
@@ -107,7 +107,7 @@ Shared modules (`shoplive-core`, `shoplive-webrtc`, …) resolve once; Gradle de
 | Product coordinate | Purpose | Pulled transitively (examples) |
 | --- | --- | --- |
 | `cloud.shoplive:shoplive-player-sdk` | Live / VOD playback | `shoplive-core`, `shoplive-core-player`, `shoplive-exoplayer`, `shoplive-webrtc` → `shoplive-android-webrtc`, … |
-| `cloud.shoplive:shoplive-streamer-sdk` | Broadcasting | `shoplive-core`, `shoplive-webrtc` → `shoplive-android-webrtc`, … |
+| `cloud.shoplive:shoplive-streamer-sdk` | Broadcasting | `shoplive-core`, `shoplive-webrtc` → `shoplive-android-webrtc`, `shoplive-rtmp`, … |
 
 On international **3.x**, former `common` / `lokalise` / `network` / `permission` surfaces ship inside `shoplive-core`. You only depend on the product SDK rows above.
 
