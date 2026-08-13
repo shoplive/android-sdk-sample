@@ -1,9 +1,6 @@
 # Shoplive Android SDK
 
-Distribution repository for the Shoplive Android SDK. **No SDK source lives here.**
-
-> Canonical repo: [`shoplive/shoplive-sdk-android`](https://github.com/shoplive/shoplive-sdk-android)  
-> (`android-sdk-sample` redirects here.)
+Distribution repository for the Shoplive Android SDK.
 
 Binaries (AAR + POM) are published to:
 
@@ -12,7 +9,6 @@ Binaries (AAR + POM) are published to:
 | **GitHub Releases** | Downloadable AAR/POM assets per version tag |
 | **`maven-repo` branch** | Maven repository layout for Gradle `implementation(...)` resolve |
 
-Consumers never need the internal modules (`shoplive-core`, `shoplive-webrtc`, …).  
 Declare **only** the product(s) you use — transitive dependencies come from each artifact’s POM (same behaviour as Maven Central).
 
 ## Requirements
@@ -109,7 +105,7 @@ Shared modules (`shoplive-core`, `shoplive-webrtc`, …) resolve once; Gradle de
 | `cloud.shoplive:shoplive-player-sdk` | Live / VOD playback | `shoplive-core`, `shoplive-core-player`, `shoplive-exoplayer`, `shoplive-webrtc` → `shoplive-android-webrtc`, … |
 | `cloud.shoplive:shoplive-streamer-sdk` | Broadcasting | `shoplive-core`, `shoplive-webrtc` → `shoplive-android-webrtc`, `shoplive-rtmp`, … |
 
-On international **3.x**, former `common` / `lokalise` / `network` / `permission` surfaces ship inside `shoplive-core`. You only depend on the product SDK rows above.
+You only depend on the product SDK rows above.
 
 ## Releases
 
@@ -118,20 +114,9 @@ On international **3.x**, former `common` / `lokalise` / `network` / `permission
 
 ## Note on “Source code” zip / tar.gz
 
-GitHub always attaches auto-generated source archives to a Release. Those archives are **this distribution repo** (README / docs), not the private SDK sources.
+GitHub always attaches auto-generated source archives to a Release. Those archives are **this distribution repo** (README / docs), not the SDK sources. Use the AAR/POM assets or the `maven-repo` branch.
 
-## Cutting a release (maintainers)
+## Support
 
-Artifacts are built in the private SDK source repository (`matrix-sdk-android`, international line) and published here.
-
-```bash
-# from matrix-sdk-android
-make githubReleaseInternational
-# or: VERSION=3.0.0 ./scripts/deploy-github-release-international.sh
-```
-
-## Ownership
-
-- Team: Shoplive Mobile
 - Contact: [ask@shoplive.cloud](mailto:ask@shoplive.cloud)
 
