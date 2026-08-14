@@ -14,7 +14,7 @@ Maven layout for Gradle to resolve.
 
 ## Installation
 
-### 1. Repository
+### 1. Set up the Maven repository
 
 `settings.gradle.kts` (or the root `repositories` block):
 
@@ -32,12 +32,11 @@ dependencyResolutionManagement {
 
 ### 2. Dependencies
 
-Declare only the products your app needs — Player, Streamer, or both:
+Declare the product coordinates you need, all on the same version:
 
 ```kotlin
 dependencies {
     implementation("cloud.shoplive:shoplive-player-sdk:3.0.0")
-    implementation("cloud.shoplive:shoplive-streamer-sdk:3.0.0")
 }
 ```
 
@@ -54,28 +53,42 @@ shoplive-streamer-sdk = { module = "cloud.shoplive:shoplive-streamer-sdk", versi
 
 ```kotlin
 implementation(libs.shoplive.player.sdk)
-implementation(libs.shoplive.streamer.sdk)
 ```
 
-## Modules
+Everything else — `shoplive-core`, `shoplive-core-player`, `shoplive-exoplayer`, `shoplive-webrtc`,
+`shoplive-android-webrtc`, `shoplive-rtmp` — is an implementation detail that arrives transitively
+through each product's POM. You never declare those yourself.
 
-| Product coordinate | Purpose | Pulled in transitively |
-| --- | --- | --- |
-| `cloud.shoplive:shoplive-player-sdk` | Live / VOD playback | `shoplive-core`, `shoplive-core-player`, `shoplive-exoplayer`, `shoplive-webrtc` → `shoplive-android-webrtc` |
-| `cloud.shoplive:shoplive-streamer-sdk` | Broadcasting | `shoplive-core`, `shoplive-webrtc` → `shoplive-android-webrtc`, `shoplive-rtmp` |
+### 3. Products
 
-**Two products, and you declare only those two.** Everything else in the table is an
-implementation detail that arrives through each product's POM:
+| Product coordinate | Purpose |
+| --- | --- |
+| `cloud.shoplive:shoplive-player-sdk` | Live / VOD playback |
+| `cloud.shoplive:shoplive-streamer-sdk` | Broadcasting |
 
-- `shoplive-core` — shared configuration, user/session state and networking; the one module both products depend on
-- `shoplive-core-player` — playback layer behind the Player product
-- `shoplive-exoplayer` — HLS / VOD playback on ExoPlayer 2.19.1
-- `shoplive-webrtc` — WebRTC path used by both products, including camera capture
-- `shoplive-android-webrtc` — the prebuilt WebRTC binary (~22MB, so it stays its own artifact)
-- `shoplive-rtmp` — RTMP broadcasting behind the Streamer product
+**Player**
 
-You never add these yourself. Using Player and Streamer together still resolves each shared module
-exactly once — Gradle deduplicates the identical coordinates coming from both POMs.
+```kotlin
+implementation("cloud.shoplive:shoplive-player-sdk:3.0.0")
+```
+
+**Streamer**
+
+```kotlin
+implementation("cloud.shoplive:shoplive-streamer-sdk:3.0.0")
+```
+
+**All**
+
+```kotlin
+implementation("cloud.shoplive:shoplive-player-sdk:3.0.0")
+implementation("cloud.shoplive:shoplive-streamer-sdk:3.0.0")
+```
+
+Using both products still resolves each shared module exactly once — Gradle deduplicates the
+identical coordinates coming from both POMs.
+
+With any of the three, the core surface is available without declaring it:
 
 ```kotlin
 import cloud.shoplive.core.publicsurface.Shoplive
@@ -86,10 +99,15 @@ Shoplive.initialize(context, ShopliveConfiguration(accessKey = "{ACCESS_KEY}"))
 Shoplive.setUser(ShopliveUser.Guest)
 ```
 
-`Shoplive.*` is available with only the product coordinate declared — the core surface comes in
-transitively through the product's POM.
+## Releases
 
-## Support
+- [Releases](https://github.com/shoplive/shoplive-sdk-android/releases) — tagged versions with the
+  AAR/POM assets attached, plus the release notes for each version.
+- The `maven-repo` branch holds the same binaries in Maven path layout for Gradle to resolve.
+- The auto-generated "Source code (zip / tar.gz)" archives on a release are this distribution repo,
+  not the SDK sources — use the AAR/POM assets or the Maven repository above.
 
-Questions and issue reports: contact your Shoplive representative, or
-[ask@shoplive.cloud](mailto:ask@shoplive.cloud).
+## Ownership & Support
+
+- Team: Shoplive Mobile
+- Contact: [ask@shoplive.cloud](mailto:ask@shoplive.cloud)
