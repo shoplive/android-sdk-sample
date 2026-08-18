@@ -114,13 +114,3 @@ Shoplive.setUser(ShopliveUser.Guest)
 - Team: Shoplive Mobile
 - Contact: [ask@shoplive.cloud](mailto:ask@shoplive.cloud)
 
-## Latest versions
-
-<!-- shoplive-sdk-versions:start -->
-
-| Line | Latest version | Release | Built from |
-| --- | --- | --- | --- |
-| domestic | 1.8.13 | [v1.8.13](https://github.com/shoplive/shoplive-sdk-android/releases/tag/v1.8.13) | `matrix-sdk-android@d382f1d14` (2026-08-18) |
-| international | 3.0.0 | [v3.0.0](https://github.com/shoplive/shoplive-sdk-android/releases/tag/v3.0.0) | existing |
-
-<!-- shoplive-sdk-versions:end -->
