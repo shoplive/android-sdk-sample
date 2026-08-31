@@ -24,11 +24,13 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven {
-            url = uri("https://raw.githubusercontent.com/shoplive/shoplive-sdk-android/maven-repo")
+            url = uri("https://sdk.shoplive.cloud/maven-repo")
         }
     }
 }
 ```
+
+Use the `sdk.shoplive.cloud` endpoint as the canonical Maven repository URL.
 
 ### 2. Dependencies
 
@@ -111,3 +113,4 @@ Shoplive.setUser(ShopliveUser.Guest)
 
 - Team: Shoplive Mobile
 - Contact: [ask@shoplive.cloud](mailto:ask@shoplive.cloud)
+
